@@ -75,6 +75,16 @@ flutter:
     - family: Gugi
       fonts:
         - asset: assets/fonts/Gugi-Regular.ttf
+    - family: SunflowerBold
+      fonts:
+        - asset: assets/fonts/Sunflower-Bold.ttf
+    - family: SunflowerMedium
+      fonts:
+        - asset: assets/fonts/Sunflower-Medium.ttf
+    - family: SunflowerLight
+      fonts:
+        - asset: assets/fonts/Sunflower-Light.ttf
+    
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

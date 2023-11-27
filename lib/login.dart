@@ -9,7 +9,7 @@ class Login extends StatelessWidget {
     Widget title = _buildTitle();
 
     return MaterialApp(
-      theme: ThemeData(fontFamily: 'Gugi'),
+      theme: ThemeData(fontFamily: 'SunflowerMedium'),
       home: Scaffold(
           backgroundColor: Colors.white,
           body: ListView(
