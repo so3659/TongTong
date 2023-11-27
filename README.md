@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # tongtong
 
 A new Flutter project.
@@ -14,3 +15,7 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+=======
+# Social-App-For-Club
+동아리 인원들을 위한 SNS 앱 입니다
+>>>>>>> 10dd1d634b59c65f6041310c89a24da06b4ee882
