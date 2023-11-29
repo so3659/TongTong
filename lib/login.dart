@@ -88,34 +88,16 @@ Widget _buildLogin() {
       FadeInUp(
         duration: const Duration(milliseconds: 1800),
         child: Container(
-          margin: const EdgeInsets.fromLTRB(30, 15, 30, 15),
-          padding: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(38.5),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.grey,
-                offset: Offset(4.0, 4.0),
-                blurRadius: 15.0,
-                spreadRadius: 1.0,
-              ),
-              BoxShadow(
-                color: Colors.white,
-                offset: Offset(-4.0, -4.0),
-                blurRadius: 15.0,
-                spreadRadius: 1.0,
-              ),
-            ],
-          ),
-          child: const TextField(
-            textAlign: TextAlign.center,
-            decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: "로그인",
-                hintStyle: TextStyle(color: Colors.black)),
-          ),
-        ),
+            margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: const EdgeInsets.all(20),
+            width: 450,
+            child: FloatingActionButton(
+              backgroundColor: Colors.white,
+              onPressed: () {},
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100)),
+              child: const Text('로그인'),
+            )),
       ),
     ],
   );
@@ -132,8 +114,11 @@ Widget _buildRegister() {
             decoration: const BoxDecoration(
               color: Colors.white,
             ),
-            child: const Center(
-              child: Text('비밀번호 찾기'),
+            child: Center(
+              child: TextButton(
+                child: const Text('비밀번호 찾기'),
+                onPressed: () {},
+              ),
             )),
       ),
       FadeInUp(
@@ -143,8 +128,11 @@ Widget _buildRegister() {
           decoration: const BoxDecoration(
             color: Colors.white,
           ),
-          child: const Center(
-            child: Text('회원가입'),
+          child: Center(
+            child: TextButton(
+              child: const Text('회원가입'),
+              onPressed: () {},
+            ),
           ),
         ),
       ),
