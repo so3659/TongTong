@@ -1,26 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tongtong/register.dart';
+
+final GoRouter _goroute = GoRouter(
+  routes: <RouteBase>[
+    GoRoute(path: '/', builder: (context, state) => _firstpage()),
+    GoRoute(
+      path: '/register',
+      builder: (context, state) => Register(),
+    )
+  ],
+);
 
 class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Widget login = _buildLogin();
-    Widget register = _buildRegister();
-    Widget title = _buildTitle();
-
-    return MaterialApp(
-      theme: ThemeData(fontFamily: 'SunflowerMedium'),
-      home: Scaffold(
-          backgroundColor: Colors.white,
-          body: ListView(
-            children: [
-              title,
-              login,
-              register,
-            ],
-          )),
+    return MaterialApp.router(
+      routerConfig: _goroute,
     );
   }
+}
+
+Widget _firstpage() {
+  return MaterialApp(
+    theme: ThemeData(fontFamily: 'SunflowerMedium'),
+    home: Scaffold(
+        backgroundColor: Colors.white,
+        body: ListView(
+          children: [
+            _buildTitle(),
+            _buildLogin(),
+            const BuildRegister(),
+          ],
+        )),
+  );
 }
 
 Widget _buildTitle() {
@@ -103,39 +117,44 @@ Widget _buildLogin() {
   );
 }
 
-Widget _buildRegister() {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    children: <Widget>[
-      FadeInUp(
-        duration: const Duration(milliseconds: 1800),
-        child: Container(
+class BuildRegister extends StatelessWidget {
+  const BuildRegister({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        FadeInUp(
+          duration: const Duration(milliseconds: 1800),
+          child: Container(
+              margin: const EdgeInsets.all(5),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+              ),
+              child: Center(
+                child: TextButton(
+                  child: const Text('비밀번호 찾기'),
+                  onPressed: () {},
+                ),
+              )),
+        ),
+        FadeInUp(
+          duration: const Duration(milliseconds: 1800),
+          child: Container(
             margin: const EdgeInsets.all(5),
             decoration: const BoxDecoration(
               color: Colors.white,
             ),
             child: Center(
               child: TextButton(
-                child: const Text('비밀번호 찾기'),
-                onPressed: () {},
+                child: const Text('회원가입'),
+                onPressed: () => context.push('/register'),
               ),
-            )),
-      ),
-      FadeInUp(
-        duration: const Duration(milliseconds: 1800),
-        child: Container(
-          margin: const EdgeInsets.all(5),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-          ),
-          child: Center(
-            child: TextButton(
-              child: const Text('회원가입'),
-              onPressed: () {},
             ),
           ),
         ),
-      ),
-    ],
-  );
+      ],
+    );
+  }
 }

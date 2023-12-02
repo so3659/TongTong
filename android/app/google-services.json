@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "256107932838",
+    "project_id": "tongtong-5936b",
+    "storage_bucket": "tongtong-5936b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:256107932838:android:c970fb5a766b69beac9867",
+        "android_client_info": {
+          "package_name": "com.example.tongtong"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUJ9D3wAXYYecO0Z1RHJ4i5o6730zEEu4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
