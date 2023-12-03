@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tongtong/db/loginDB.dart';
 import 'package:tongtong/login.dart';
 
 final GoRouter _goroute = GoRouter(
@@ -54,7 +55,7 @@ class AggState extends State<Agg> {
         key: formKey,
         child:
             Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          SizedBox(height: 30.0),
+          const SizedBox(height: 30.0),
           TextFormField(
             controller: classNumController,
             textAlign: TextAlign.center,
@@ -164,8 +165,18 @@ class AggState extends State<Agg> {
             onPressed: () async {
               if (formKey.currentState!.validate()) {
                 formKey.currentState!.save();
-                showSuccessDialog(context);
-                context.pop();
+                final idCheck = await confirmIdCheck(_id!);
+                if (idCheck != '0') {
+                  if (context.mounted) {
+                    showDuplicateDialog(context);
+                  }
+                } else {
+                  insertMember(_classNum!, _name!, _id!, _password!);
+                  if (context.mounted) {
+                    showSuccessDialog(context);
+                    context.pop();
+                  }
+                }
               } else {
                 showFailDialog(context);
               }
@@ -205,6 +216,27 @@ void showFailDialog(BuildContext context) async {
       return AlertDialog(
         title: const Text('통통 회원가입'),
         content: const Text("양식을 제대로 채워주세요"),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('OK'),
+            onPressed: () {
+              Navigator.pop(context, "OK");
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void showDuplicateDialog(BuildContext context) async {
+  String result = await showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('통통 회원가입'),
+        content: const Text("입력한 아이디가 이미 존재합니다"),
         actions: <Widget>[
           TextButton(
             child: const Text('OK'),

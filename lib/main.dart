@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tongtong/db/mySqlConnector.dart';
 import 'package:tongtong/login.dart';
 
 void main() {
-  dbConnector();
   runApp(MyApp());
 }
 

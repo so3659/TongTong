@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tongtong/main.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(Homepage());
 }
 
-class MyApp extends StatelessWidget {
+class Homepage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
