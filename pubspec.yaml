@@ -65,9 +65,12 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/images/tong_logo.png
+    - assets/images/tong_top_logo.png
+    - assets/images/insta.png
+    - assets/images/navercafe.png
+
   fonts:
     - family: NanumGothic
       fonts:

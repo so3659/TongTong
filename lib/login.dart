@@ -23,6 +23,7 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       routerConfig: _goroute,
     );
   }
@@ -30,6 +31,7 @@ class Login extends StatelessWidget {
 
 Widget _firstpage() {
   return MaterialApp(
+    debugShowCheckedModeBanner: false,
     theme: ThemeData(fontFamily: 'SunflowerMedium'),
     home: Scaffold(
         backgroundColor: Colors.white,
@@ -129,7 +131,7 @@ class BuildLogin extends StatelessWidget {
                     }
                   } else {
                     if (context.mounted) {
-                      context.push('/homepage');
+                      context.go('/homepage');
                     }
                   }
                 },
