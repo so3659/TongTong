@@ -14,7 +14,7 @@ final GoRouter _goroute = GoRouter(
     ),
     GoRoute(
       path: '/homepage',
-      builder: (context, state) => Homepage(),
+      builder: (context, state) => HomePage(),
     )
   ],
 );
@@ -32,7 +32,9 @@ class Login extends StatelessWidget {
 Widget _firstpage() {
   return MaterialApp(
     debugShowCheckedModeBanner: false,
-    theme: ThemeData(fontFamily: 'SunflowerMedium'),
+    theme: ThemeData(
+        fontFamily: 'SunflowerMedium',
+        colorScheme: ColorScheme.fromSeed(seedColor: (Colors.lightBlue[200])!)),
     home: Scaffold(
         backgroundColor: Colors.white,
         body: ListView(
