@@ -34,6 +34,7 @@ dependencies:
   go_router: ^12.1.1
   sqflite: ^2.2.8
   mysql_client: ^0.0.27
+  shared_preferences: ^2.2.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -42,6 +43,7 @@ dependencies:
   firebase_core: ^2.24.0
   firebase_analytics: ^10.7.2
   url_launcher: ^6.2.1
+  provider: ^6.1.1
 
 dev_dependencies:
   flutter_test:

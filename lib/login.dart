@@ -4,22 +4,25 @@ import 'package:go_router/go_router.dart';
 import 'package:tongtong/db/loginDB.dart';
 import 'package:tongtong/homepage.dart';
 import 'package:tongtong/register.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final GoRouter _goroute = GoRouter(
   routes: <RouteBase>[
-    GoRoute(path: '/', builder: (context, state) => _firstpage()),
+    GoRoute(path: '/', builder: (context, state) => const TokenCheck()),
     GoRoute(
       path: '/register',
-      builder: (context, state) => Register(),
+      builder: (context, state) => const Register(),
     ),
     GoRoute(
       path: '/homepage',
-      builder: (context, state) => HomePage(),
+      builder: (context, state) => const HomePage(),
     )
   ],
 );
 
 class Login extends StatelessWidget {
+  const Login({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
@@ -41,7 +44,6 @@ Widget _firstpage() {
           children: [
             _buildTitle(),
             const BuildLogin(),
-            const BuildRegister(),
           ],
         )),
   );
@@ -69,8 +71,28 @@ Widget _buildTitle() {
   );
 }
 
-class BuildLogin extends StatelessWidget {
-  const BuildLogin({super.key});
+class BuildLogin extends StatefulWidget {
+  const BuildLogin({Key? key}) : super(key: key);
+
+  @override
+  State<BuildLogin> createState() => BuildLoginState();
+}
+
+class BuildLoginState extends State<BuildLogin> {
+  bool switchValue = false;
+
+  // 자동 로그인 설정
+  void _setAutoLogin(String token) async {
+    // 공유저장소에 유저 DB의 인덱스 저장
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token);
+  }
+
+  // 자동 로그인 해제
+  void _delAutoLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +155,11 @@ class BuildLogin extends StatelessWidget {
                     }
                   } else {
                     if (context.mounted) {
+                      if (switchValue == true) {
+                        _setAutoLogin(loginCheck!);
+                      } else {
+                        _delAutoLogin();
+                      }
                       context.go('/homepage');
                     }
                   }
@@ -142,48 +169,49 @@ class BuildLogin extends StatelessWidget {
                 child: const Text('로그인'),
               )),
         ),
-      ],
-    );
-  }
-}
-
-class BuildRegister extends StatelessWidget {
-  const BuildRegister({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        FadeInUp(
-          duration: const Duration(milliseconds: 1800),
-          child: Container(
-              margin: const EdgeInsets.all(5),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-              ),
-              child: Center(
-                child: TextButton(
-                  child: const Text('비밀번호 찾기'),
-                  onPressed: () {},
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            FadeInUp(
+              duration: const Duration(milliseconds: 1800),
+              // 자동 로그인 확인 토글 스위치
+              child: SizedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('자동로그인 '),
+                    Switch(
+                      // 부울 값으로 스위치 토글 (value)
+                      value: switchValue,
+                      activeColor: Colors.lightBlue[200],
+                      onChanged: (bool? value) {
+                        // 스위치가 토글될 때 실행될 코드
+                        setState(() {
+                          switchValue = value ?? false;
+                        });
+                      },
+                    ),
+                  ],
                 ),
-              )),
-        ),
-        FadeInUp(
-          duration: const Duration(milliseconds: 1800),
-          child: Container(
-            margin: const EdgeInsets.all(5),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-            ),
-            child: Center(
-              child: TextButton(
-                child: const Text('회원가입'),
-                onPressed: () => context.push('/register'),
               ),
             ),
-          ),
-        ),
+            FadeInUp(
+              duration: const Duration(milliseconds: 1800),
+              child: Container(
+                margin: const EdgeInsets.all(5),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: Center(
+                  child: TextButton(
+                    child: const Text('회원가입'),
+                    onPressed: () => context.push('/register'),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        )
       ],
     );
   }
@@ -208,4 +236,49 @@ void showFailDialog(BuildContext context) async {
       );
     },
   );
+}
+
+// 자동 로그인 확인
+// 토큰 있음 : 메인 페이지
+// 토큰 없음 : 로그인 화면
+class TokenCheck extends StatefulWidget {
+  const TokenCheck({super.key});
+
+  @override
+  State<TokenCheck> createState() => _TokenCheckState();
+}
+
+class _TokenCheckState extends State<TokenCheck> {
+  bool isToken = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _autoLoginCheck();
+  }
+
+  // 자동 로그인 설정 시, 공유 저장소에 토큰 저장
+  void _autoLoginCheck() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+
+    if (token != null) {
+      setState(() {
+        isToken = true;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      // 토큰이 있으면 메인 페이지, 없으면 로그인 페이지
+      home: isToken ? const HomePage() : _firstpage(),
+    );
+  }
 }

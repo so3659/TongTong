@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tongtong/login.dart';
 import 'package:tongtong/mainpage.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tongtong/memoMainPage.dart';
 
-void main() => runApp(const HomePage());
+// void main() => runApp(const HomePage());
 
 final GoRouter _goroute = GoRouter(
   routes: <RouteBase>[
@@ -10,6 +12,10 @@ final GoRouter _goroute = GoRouter(
     GoRoute(
       path: '/mainpage',
       builder: (context, state) => const Mainpage(),
+    ),
+    GoRoute(
+      path: '/login',
+      builder: (context, state) => const Login(),
     )
   ],
 );
@@ -46,10 +52,7 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     Mainpage(),
-    Text(
-      'INFO',
-      style: optionStyle,
-    ),
+    MyMemoPage(),
     Text(
       'Calender',
       style: optionStyle,
@@ -87,7 +90,15 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
         appBar: AppBar(
           title: const Center(child: Text('통통')),
           actions: <Widget>[
-            IconButton(onPressed: () {}, icon: const Icon(Icons.settings))
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (builder) => const Login(),
+                      ));
+                },
+                icon: const Icon(Icons.settings))
           ],
         ),
         drawer: _createDrawer(),
@@ -137,7 +148,7 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
 
 Widget _createDrawer() {
   return Drawer(
-    child: ListView(
+    child: Column(
       children: [
         const DrawerHeader(
           decoration: BoxDecoration(color: Colors.blue),
@@ -154,6 +165,11 @@ Widget _createDrawer() {
         _createFolderInDrawer("Android"),
         _createFolderInDrawer("iOS"),
         _createFolderInDrawer("Something1"),
+        const Expanded(
+            child: Align(
+          alignment: Alignment.bottomCenter,
+          child: Text('Bottom'),
+        ))
       ],
     ),
   );
