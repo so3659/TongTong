@@ -117,7 +117,7 @@ class _ContentState extends State<ContentPage> {
       var memo = {
         'id': row.colByName('id'),
         'userIndex': row.colByName('userIndex'),
-        'userName': row.colByName('userName'),
+        'userName': row.colByName('id'),
         'memoTitle': row.colByName('memoTitle'),
         'memoContent': row.colByName('memoContent'),
         'createDate': row.colByName('createDate'),
@@ -136,7 +136,7 @@ class _ContentState extends State<ContentPage> {
     var memo = {
       'id': content['id'],
       'userIndex': content['userIndex'],
-      'userName': content['userName'],
+      'userName': content['id'],
       'memoTitle': content['memoTitle'],
       'memoContent': content['memoContent'],
       'createDate': content['createDate'],
@@ -202,7 +202,7 @@ class _ContentState extends State<ContentPage> {
                     const SizedBox(height: 35),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
-                      children: [Text('작성자 : ${memoInfo[0]['userName']}')],
+                      children: [Text('작성자 : ${memoInfo[0]['id']}')],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,

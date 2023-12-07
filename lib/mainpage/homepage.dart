@@ -92,11 +92,7 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
           actions: <Widget>[
             IconButton(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (builder) => const Login(),
-                      ));
+                  context.go('/login');
                 },
                 icon: const Icon(Icons.settings))
           ],

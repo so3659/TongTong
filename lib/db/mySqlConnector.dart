@@ -9,7 +9,7 @@ Future<MySQLConnection> dbConnector() async {
     port: 3306,
     userName: 'root',
     password: 'so36593659',
-    databaseName: 'testdb', // optional
+    databaseName: 'tongtong', // optional
   );
 
   await conn.connect();

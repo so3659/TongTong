@@ -10,7 +10,7 @@ Future<void> insertMember(
   // DB에 유저 정보 추가
   try {
     await conn.execute(
-        "INSERT INTO register (classnum, name, id, password) VALUES (:classnum, :name, :id, :password)",
+        "INSERT INTO users (classnum, name, id, password) VALUES (:classnum, :name, :id, :password)",
         {"classnum": classnum, "name": name, "id": id, "password": password});
     print('Insert');
   } catch (e) {
@@ -31,7 +31,7 @@ Future<String?> login(String id, String password) async {
   // DB에 해당 유저의 아이디와 비밀번호를 확인하여 users 테이블에 있는지 확인
   try {
     result = await conn.execute(
-        "SELECT id FROM register WHERE id = :id and password = :password",
+        "SELECT userIndex FROM users WHERE id = :id and password = :password",
         {"id": id, "password": password});
 
     if (result.isNotEmpty) {
@@ -62,7 +62,7 @@ Future<String?> confirmIdCheck(String id) async {
   try {
     // 아이디가 중복이면 1 값 반환, 중복이 아니면 0 값 반환
     result = await conn.execute(
-        "SELECT IFNULL((SELECT id FROM register WHERE id=:id), 0) as idCheck",
+        "SELECT IFNULL((SELECT id FROM users WHERE id=:id), 0) as idCheck",
         {"id": id});
 
     if (result.isNotEmpty) {

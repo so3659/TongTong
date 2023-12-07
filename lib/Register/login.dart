@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final GoRouter _goroute = GoRouter(
   routes: <RouteBase>[
-    GoRoute(path: '/', builder: (context, state) => const TokenCheck()),
+    GoRoute(path: '/', builder: (context, state) => _firstpage()),
     GoRoute(
       path: '/register',
       builder: (context, state) => const Register(),

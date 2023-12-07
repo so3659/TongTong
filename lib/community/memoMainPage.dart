@@ -41,7 +41,7 @@ class MyMemoState extends State<MyMemoPage> {
         var memoInfo = {
           'id': row.colByName('id'),
           'userIndex': row.colByName('userIndex'),
-          'userName': row.colByName('userName'),
+          'userName': row.colByName('id'),
           'memoTitle': row.colByName('memoTitle'),
           'memoContent': row.colByName('memoContent'),
           'createDate': row.colByName('createDate'),
@@ -183,7 +183,7 @@ class MyMemoState extends State<MyMemoPage> {
                     itemBuilder: (BuildContext context, int index) {
                       // 메모 정보 저장
                       dynamic memoInfo = items[index];
-                      String userName = memoInfo['userName'];
+                      String userName = memoInfo['id'];
                       String memoTitle = memoInfo['memoTitle'];
                       String memoContent = memoInfo['memoContent'];
                       String createDate = memoInfo['createDate'];
