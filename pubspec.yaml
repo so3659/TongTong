@@ -44,6 +44,9 @@ dependencies:
   firebase_analytics: ^10.7.2
   url_launcher: ^6.2.1
   provider: ^6.1.1
+  table_calendar: ^3.0.9
+  image_picker: ^1.0.4
+  timeago: ^3.6.0
 
 dev_dependencies:
   flutter_test:
@@ -73,8 +76,20 @@ flutter:
     - assets/images/tong_top_logo.png
     - assets/images/insta.png
     - assets/images/navercafe.png
+    - assets/images/community.png
+    - assets/images/memo.png
+    - assets/images/lightning.png
+    - assets/images/guitar.png
+    - assets/images/restaurant.png
+    - assets/images/shop.png
+    - assets/images/booking.png
+    
+
 
   fonts:
+    - family: TwitterIcon
+      fonts:
+        - asset: assets/fonts/icons.ttf
     - family: NanumGothic
       fonts:
         - asset: assets/fonts/NanumGothic-Bold.ttf

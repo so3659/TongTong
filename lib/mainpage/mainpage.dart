@@ -1,5 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:tongtong/community/memoMainPage.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:go_router/go_router.dart';
+
+final GoRouter _goroute = GoRouter(
+  routes: <RouteBase>[
+    GoRoute(path: '/', builder: (context, state) => const Mainpage()),
+    GoRoute(
+      path: '/memo',
+      builder: (context, state) => const MyMemoPageRouter(),
+    ),
+  ],
+);
+
+class MainpageRouter extends StatelessWidget {
+  const MainpageRouter({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: 'SunflowerMedium',
+      ),
+      routerConfig: _goroute,
+    );
+  }
+}
 
 class Mainpage extends StatefulWidget {
   const Mainpage({Key? key}) : super(key: key);
@@ -60,10 +87,12 @@ class MainpageState extends State<Mainpage> {
                               child: FloatingActionButton(
                                 heroTag: 'booking',
                                 backgroundColor: Colors.white,
-                                onPressed: () {},
+                                onPressed: () {
+                                  context.push('/memo');
+                                },
                                 child: const Image(
                                   image:
-                                      AssetImage('assets/images/tong_logo.png'),
+                                      AssetImage('assets/images/booking.png'),
                                   height: 100,
                                   width: 100,
                                 ),
@@ -84,15 +113,11 @@ class MainpageState extends State<Mainpage> {
                                 heroTag: 'chat',
                                 backgroundColor: Colors.white,
                                 onPressed: () async {
-                                  final url = Uri.parse(
-                                      'https://www.instagram.com/t_tong.official/');
-                                  if (await canLaunchUrl(url)) {
-                                    launchUrl(url,
-                                        mode: LaunchMode.externalApplication);
-                                  }
+                                  context.push('/memo');
                                 },
                                 child: const Image(
-                                  image: AssetImage('assets/images/insta.png'),
+                                  image:
+                                      AssetImage('assets/images/community.png'),
                                   height: 100,
                                   width: 100,
                                 ),

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:mysql_client/mysql_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tongtong/db/mySqlConnector.dart';
@@ -17,7 +18,7 @@ Future<IResultSet?> selectMemoALL() async {
   // 유저의 모든 메모 보기
   try {
     result = await conn.execute(
-        "SELECT m.id, u.userIndex, u.id, memoTitle, memoContent, createDate, updateDate FROM memo AS m LEFT JOIN users AS u ON m.userIndex = u.userIndex WHERE m.userIndex = :token",
+        "SELECT m.id, u.userIndex, u.userName, memoTitle, memoContent, createDate, updateDate FROM memo AS m LEFT JOIN users AS u ON m.userIndex = u.userIndex WHERE m.userIndex = :token",
         {"token": token});
     if (result.numOfRows > 0) {
       return result;
@@ -50,9 +51,10 @@ Future<String?> addMemo(String title, String content) async {
   try {
     // 유저 이름 확인
     result = await conn.execute(
-      "SELECT id FROM users WHERE id = :token",
+      "SELECT userName FROM users WHERE id = :token",
       {"token": token},
     );
+    print('result:$result');
 
     // 유저 이름 저장
     for (final row in result.rows) {
@@ -113,7 +115,7 @@ Future<IResultSet?> selectMemo(String id) async {
   // 메모 수정
   try {
     result = await conn.execute(
-        "SELECT m.id, userIndex, u.userIndex, memoTitle, memoContent, createDate, updateDate FROM memo AS m LEFT JOIN users AS u ON m.userIndex = u.userIndex WHERE userIndex = :token and m.id = :id",
+        "SELECT m.id, userIndex, u.userName, memoTitle, memoContent, createDate, updateDate FROM memo AS m LEFT JOIN users AS u ON m.userIndex = u.userIndex WHERE userIndex = :token and m.id = :id",
         {"token": token, "id": id});
     return result;
   } catch (e) {

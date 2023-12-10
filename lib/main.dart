@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tongtong/login.dart';
+import 'package:tongtong/Register/login.dart';
+import 'package:tongtong/community/memoListProvider.dart';
 import 'package:provider/provider.dart';
-import 'package:tongtong/memoListProvider.dart';
 
 void main() {
   runApp(
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Login(),
     );

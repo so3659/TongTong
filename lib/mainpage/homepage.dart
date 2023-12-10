@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:tongtong/login.dart';
-import 'package:tongtong/mainpage.dart';
+import 'package:tongtong/Register/login.dart';
+import 'package:tongtong/calendar/calendarMain.dart';
+import 'package:tongtong/community/makePost.dart';
+import 'package:tongtong/community/memoMainPage.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tongtong/memoMainPage.dart';
+import 'package:tongtong/community/test.dart';
+import 'package:tongtong/info/infoMain.dart';
+import 'package:tongtong/mainpage/mainpage.dart';
 
 // void main() => runApp(const HomePage());
 
@@ -51,12 +55,9 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   static const List<Widget> _widgetOptions = <Widget>[
-    Mainpage(),
-    MyMemoPage(),
-    Text(
-      'Calender',
-      style: optionStyle,
-    ),
+    MainpageRouter(),
+    InfoMain(),
+    FeedPage(),
     Text(
       'Friends',
       style: optionStyle,

@@ -4,8 +4,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tongtong/memoMainPage.dart';
-import 'package:tongtong/memoListProvider.dart';
+import 'package:tongtong/community/memoListProvider.dart';
+import 'package:tongtong/community/memoMainPage.dart';
 import 'package:tongtong/db/memoDB.dart';
 
 class ContentPage extends StatefulWidget {
@@ -28,6 +28,13 @@ class _ContentState extends State<ContentPage> {
   // 앱 바 메모 수정 버튼을 이용하여 메모를 수정할 제목과 내용
   final TextEditingController titleController = TextEditingController();
   final TextEditingController contentController = TextEditingController();
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    contentController.dispose();
+    super.dispose();
+  }
 
   // 앱 바 메모 수정 클릭 이벤트
   Future<void> updateItemEvent(BuildContext context) {
@@ -117,7 +124,7 @@ class _ContentState extends State<ContentPage> {
       var memo = {
         'id': row.colByName('id'),
         'userIndex': row.colByName('userIndex'),
-        'userName': row.colByName('id'),
+        'userName': row.colByName('userName'),
         'memoTitle': row.colByName('memoTitle'),
         'memoContent': row.colByName('memoContent'),
         'createDate': row.colByName('createDate'),
@@ -136,7 +143,7 @@ class _ContentState extends State<ContentPage> {
     var memo = {
       'id': content['id'],
       'userIndex': content['userIndex'],
-      'userName': content['id'],
+      'userName': content['userName'],
       'memoTitle': content['memoTitle'],
       'memoContent': content['memoContent'],
       'createDate': content['createDate'],

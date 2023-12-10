@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tongtong/Register/register.dart';
 import 'package:tongtong/db/loginDB.dart';
-import 'package:tongtong/homepage.dart';
-import 'package:tongtong/register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tongtong/mainpage/homepage.dart';
 
 final GoRouter _goroute = GoRouter(
   routes: <RouteBase>[
-    GoRoute(path: '/', builder: (context, state) => _firstpage()),
+    GoRoute(path: '/', builder: (context, state) => const TokenCheck()),
     GoRoute(
       path: '/register',
       builder: (context, state) => const Register(),

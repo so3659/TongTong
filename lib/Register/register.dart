@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tongtong/Register/login.dart';
 import 'package:tongtong/db/loginDB.dart';
-import 'package:tongtong/login.dart';
 import 'package:animate_do/animate_do.dart';
 
 final GoRouter _goroute = GoRouter(
   routes: <RouteBase>[
-    GoRoute(
-      path: '/login',
-      builder: (context, state) => const Login(),
-    )
+    GoRoute(path: '/login', builder: (context, state) => const Login())
   ],
 );
 
@@ -54,7 +51,19 @@ class AggState extends State<Agg> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController passwordConfirmController =
       TextEditingController();
-  String? _classNum, _name, _id, _password, _passwordConfirm;
+  final TextEditingController userNameController = TextEditingController();
+  String? _classNum, _name, _id, _password, _passwordConfirm, _userName;
+
+  @override
+  void dispose() {
+    classNumController.dispose();
+    nameController.dispose();
+    idController.dispose();
+    passwordController.dispose();
+    passwordConfirmController.dispose();
+    userNameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +146,7 @@ class AggState extends State<Agg> {
                       },
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return '이름을 입력해주세요';
+                          return '아이디를 입력해주세요';
                         }
                         return null;
                       },
@@ -192,6 +201,29 @@ class AggState extends State<Agg> {
                       },
                     ),
                   ),
+                  SizedBox(
+                    width: 350,
+                    child: TextFormField(
+                      controller: userNameController,
+                      textAlign: TextAlign.center,
+                      decoration: const InputDecoration(
+                        hintText: '닉네임',
+                        hintStyle: TextStyle(color: Colors.black),
+                      ),
+                      autovalidateMode: AutovalidateMode.always,
+                      onSaved: (value) {
+                        setState(() {
+                          _userName = value as String;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '닉네임을 입력해주세요';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
                   const SizedBox(
                     height: 10,
                   ),
@@ -204,12 +236,19 @@ class AggState extends State<Agg> {
                         if (formKey.currentState!.validate()) {
                           formKey.currentState!.save();
                           final idCheck = await confirmIdCheck(_id!);
+                          final userNameCheck =
+                              await confirmUserNameCheck(_userName!);
                           if (idCheck != '0') {
                             if (context.mounted) {
-                              showDuplicateDialog(context);
+                              showIdDuplicateDialog(context);
+                            }
+                          } else if (userNameCheck != '0') {
+                            if (context.mounted) {
+                              showUserNameDuplicateDialog(context);
                             }
                           } else {
-                            insertMember(_classNum!, _name!, _id!, _password!);
+                            insertMember(_classNum!, _name!, _id!, _password!,
+                                _userName!);
                             if (context.mounted) {
                               showSuccessDialog(context);
                               context.pop();
@@ -268,7 +307,7 @@ void showFailDialog(BuildContext context) async {
   );
 }
 
-void showDuplicateDialog(BuildContext context) async {
+void showIdDuplicateDialog(BuildContext context) async {
   String result = await showDialog(
     context: context,
     barrierDismissible: false,
@@ -276,6 +315,27 @@ void showDuplicateDialog(BuildContext context) async {
       return AlertDialog(
         title: const Text('통통 회원가입'),
         content: const Text("입력한 아이디가 이미 존재합니다"),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('OK'),
+            onPressed: () {
+              Navigator.pop(context, "OK");
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void showUserNameDuplicateDialog(BuildContext context) async {
+  String result = await showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('통통 회원가입'),
+        content: const Text("입력한 닉네임이 이미 존재합니다"),
         actions: <Widget>[
           TextButton(
             child: const Text('OK'),
