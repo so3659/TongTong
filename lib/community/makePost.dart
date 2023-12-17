@@ -4,6 +4,9 @@ import 'dart:io';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:tongtong/db/memoDB.dart';
+import 'package:tongtong/community/memoListProvider.dart';
 
 final GoRouter _goroute = GoRouter(
   routes: <RouteBase>[
@@ -35,6 +38,38 @@ class MakePost extends StatefulWidget {
 }
 
 class MakePostState extends State<MakePost> {
+  final TextEditingController contentController = TextEditingController();
+
+  @override
+  void dispose() {
+    contentController.dispose();
+    super.dispose();
+  }
+
+  Future<void> getMemoList() async {
+    List memoList = [];
+    // DB에서 메모 정보 호출
+    var result = await selectMemoALL();
+
+    // 메모 리스트 저장
+    if (result != null) {
+      for (final row in result.rows) {
+        var memoInfo = {
+          'id': row.colByName('id'),
+          'userIndex': row.colByName('userIndex'),
+          'userName': row.colByName('userName'),
+          'memoContent': row.colByName('memoContent'),
+          'createDate': row.colByName('createDate'),
+        };
+        memoList.add(memoInfo);
+      }
+    }
+
+    if (mounted) {
+      context.read<MemoUpdator>().updateList(memoList);
+    }
+  }
+
   void _onImageIconSelected(File file) {
     setState(() {
       _image = file;
@@ -62,7 +97,16 @@ class MakePostState extends State<MakePost> {
           ),
           actions: <Widget>[
             IconButton(
-              onPressed: () {},
+              onPressed: () async {
+                String content = contentController.text;
+                await addMemo(content);
+                setState(() {
+                  // 메모 리스트 새로고침
+                  getMemoList();
+                });
+
+                Navigator.of(context, rootNavigator: true).pop();
+              },
               icon: const Icon(Icons.send),
               color: Colors.lightBlue[200],
             )
@@ -71,9 +115,10 @@ class MakePostState extends State<MakePost> {
         body: Stack(
           children: <Widget>[
             const SingleChildScrollView(),
-            const Expanded(
+            Expanded(
               child: TextField(
-                decoration: InputDecoration(
+                controller: contentController,
+                decoration: const InputDecoration(
                   hintText: 'What\'s happening?',
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.only(left: 16),

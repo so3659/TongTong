@@ -55,17 +55,17 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   static const List<Widget> _widgetOptions = <Widget>[
-    MainpageRouter(),
+    MyMemoPage(),
     InfoMain(),
-    FeedPage(),
-    Text(
-      'Friends',
-      style: optionStyle,
-    ),
-    Text(
-      'My',
-      style: optionStyle,
-    ),
+    Calendar(),
+    // Text(
+    //   'Friends',
+    //   style: optionStyle,
+    // ),
+    // Text(
+    //   'My',
+    //   style: optionStyle,
+    // ),
   ];
 
   @override
@@ -98,7 +98,45 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
                 icon: const Icon(Icons.settings))
           ],
         ),
-        drawer: _createDrawer(),
+        drawer: Drawer(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 200,
+              ),
+              Container(
+                  width: 200,
+                  height: 200,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/tong_logo.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  )),
+              Container(
+                  width: 200,
+                  height: 100,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/tong_logo_name.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  )),
+              Expanded(
+                  child: Align(
+                alignment: Alignment.bottomCenter,
+                child: TextButton(
+                  child: const Text(
+                    '로그아웃',
+                  ),
+                  onPressed: () {
+                    GoRouter.of(context).go('/login');
+                  },
+                ),
+              ))
+            ],
+          ),
+        ),
         body: PageView(
           controller: _pageController,
           children: <Widget>[
@@ -121,14 +159,14 @@ class MyStatefulWidgetState extends State<MyStatefulWidget> {
                     icon: Icon(Icons.calendar_month),
                     label: 'Calendar',
                   ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.people),
-                    label: 'Friends',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.perm_identity),
-                    label: 'My',
-                  ),
+                  // BottomNavigationBarItem(
+                  //   icon: Icon(Icons.people),
+                  //   label: 'Friends',
+                  // ),
+                  // BottomNavigationBarItem(
+                  //   icon: Icon(Icons.perm_identity),
+                  //   label: 'My',
+                  // ),
                 ],
                 currentIndex: _selectedIndex,
                 selectedItemColor: Colors.lightBlue[200],
