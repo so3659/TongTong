@@ -47,6 +47,10 @@ dependencies:
   table_calendar: ^3.0.9
   image_picker: ^1.0.4
   timeago: ^3.6.0
+  google_fonts: ^6.1.0
+  http: ^1.1.2
+  share_plus: ^7.2.1
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
@@ -83,6 +87,7 @@ flutter:
     - assets/images/restaurant.png
     - assets/images/shop.png
     - assets/images/booking.png
+    - assets/images/tong_logo_name.png
     
 
 

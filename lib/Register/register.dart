@@ -4,11 +4,11 @@ import 'package:tongtong/Register/login.dart';
 import 'package:tongtong/db/loginDB.dart';
 import 'package:animate_do/animate_do.dart';
 
-final GoRouter _goroute = GoRouter(
-  routes: <RouteBase>[
-    GoRoute(path: '/login', builder: (context, state) => const Login())
-  ],
-);
+// final GoRouter _goroute = GoRouter(
+//   routes: <RouteBase>[
+//     GoRoute(path: '/login', builder: (context, state) => const Login())
+//   ],
+// );
 
 // void main() {
 //   runApp(const Register());
@@ -25,12 +25,7 @@ class Register extends StatelessWidget {
           fontFamily: 'SunflowerMedium',
           colorScheme:
               ColorScheme.fromSeed(seedColor: (Colors.lightBlue[200])!)),
-      home: const Scaffold(
-        body: SingleChildScrollView(
-            child: Column(
-          children: [Agg()],
-        )),
-      ),
+      home: const Agg(),
     );
   }
 }
@@ -43,7 +38,7 @@ class Agg extends StatefulWidget {
 }
 
 class AggState extends State<Agg> {
-  GlobalKey<FormState> formKey = GlobalKey();
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   final TextEditingController classNumController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
@@ -67,206 +62,213 @@ class AggState extends State<Agg> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-        key: formKey,
-        child: FadeInUp(
-            duration: const Duration(milliseconds: 1800),
-            child: Center(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(10, 50, 10, 5),
-                    height: 150,
-                    width: 150,
-                    child: const Image(
-                        image: AssetImage('assets/images/tong_logo.png')),
-                  ),
-                  const SizedBox(height: 30.0),
-                  SizedBox(
-                    width: 350,
-                    child: TextFormField(
-                      controller: classNumController,
-                      textAlign: TextAlign.center,
-                      decoration: const InputDecoration(
-                        hintText: '학번',
-                        hintStyle: TextStyle(color: Colors.black),
-                      ),
-                      autovalidateMode: AutovalidateMode.always,
-                      onSaved: (value) {
-                        setState(() {
-                          _classNum = value as String;
-                        });
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '학번을 입력해주세요';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: 350,
-                    child: TextFormField(
-                      controller: nameController,
-                      textAlign: TextAlign.center,
-                      decoration: const InputDecoration(
-                        hintText: '이름',
-                        hintStyle: TextStyle(color: Colors.black),
-                      ),
-                      autovalidateMode: AutovalidateMode.always,
-                      onSaved: (value) {
-                        setState(() {
-                          _name = value as String;
-                        });
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '이름을 입력해주세요';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: 350,
-                    child: TextFormField(
-                      controller: idController,
-                      textAlign: TextAlign.center,
-                      decoration: const InputDecoration(
-                        hintText: '아이디',
-                        hintStyle: TextStyle(color: Colors.black),
-                      ),
-                      autovalidateMode: AutovalidateMode.always,
-                      onSaved: (value) {
-                        setState(() {
-                          _id = value as String;
-                        });
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '아이디를 입력해주세요';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: 350,
-                    child: TextFormField(
-                      controller: passwordController,
-                      textAlign: TextAlign.center,
-                      decoration: const InputDecoration(
-                        hintText: '비밀번호',
-                        hintStyle: TextStyle(color: Colors.black),
-                      ),
-                      autovalidateMode: AutovalidateMode.always,
-                      onSaved: (value) {
-                        setState(() {
-                          _password = value as String;
-                        });
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '비밀번호를 입력해주세요';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: 350,
-                    child: TextFormField(
-                      controller: passwordConfirmController,
-                      textAlign: TextAlign.center,
-                      decoration: const InputDecoration(
-                        hintText: '비밀번호 확인',
-                        hintStyle: TextStyle(color: Colors.black),
-                      ),
-                      autovalidateMode: AutovalidateMode.always,
-                      onSaved: (value) {
-                        setState(() {
-                          _passwordConfirm = value as String;
-                        });
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '비밀번호를 확인해주세요';
-                        }
-                        if (value != passwordController.text) {
-                          return '비밀번호가 일치하지 않습니다';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: 350,
-                    child: TextFormField(
-                      controller: userNameController,
-                      textAlign: TextAlign.center,
-                      decoration: const InputDecoration(
-                        hintText: '닉네임',
-                        hintStyle: TextStyle(color: Colors.black),
-                      ),
-                      autovalidateMode: AutovalidateMode.always,
-                      onSaved: (value) {
-                        setState(() {
-                          _userName = value as String;
-                        });
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '닉네임을 입력해주세요';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  SizedBox(
-                    width: 150,
-                    child: FloatingActionButton(
-                      heroTag: 'Register',
-                      backgroundColor: Colors.white,
-                      onPressed: () async {
-                        if (formKey.currentState!.validate()) {
-                          formKey.currentState!.save();
-                          final idCheck = await confirmIdCheck(_id!);
-                          final userNameCheck =
-                              await confirmUserNameCheck(_userName!);
-                          if (idCheck != '0') {
-                            if (context.mounted) {
-                              showIdDuplicateDialog(context);
-                            }
-                          } else if (userNameCheck != '0') {
-                            if (context.mounted) {
-                              showUserNameDuplicateDialog(context);
-                            }
-                          } else {
-                            insertMember(_classNum!, _name!, _id!, _password!,
-                                _userName!);
-                            if (context.mounted) {
-                              showSuccessDialog(context);
-                              context.pop();
-                            }
-                          }
-                        } else {
-                          showFailDialog(context);
-                        }
-                      },
-                      child: const Text('회원가입'),
-                    ),
-                  )
-                ]))));
+    return Scaffold(
+        body: SingleChildScrollView(
+            child: Form(
+                key: formKey,
+                child: FadeInUp(
+                    duration: const Duration(milliseconds: 1800),
+                    child: Center(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(10, 50, 10, 5),
+                            height: 150,
+                            width: 150,
+                            child: const Image(
+                                image:
+                                    AssetImage('assets/images/tong_logo.png')),
+                          ),
+                          const SizedBox(height: 30.0),
+                          SizedBox(
+                            width: 350,
+                            child: TextFormField(
+                              controller: classNumController,
+                              textAlign: TextAlign.center,
+                              decoration: const InputDecoration(
+                                hintText: '학번',
+                                hintStyle: TextStyle(color: Colors.black),
+                              ),
+                              autovalidateMode: AutovalidateMode.always,
+                              onSaved: (value) {
+                                setState(() {
+                                  _classNum = value as String;
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return '학번을 입력해주세요';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: 350,
+                            child: TextFormField(
+                              controller: nameController,
+                              textAlign: TextAlign.center,
+                              decoration: const InputDecoration(
+                                hintText: '이름',
+                                hintStyle: TextStyle(color: Colors.black),
+                              ),
+                              autovalidateMode: AutovalidateMode.always,
+                              onSaved: (value) {
+                                setState(() {
+                                  _name = value as String;
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return '이름을 입력해주세요';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: 350,
+                            child: TextFormField(
+                              controller: idController,
+                              textAlign: TextAlign.center,
+                              decoration: const InputDecoration(
+                                hintText: '아이디',
+                                hintStyle: TextStyle(color: Colors.black),
+                              ),
+                              autovalidateMode: AutovalidateMode.always,
+                              onSaved: (value) {
+                                setState(() {
+                                  _id = value as String;
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return '아이디를 입력해주세요';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: 350,
+                            child: TextFormField(
+                              controller: passwordController,
+                              textAlign: TextAlign.center,
+                              decoration: const InputDecoration(
+                                hintText: '비밀번호',
+                                hintStyle: TextStyle(color: Colors.black),
+                              ),
+                              autovalidateMode: AutovalidateMode.always,
+                              onSaved: (value) {
+                                setState(() {
+                                  _password = value as String;
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return '비밀번호를 입력해주세요';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: 350,
+                            child: TextFormField(
+                              controller: passwordConfirmController,
+                              textAlign: TextAlign.center,
+                              decoration: const InputDecoration(
+                                hintText: '비밀번호 확인',
+                                hintStyle: TextStyle(color: Colors.black),
+                              ),
+                              autovalidateMode: AutovalidateMode.always,
+                              onSaved: (value) {
+                                setState(() {
+                                  _passwordConfirm = value as String;
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return '비밀번호를 확인해주세요';
+                                }
+                                if (value != passwordController.text) {
+                                  return '비밀번호가 일치하지 않습니다';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: 350,
+                            child: TextFormField(
+                              controller: userNameController,
+                              textAlign: TextAlign.center,
+                              decoration: const InputDecoration(
+                                hintText: '닉네임',
+                                hintStyle: TextStyle(color: Colors.black),
+                              ),
+                              autovalidateMode: AutovalidateMode.always,
+                              onSaved: (value) {
+                                setState(() {
+                                  _userName = value as String;
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return '닉네임을 입력해주세요';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            width: 150,
+                            child: FloatingActionButton(
+                              heroTag: 'Register',
+                              backgroundColor: Colors.white,
+                              onPressed: () async {
+                                if (formKey.currentState!.validate()) {
+                                  formKey.currentState!.save();
+                                  final idCheck = await confirmIdCheck(_id!);
+                                  final userNameCheck =
+                                      await confirmUserNameCheck(_userName!);
+                                  if (idCheck != '0') {
+                                    if (context.mounted) {
+                                      showIdDuplicateDialog(context);
+                                    }
+                                  } else if (userNameCheck != '0') {
+                                    if (context.mounted) {
+                                      showUserNameDuplicateDialog(context);
+                                    }
+                                  } else {
+                                    if (context.mounted) {
+                                      showSuccessDialog(context);
+                                      context.pop();
+                                    }
+                                    insertMember(
+                                        classNumController.text,
+                                        nameController.text,
+                                        idController.text,
+                                        passwordController.text,
+                                        userNameController.text);
+                                  }
+                                } else {
+                                  showFailDialog(context);
+                                }
+                              },
+                              child: const Text('회원가입'),
+                            ),
+                          )
+                        ]))))));
   }
 }
 
 void showSuccessDialog(BuildContext context) async {
-  String result = await showDialog(
+  var result = await showDialog(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {

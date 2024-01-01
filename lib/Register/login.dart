@@ -6,46 +6,54 @@ import 'package:tongtong/db/loginDB.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tongtong/mainpage/homepage.dart';
 
-final GoRouter _goroute = GoRouter(
-  routes: <RouteBase>[
-    GoRoute(path: '/', builder: (context, state) => const TokenCheck()),
-    GoRoute(
-      path: '/register',
-      builder: (context, state) => const Register(),
-    ),
-    GoRoute(
-      path: '/homepage',
-      builder: (context, state) => const HomePage(),
-    )
-  ],
-);
+// final GoRouter _goroute = GoRouter(
+//   routes: <RouteBase>[
+//     GoRoute(
+//       path: '/',
+//       builder: (context, state) => Login(),
+// pageBuilder: (context, state) => MaterialPage<void>(child: Login()),
+//     ),
+//     GoRoute(
+//       path: '/register',
+// pageBuilder: (context, state) => MaterialPage<void>(child: Register()),
+//     ),
+//     GoRoute(
+//       path: '/homepage',
+// pageBuilder: (context, state) => MaterialPage<void>(child: HomePage()),
+//     ),
+//   ],
+// );
 
 class Login extends StatelessWidget {
-  const Login({super.key});
-
+  const Login({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      routerConfig: _goroute,
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: ListView(
+        children: [
+          _buildTitle(),
+          const BuildLogin(),
+        ],
+      ),
     );
   }
 }
 
 Widget _firstpage() {
-  return MaterialApp(
-    debugShowCheckedModeBanner: false,
-    theme: ThemeData(
-        fontFamily: 'SunflowerMedium',
-        colorScheme: ColorScheme.fromSeed(seedColor: (Colors.lightBlue[200])!)),
-    home: Scaffold(
-        backgroundColor: Colors.white,
-        body: ListView(
-          children: [
-            _buildTitle(),
-            const BuildLogin(),
-          ],
-        )),
+  // return MaterialApp(
+  //   debugShowCheckedModeBanner: false,
+  //   theme: ThemeData(
+  //       fontFamily: 'SunflowerMedium',
+  //       colorScheme: ColorScheme.fromSeed(seedColor: (Colors.lightBlue[200])!)),
+  return Scaffold(
+    backgroundColor: Colors.white,
+    body: ListView(
+      children: [
+        _buildTitle(),
+        const BuildLogin(),
+      ],
+    ),
   );
 }
 
@@ -253,8 +261,8 @@ class _TokenCheckState extends State<TokenCheck> {
 
   @override
   void initState() {
-    super.initState();
     _autoLoginCheck();
+    super.initState();
   }
 
   // 자동 로그인 설정 시, 공유 저장소에 토큰 저장
@@ -274,7 +282,8 @@ class _TokenCheckState extends State<TokenCheck> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        fontFamily: 'SunflowerMedium',
+        colorScheme: ColorScheme.fromSeed(seedColor: (Colors.lightBlue[200])!),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       // 토큰이 있으면 메인 페이지, 없으면 로그인 페이지

@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tongtong/Register/login.dart';
+import 'package:tongtong/Register/register.dart';
+import 'package:tongtong/community/makePost.dart';
 import 'package:tongtong/community/memoListProvider.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tongtong/community/memoMainPage.dart';
+import 'package:tongtong/mainpage/homepage.dart';
+import 'package:tongtong/mainpage/mainpage.dart';
 
 void main() {
   runApp(
@@ -14,14 +20,56 @@ void main() {
   );
 }
 
+final GoRouter _goroute = GoRouter(
+  routes: <RouteBase>[
+    GoRoute(
+      path: '/',
+      pageBuilder: (context, state) =>
+          const MaterialPage<void>(child: TokenCheck()),
+    ),
+    GoRoute(
+      path: '/register',
+      pageBuilder: (context, state) =>
+          const MaterialPage<void>(child: Register()),
+    ),
+    GoRoute(
+      path: '/homepage',
+      pageBuilder: (context, state) =>
+          const MaterialPage<void>(child: HomePage()),
+    ),
+    GoRoute(
+      path: '/memo',
+      builder: (context, state) => const MyMemoPage(),
+    ),
+    GoRoute(
+      path: '/mainpage',
+      builder: (context, state) => const Mainpage(),
+    ),
+    GoRoute(
+      path: '/login',
+      builder: (context, state) => const Login(),
+    ),
+    GoRoute(
+      path: '/makePost',
+      builder: (context, state) => const MakePost(),
+    ),
+  ],
+  debugLogDiagnostics: true,
+);
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      home: Login(),
+      theme: ThemeData(
+          fontFamily: 'SunflowerMedium',
+          colorScheme:
+              ColorScheme.fromSeed(seedColor: (Colors.lightBlue[200])!)),
+      routerConfig: _goroute,
+      // home: Login(),
     );
   }
 }

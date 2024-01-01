@@ -18,7 +18,7 @@ Future<IResultSet?> selectMemoALL() async {
   // 유저의 모든 메모 보기
   try {
     result = await conn.execute(
-        "SELECT m.id, u.userIndex, u.userName, memoTitle, memoContent, createDate, updateDate FROM memo AS m LEFT JOIN users AS u ON m.userIndex = u.userIndex WHERE m.userIndex = :token",
+        "SELECT p.id, u.userIndex, u.userName, memoContent, createDate FROM post AS p LEFT JOIN users AS u ON p.userIndex = u.userIndex WHERE p.userIndex = :token",
         {"token": token});
     if (result.numOfRows > 0) {
       return result;
@@ -33,7 +33,7 @@ Future<IResultSet?> selectMemoALL() async {
 }
 
 // 메모 작성
-Future<String?> addMemo(String title, String content) async {
+Future<String?> addMemo(String content) async {
   // MySQL 접속 설정
   final conn = await dbConnector();
 
@@ -63,8 +63,8 @@ Future<String?> addMemo(String title, String content) async {
 
     // 메모 추가
     result = await conn.execute(
-      "INSERT INTO memo (userIndex, memoTitle, memoContent) VALUES (:userIndex, :title, :content)",
-      {"userIndex": token, "title": title, "content": content},
+      "INSERT INTO post (userIndex, memoContent) VALUES (:userIndex, :content)",
+      {"userIndex": token, "content": content},
     );
   } catch (e) {
     print(token);
@@ -115,7 +115,7 @@ Future<IResultSet?> selectMemo(String id) async {
   // 메모 수정
   try {
     result = await conn.execute(
-        "SELECT m.id, userIndex, u.userName, memoTitle, memoContent, createDate, updateDate FROM memo AS m LEFT JOIN users AS u ON m.userIndex = u.userIndex WHERE userIndex = :token and m.id = :id",
+        "SELECT m.id, userIndex, u.userName,  memoContent, createDate FROM memo AS m LEFT JOIN users AS u ON m.userIndex = u.userIndex WHERE userIndex = :token and m.id = :id",
         {"token": token, "id": id});
     return result;
   } catch (e) {
