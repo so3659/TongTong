@@ -4,9 +4,37 @@ import 'dart:io';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:go_router/go_router.dart';
+<<<<<<< HEAD
 import 'package:tongtong/db/memoDB.dart';
 import 'package:provider/provider.dart';
 import 'package:tongtong/community/memoListProvider.dart';
+=======
+import 'package:provider/provider.dart';
+import 'package:tongtong/db/memoDB.dart';
+import 'package:tongtong/community/memoListProvider.dart';
+
+final GoRouter _goroute = GoRouter(
+  routes: <RouteBase>[
+    GoRoute(path: '/', builder: (context, state) => const MakePost()),
+  ],
+);
+
+class MakePostRouter extends StatelessWidget {
+  const MakePostRouter({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+          fontFamily: 'SunflowerMedium',
+          colorScheme:
+              ColorScheme.fromSeed(seedColor: (Colors.lightBlue[200])!)),
+      routerConfig: _goroute,
+    );
+  }
+}
+>>>>>>> 97ca06a09e6687d7ffc036fe4aaf3af2cfaf7503
 
 class MakePost extends StatefulWidget {
   const MakePost({Key? key}) : super(key: key);
@@ -29,12 +57,18 @@ class MakePostState extends State<MakePost> {
     // DB에서 메모 정보 호출
     var result = await selectMemoALL();
 
+<<<<<<< HEAD
     print(result?.numOfRows);
 
     // 메모 리스트 저장
     if (result != null) {
       for (final row in result.rows) {
         print('Row: $row');
+=======
+    // 메모 리스트 저장
+    if (result != null) {
+      for (final row in result.rows) {
+>>>>>>> 97ca06a09e6687d7ffc036fe4aaf3af2cfaf7503
         var memoInfo = {
           'id': row.colByName('id'),
           'userIndex': row.colByName('userIndex'),
@@ -46,7 +80,10 @@ class MakePostState extends State<MakePost> {
       }
     }
 
+<<<<<<< HEAD
     print('MemoMainPage - getMemoList : $memoList');
+=======
+>>>>>>> 97ca06a09e6687d7ffc036fe4aaf3af2cfaf7503
     if (mounted) {
       context.read<MemoUpdator>().updateList(memoList);
     }
@@ -94,6 +131,7 @@ class MakePostState extends State<MakePost> {
             },
             icon: const Icon(Icons.send),
             color: Colors.lightBlue[200],
+<<<<<<< HEAD
           )
         ],
       ),
@@ -106,6 +144,39 @@ class MakePostState extends State<MakePost> {
                 hintText: 'What\'s happening?',
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.only(left: 16),
+=======
+          ),
+          actions: <Widget>[
+            IconButton(
+              onPressed: () async {
+                String content = contentController.text;
+                await addMemo(content);
+                setState(() {
+                  // 메모 리스트 새로고침
+                  getMemoList();
+                });
+
+                Navigator.of(context, rootNavigator: true).pop();
+              },
+              icon: const Icon(Icons.send),
+              color: Colors.lightBlue[200],
+            )
+          ],
+        ),
+        body: Stack(
+          children: <Widget>[
+            const SingleChildScrollView(),
+            Expanded(
+              child: TextField(
+                controller: contentController,
+                decoration: const InputDecoration(
+                  hintText: 'What\'s happening?',
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.only(left: 16),
+                ),
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+>>>>>>> 97ca06a09e6687d7ffc036fe4aaf3af2cfaf7503
               ),
               keyboardType: TextInputType.multiline,
               maxLines: null,

@@ -23,6 +23,7 @@ class HomePageState extends State<HomePage> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   static const List<Widget> _widgetOptions = <Widget>[
+<<<<<<< HEAD
     Mainpage(),
     InfoMain(),
     Calendar(),
@@ -34,6 +35,19 @@ class HomePageState extends State<HomePage> {
       'My',
       style: optionStyle,
     ),
+=======
+    MyMemoPage(),
+    InfoMain(),
+    Calendar(),
+    // Text(
+    //   'Friends',
+    //   style: optionStyle,
+    // ),
+    // Text(
+    //   'My',
+    //   style: optionStyle,
+    // ),
+>>>>>>> 97ca06a09e6687d7ffc036fe4aaf3af2cfaf7503
   ];
 
   @override
@@ -63,11 +77,100 @@ class HomePageState extends State<HomePage> {
           IconButton(onPressed: () {}, icon: const Icon(Icons.settings))
         ],
       ),
+<<<<<<< HEAD
       drawer: Drawer(
         child: Column(
           children: [
             const SizedBox(
               height: 200,
+=======
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Center(child: Text('통통')),
+          actions: <Widget>[
+            IconButton(
+                onPressed: () {
+                  context.go('/login');
+                },
+                icon: const Icon(Icons.settings))
+          ],
+        ),
+        drawer: Drawer(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 200,
+              ),
+              Container(
+                  width: 200,
+                  height: 200,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/tong_logo.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  )),
+              Container(
+                  width: 200,
+                  height: 100,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/tong_logo_name.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  )),
+              Expanded(
+                  child: Align(
+                alignment: Alignment.bottomCenter,
+                child: TextButton(
+                  child: const Text(
+                    '로그아웃',
+                  ),
+                  onPressed: () {
+                    GoRouter.of(context).go('/login');
+                  },
+                ),
+              ))
+            ],
+          ),
+        ),
+        body: PageView(
+          controller: _pageController,
+          children: <Widget>[
+            Scaffold(
+              body: Center(
+                child: _widgetOptions.elementAt(_selectedIndex),
+              ),
+              bottomNavigationBar: BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.info),
+                    label: 'Info',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.calendar_month),
+                    label: 'Calendar',
+                  ),
+                  // BottomNavigationBarItem(
+                  //   icon: Icon(Icons.people),
+                  //   label: 'Friends',
+                  // ),
+                  // BottomNavigationBarItem(
+                  //   icon: Icon(Icons.perm_identity),
+                  //   label: 'My',
+                  // ),
+                ],
+                currentIndex: _selectedIndex,
+                selectedItemColor: Colors.lightBlue[200],
+                backgroundColor: Colors.white,
+                onTap: _onItemTapped,
+              ),
+>>>>>>> 97ca06a09e6687d7ffc036fe4aaf3af2cfaf7503
             ),
             Container(
                 width: 200,

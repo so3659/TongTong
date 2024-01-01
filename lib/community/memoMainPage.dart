@@ -10,7 +10,41 @@ import 'memoDetailPage.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
+<<<<<<< HEAD
 import 'package:timeago/timeago.dart' as timeago;
+=======
+import 'package:google_fonts/google_fonts.dart';
+
+final GoRouter _goroute = GoRouter(
+  routes: <RouteBase>[
+    GoRoute(path: '/', builder: (context, state) => const MyMemoPage()),
+    GoRoute(
+      path: '/memo',
+      builder: (context, state) => const MyMemoPage(),
+    ),
+    GoRoute(
+      path: '/makePost',
+      builder: (context, state) => const MakePost(),
+    ),
+  ],
+);
+
+class MyMemoPageRouter extends StatelessWidget {
+  const MyMemoPageRouter({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+          fontFamily: 'SunflowerMedium',
+          colorScheme:
+              ColorScheme.fromSeed(seedColor: (Colors.lightBlue[200])!)),
+      routerConfig: _goroute,
+    );
+  }
+}
+>>>>>>> 97ca06a09e6687d7ffc036fe4aaf3af2cfaf7503
 
 class MyMemoPage extends StatefulWidget {
   const MyMemoPage({super.key});
@@ -43,12 +77,9 @@ class MyMemoState extends State<MyMemoPage> {
     // DB에서 메모 정보 호출
     var result = await selectMemoALL();
 
-    print(result?.numOfRows);
-
     // 메모 리스트 저장
     if (result != null) {
       for (final row in result.rows) {
-        print('Row: $row');
         var memoInfo = {
           'id': row.colByName('id'),
           'userIndex': row.colByName('userIndex'),
@@ -60,7 +91,6 @@ class MyMemoState extends State<MyMemoPage> {
       }
     }
 
-    print('MemoMainPage - getMemoList : $memoList');
     if (mounted) {
       context.read<MemoUpdator>().updateList(memoList);
     }
@@ -76,7 +106,6 @@ class MyMemoState extends State<MyMemoPage> {
   // 리스트뷰 카드 클릭 이벤트
   void cardClickEvent(BuildContext context, int index) async {
     dynamic content = items[index];
-    print('content : $content');
     // 메모 리스트 업데이트 확인 변수 (false : 업데이트 되지 않음, true : 업데이트 됨)
     var isMemoUpdate = await Navigator.push(
       context,
@@ -137,7 +166,6 @@ class MyMemoState extends State<MyMemoPage> {
 
                 setState(() {
                   // 메모 리스트 새로고침
-                  print("MemoMainPage - addMemo/setState");
                   getMemoList();
                 });
                 Navigator.of(context).pop();
@@ -151,6 +179,7 @@ class MyMemoState extends State<MyMemoPage> {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     // return MaterialApp(
     //     debugShowCheckedModeBanner: false,
     //     theme: ThemeData(
@@ -319,11 +348,176 @@ class MyMemoState extends State<MyMemoPage> {
                   }
                 },
               ),
+=======
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            fontFamily: 'SunflowerMedium',
+            colorScheme:
+                ColorScheme.fromSeed(seedColor: (Colors.lightBlue[200])!)),
+        home: Scaffold(
+            body: Column(
+              children: <Widget>[
+                Expanded(
+                  child: Builder(
+                    builder: (context) {
+                      // 메모 수정이 일어날 경우 메모 리스트 새로고침
+                      items = context.watch<MemoUpdator>().memoList;
+
+                      // 메모가 없을 경우의 페이지
+                      if (items.isEmpty) {
+                        return const Center(
+                          child: Text(
+                            "표시할 게시물이 없어요",
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        );
+                      }
+                      // 메모가 있을 경우의 페이지
+                      else {
+                        // items 변수에 저장되어 있는 모든 값 출력
+                        return ListView.builder(
+                          itemCount: items.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            // 메모 정보 저장
+                            dynamic memoInfo = items[index];
+                            var userName = memoInfo['userName'];
+                            String memoContent = memoInfo['memoContent'];
+                            String createDate = memoInfo['createDate'];
+
+                            return Column(
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: 40,
+                                      height: 40,
+                                      margin: const EdgeInsets.all(10),
+                                      child: GestureDetector(
+                                        onTap: () {},
+                                        child: CircleAvatar(
+                                          backgroundColor:
+                                              Theme.of(context).cardColor,
+                                          backgroundImage: const AssetImage(
+                                              'assets/images/tong_logo.png'),
+                                          radius: 35,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                        child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                  right: 5),
+                                              child: Text(
+                                                userName,
+                                                style: GoogleFonts.mulish(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w800,
+                                                  color: Colors.black,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            Text(
+                                              Utility.getChatTime(createDate),
+                                              style: GoogleFonts.mulish(
+                                                  fontSize: 12,
+                                                  color: Colors.grey),
+                                            )
+                                          ],
+                                        ),
+                                        Text(
+                                          memoContent,
+                                          style: GoogleFonts.mulish(
+                                              color: Colors.black,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w300),
+                                        ),
+                                        Container(
+                                          color: Colors.transparent,
+                                          padding: const EdgeInsets.only(
+                                              bottom: 0, top: 0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              const SizedBox(
+                                                width: 20,
+                                              ),
+                                              Expanded(
+                                                  child: Row(children: [
+                                                IconButton(
+                                                  onPressed: () {},
+                                                  icon: customIcon(
+                                                    context,
+                                                    icon: AppIcon.reply,
+                                                    isTwitterIcon: true,
+                                                    size: 15,
+                                                    iconColor: Colors.grey,
+                                                  ),
+                                                ),
+                                                customText(
+                                                  '0',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.grey,
+                                                    fontSize: 10,
+                                                  ),
+                                                  context: context,
+                                                ),
+                                              ])),
+                                              Expanded(
+                                                  child: Row(children: [
+                                                IconButton(
+                                                  onPressed: () {},
+                                                  icon: customIcon(
+                                                    context,
+                                                    icon: AppIcon.heartEmpty,
+                                                    isTwitterIcon: true,
+                                                    size: 15,
+                                                    iconColor: Colors.grey,
+                                                  ),
+                                                ),
+                                                customText(
+                                                  '0',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.grey,
+                                                    fontSize: 10,
+                                                  ),
+                                                  context: context,
+                                                ),
+                                              ])),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ))
+                                  ],
+                                ),
+                                Divider(
+                                  color: Colors.grey[200],
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
+>>>>>>> 97ca06a09e6687d7ffc036fe4aaf3af2cfaf7503
             ),
-          ],
-        ),
-        // 플로팅 액션 버튼
-        floatingActionButton: _floatingActionButton(context));
+            // 플로팅 액션 버튼
+            floatingActionButton: _floatingActionButton(context)));
   }
 }
 

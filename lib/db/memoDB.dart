@@ -3,7 +3,6 @@ import 'package:mysql_client/mysql_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tongtong/db/mySqlConnector.dart';
 
-// 모든 메모 보기
 Future<IResultSet?> selectMemoALL() async {
   // MySQL 접속 설정
   final conn = await dbConnector();
@@ -12,10 +11,9 @@ Future<IResultSet?> selectMemoALL() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final String? token = prefs.getString('token');
 
-  // DB에 저장된 메모 리스트
   IResultSet result;
 
-  // 유저의 모든 메모 보기
+  // 유저의 모든 글 보기
   try {
     result = await conn.execute(
         "SELECT p.id, u.userIndex, u.userName, memoContent, createDate FROM post AS p LEFT JOIN users AS u ON p.userIndex = u.userIndex WHERE p.userIndex = :token",
@@ -28,11 +26,14 @@ Future<IResultSet?> selectMemoALL() async {
   } finally {
     await conn.close();
   }
-  // 메모가 없으면 null 값 반환
   return null;
 }
 
+<<<<<<< HEAD
 // 메모 작성
+=======
+// 글 작성
+>>>>>>> 97ca06a09e6687d7ffc036fe4aaf3af2cfaf7503
 Future<String?> addMemo(String content) async {
   // MySQL 접속 설정
   final conn = await dbConnector();
@@ -54,14 +55,13 @@ Future<String?> addMemo(String content) async {
       "SELECT userName FROM users WHERE id = :token",
       {"token": token},
     );
-    print('result:$result');
 
     // 유저 이름 저장
     for (final row in result.rows) {
       userName = row.colAt(0);
     }
 
-    // 메모 추가
+    // 글 추가
     result = await conn.execute(
       "INSERT INTO post (userIndex, memoContent) VALUES (:userIndex, :content)",
       {"userIndex": token, "content": content},

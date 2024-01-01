@@ -37,6 +37,7 @@ class CalendarState extends State<Calendar> {
           formatButtonVisible: false,
           titleCentered: true,
         ),
+<<<<<<< HEAD
         firstDay: DateTime.utc(2010, 10, 16),
         lastDay: DateTime.utc(2030, 3, 14),
         focusedDay: DateTime.now(),
@@ -81,6 +82,59 @@ class CalendarState extends State<Calendar> {
         }),
       ),
     ]));
+=======
+        home: Scaffold(
+            body: Column(children: [
+          TableCalendar(
+            headerStyle: const HeaderStyle(
+              formatButtonVisible: false,
+              titleCentered: true,
+            ),
+            firstDay: DateTime.utc(2010, 10, 16),
+            lastDay: DateTime.utc(2030, 3, 14),
+            focusedDay: DateTime.now(),
+            selectedDayPredicate: (day) {
+              return isSameDay(_selectedDay, day);
+            },
+            eventLoader: (day) {
+              return _getEventsForDay(day);
+            },
+            onDaySelected: (selectedDay, focusedDay) {
+              setState(() {
+                _selectedDay = selectedDay;
+                _focusedDay = focusedDay; // update `_focusedDay` here as well
+              });
+            },
+            calendarFormat: _calendarFormat,
+            onFormatChanged: (format) {
+              setState(() {
+                _calendarFormat = format;
+              });
+            },
+            onPageChanged: (focusedDay) {
+              _focusedDay = focusedDay;
+            },
+            calendarBuilders: CalendarBuilders(
+                markerBuilder: (context, date, dynamic events) {
+              if (events.isNotEmpty) {
+                return Container(
+                    width: 35,
+                    decoration: BoxDecoration(
+                        color: Colors.blue.withOpacity(0.2),
+                        shape: BoxShape.circle),
+                    child: Container(
+                      padding: const EdgeInsets.only(top: 5, left: 10),
+                      child: const Text(
+                        'MT',
+                        style: TextStyle(fontSize: 10),
+                      ),
+                    ));
+              }
+              return null;
+            }),
+          ),
+        ])));
+>>>>>>> 97ca06a09e6687d7ffc036fe4aaf3af2cfaf7503
   }
 }
 

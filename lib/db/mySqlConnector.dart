@@ -8,8 +8,8 @@ Future<MySQLConnection> dbConnector() async {
     host: '10.0.2.2',
     port: 3306,
     userName: 'root',
-    password: 'so36593659',
-    databaseName: 'tongtong', // optional
+    password: 'fullstack1234',
+    databaseName: 'tongtong',
   );
 
   await conn.connect();
