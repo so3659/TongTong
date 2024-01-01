@@ -29,11 +29,7 @@ Future<IResultSet?> selectMemoALL() async {
   return null;
 }
 
-<<<<<<< HEAD
 // 메모 작성
-=======
-// 글 작성
->>>>>>> 97ca06a09e6687d7ffc036fe4aaf3af2cfaf7503
 Future<String?> addMemo(String content) async {
   // MySQL 접속 설정
   final conn = await dbConnector();

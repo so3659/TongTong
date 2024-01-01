@@ -48,10 +48,7 @@ dependencies:
   image_picker: ^1.0.4
   timeago: ^3.6.0
   google_fonts: ^6.1.0
-<<<<<<< HEAD
   http: ^1.1.2
-=======
->>>>>>> 97ca06a09e6687d7ffc036fe4aaf3af2cfaf7503
   share_plus: ^7.2.1
   intl: ^0.18.1
 
