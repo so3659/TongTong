@@ -102,8 +102,14 @@ class HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+      body: Navigator(
+        onGenerateRoute: (RouteSettings) {
+          return MaterialPageRoute(
+            builder: (context) => Center(
+              child: _widgetOptions.elementAt(_selectedIndex),
+            ),
+          );
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
