@@ -100,7 +100,8 @@ class MainpageState extends State<Mainpage> {
                                 // onPressed: () async {
                                 //   // context.push('/memo');
                                 // },
-                                onPressed: () => Get.to(const MyMemoPage()),
+                                onPressed: () =>
+                                    Get.to(() => const MyMemoPage()),
                                 child: const Image(
                                   image:
                                       AssetImage('assets/images/community.png'),

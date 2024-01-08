@@ -31,7 +31,7 @@ class Register extends StatelessWidget {
 }
 
 class Agg extends StatefulWidget {
-  const Agg({Key? key}) : super(key: key);
+  const Agg({super.key});
 
   @override
   State<Agg> createState() => AggState();
@@ -40,23 +40,23 @@ class Agg extends StatefulWidget {
 class AggState extends State<Agg> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  final TextEditingController classNumController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController idController = TextEditingController();
+  // final TextEditingController classNumController = TextEditingController();
+  // final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController passwordConfirmController =
       TextEditingController();
-  final TextEditingController userNameController = TextEditingController();
+  // final TextEditingController userNameController = TextEditingController();
   String? _classNum, _name, _id, _password, _passwordConfirm, _userName;
 
   @override
   void dispose() {
-    classNumController.dispose();
-    nameController.dispose();
-    idController.dispose();
+    // classNumController.dispose();
+    // nameController.dispose();
+    // idController.dispose();
     passwordController.dispose();
     passwordConfirmController.dispose();
-    userNameController.dispose();
+    // userNameController.dispose();
     super.dispose();
   }
 
@@ -81,59 +81,59 @@ class AggState extends State<Agg> {
                                     AssetImage('assets/images/tong_logo.png')),
                           ),
                           const SizedBox(height: 30.0),
+                          // SizedBox(
+                          //   width: 350,
+                          //   child: TextFormField(
+                          //     controller: classNumController,
+                          //     textAlign: TextAlign.center,
+                          //     decoration: const InputDecoration(
+                          //       hintText: '학번',
+                          //       hintStyle: TextStyle(color: Colors.black),
+                          //     ),
+                          //     autovalidateMode: AutovalidateMode.always,
+                          //     onSaved: (value) {
+                          //       setState(() {
+                          //         _classNum = value as String;
+                          //       });
+                          //     },
+                          //     validator: (value) {
+                          //       if (value == null || value.isEmpty) {
+                          //         return '학번을 입력해주세요';
+                          //       }
+                          //       return null;
+                          //     },
+                          //   ),
+                          // ),
+                          // SizedBox(
+                          //   width: 350,
+                          //   child: TextFormField(
+                          //     controller: nameController,
+                          //     textAlign: TextAlign.center,
+                          //     decoration: const InputDecoration(
+                          //       hintText: '이름',
+                          //       hintStyle: TextStyle(color: Colors.black),
+                          //     ),
+                          //     autovalidateMode: AutovalidateMode.always,
+                          //     onSaved: (value) {
+                          //       setState(() {
+                          //         _name = value as String;
+                          //       });
+                          //     },
+                          //     validator: (value) {
+                          //       if (value == null || value.isEmpty) {
+                          //         return '이름을 입력해주세요';
+                          //       }
+                          //       return null;
+                          //     },
+                          //   ),
+                          // ),
                           SizedBox(
                             width: 350,
                             child: TextFormField(
-                              controller: classNumController,
+                              controller: emailController,
                               textAlign: TextAlign.center,
                               decoration: const InputDecoration(
-                                hintText: '학번',
-                                hintStyle: TextStyle(color: Colors.black),
-                              ),
-                              autovalidateMode: AutovalidateMode.always,
-                              onSaved: (value) {
-                                setState(() {
-                                  _classNum = value as String;
-                                });
-                              },
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return '학번을 입력해주세요';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            width: 350,
-                            child: TextFormField(
-                              controller: nameController,
-                              textAlign: TextAlign.center,
-                              decoration: const InputDecoration(
-                                hintText: '이름',
-                                hintStyle: TextStyle(color: Colors.black),
-                              ),
-                              autovalidateMode: AutovalidateMode.always,
-                              onSaved: (value) {
-                                setState(() {
-                                  _name = value as String;
-                                });
-                              },
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return '이름을 입력해주세요';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            width: 350,
-                            child: TextFormField(
-                              controller: idController,
-                              textAlign: TextAlign.center,
-                              decoration: const InputDecoration(
-                                hintText: '아이디',
+                                hintText: '이메일',
                                 hintStyle: TextStyle(color: Colors.black),
                               ),
                               autovalidateMode: AutovalidateMode.always,
@@ -144,7 +144,7 @@ class AggState extends State<Agg> {
                               },
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return '아이디를 입력해주세요';
+                                  return '이메일을 입력해주세요';
                                 }
                                 return null;
                               },
@@ -199,29 +199,29 @@ class AggState extends State<Agg> {
                               },
                             ),
                           ),
-                          SizedBox(
-                            width: 350,
-                            child: TextFormField(
-                              controller: userNameController,
-                              textAlign: TextAlign.center,
-                              decoration: const InputDecoration(
-                                hintText: '닉네임',
-                                hintStyle: TextStyle(color: Colors.black),
-                              ),
-                              autovalidateMode: AutovalidateMode.always,
-                              onSaved: (value) {
-                                setState(() {
-                                  _userName = value as String;
-                                });
-                              },
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return '닉네임을 입력해주세요';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
+                          // SizedBox(
+                          //   width: 350,
+                          //   child: TextFormField(
+                          //     controller: userNameController,
+                          //     textAlign: TextAlign.center,
+                          //     decoration: const InputDecoration(
+                          //       hintText: '닉네임',
+                          //       hintStyle: TextStyle(color: Colors.black),
+                          //     ),
+                          //     autovalidateMode: AutovalidateMode.always,
+                          //     onSaved: (value) {
+                          //       setState(() {
+                          //         _userName = value as String;
+                          //       });
+                          //     },
+                          //     validator: (value) {
+                          //       if (value == null || value.isEmpty) {
+                          //         return '닉네임을 입력해주세요';
+                          //       }
+                          //       return null;
+                          //     },
+                          //   ),
+                          // ),
                           const SizedBox(
                             height: 10,
                           ),
@@ -249,12 +249,13 @@ class AggState extends State<Agg> {
                                       showSuccessDialog(context);
                                       context.pop();
                                     }
-                                    insertMember(
-                                        classNumController.text,
-                                        nameController.text,
-                                        idController.text,
-                                        passwordController.text,
-                                        userNameController.text);
+                                    // insertMember(
+                                    //     // classNumController.text,
+                                    //     // nameController.text,
+                                    //     emailController.text,
+                                    //     passwordController.text
+                                    //     // userNameController.text
+                                    //     );
                                   }
                                 } else {
                                   showFailDialog(context);
