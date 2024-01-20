@@ -277,11 +277,6 @@ class AggState extends State<Agg> {
                                             'Server Error'), //snack bar의 내용. icon, button같은것도 가능하다.
                                         duration: const Duration(
                                             seconds: 5), //올라와있는 시간
-                                        action: SnackBarAction(
-                                          //추가로 작업을 넣기. 버튼넣기라 생각하면 편하다.
-                                          label: 'Undo', //버튼이름
-                                          onPressed: () {}, //버튼 눌렀을때.
-                                        ),
                                       ));
                                     }
                                   } on FirebaseAuthException catch (error) {
@@ -289,13 +284,13 @@ class AggState extends State<Agg> {
                                     String? errorCode;
                                     switch (error.code) {
                                       case "email-already-in-use":
-                                        errorCode = error.code;
+                                        errorCode = ('이미 존재하는 이메일입니다');
                                         break;
                                       case "invalid-email":
-                                        errorCode = error.code;
+                                        errorCode = ('이메일의 형식이 올바르지 않습니다');
                                         break;
                                       case "weak-password":
-                                        errorCode = error.code;
+                                        errorCode = ('6자리 이상의 비밀번호로 설정해주세요');
                                         break;
                                       case "operation-not-allowed":
                                         errorCode = error.code;
@@ -303,22 +298,19 @@ class AggState extends State<Agg> {
                                       default:
                                         errorCode = null;
                                     }
-                                    if (errorCode != null) {
+                                    if (error.code != null) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                         content: Text(
-                                            errorCode), //snack bar의 내용. icon, button같은것도 가능하다.
+                                            errorCode!), //snack bar의 내용. icon, button같은것도 가능하다.
                                         duration: const Duration(
-                                            seconds: 5), //올라와있는 시간
-                                        action: SnackBarAction(
-                                          //추가로 작업을 넣기. 버튼넣기라 생각하면 편하다.
-                                          label: 'Undo', //버튼이름
-                                          onPressed: () {}, //버튼 눌렀을때.
-                                        ),
+                                            seconds: 3), //올라와있는 시간
+                                        
                                       ));
                                     }
                                   }
-                                } else {
+                                } 
+                                else {
                                   showFailDialog(context);
                                 }
                               },
