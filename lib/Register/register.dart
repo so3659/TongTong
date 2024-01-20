@@ -1,8 +1,11 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tongtong/Register/login.dart';
 import 'package:tongtong/db/loginDB.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // final GoRouter _goroute = GoRouter(
 //   routes: <RouteBase>[
@@ -46,6 +49,7 @@ class AggState extends State<Agg> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController passwordConfirmController =
       TextEditingController();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   // final TextEditingController userNameController = TextEditingController();
   String? _classNum, _name, _id, _password, _passwordConfirm, _userName;
 
@@ -232,30 +236,87 @@ class AggState extends State<Agg> {
                               backgroundColor: Colors.white,
                               onPressed: () async {
                                 if (formKey.currentState!.validate()) {
-                                  formKey.currentState!.save();
-                                  final idCheck = await confirmIdCheck(_id!);
-                                  final userNameCheck =
-                                      await confirmUserNameCheck(_userName!);
-                                  if (idCheck != '0') {
-                                    if (context.mounted) {
-                                      showIdDuplicateDialog(context);
+                                  // formKey.currentState!.save();
+                                  // final idCheck = await confirmIdCheck(_id!);
+                                  // final userNameCheck =
+                                  //     await confirmUserNameCheck(_userName!);
+                                  // if (idCheck != '0') {
+                                  //   if (context.mounted) {
+                                  //     showIdDuplicateDialog(context);
+                                  //   }
+                                  // } else if (userNameCheck != '0') {
+                                  //   if (context.mounted) {
+                                  //     showUserNameDuplicateDialog(context);
+                                  //   }
+                                  // } else {
+                                  //   if (context.mounted) {
+                                  //     showSuccessDialog(context);
+                                  //     context.pop();
+                                  //   }
+                                  //   // insertMember(
+                                  //   //     // classNumController.text,
+                                  //   //     // nameController.text,
+                                  //   //     emailController.text,
+                                  //   //     passwordController.text
+                                  //   //     // userNameController.text
+                                  //   //     );
+                                  try {
+                                    UserCredential credential =
+                                        await _firebaseAuth
+                                            .createUserWithEmailAndPassword(
+                                                email: emailController.text,
+                                                password:
+                                                    passwordController.text);
+                                    if (credential.user != null) {
+                                      user:
+                                      credential.user;
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: const Text(
+                                            'Server Error'), //snack bar의 내용. icon, button같은것도 가능하다.
+                                        duration: const Duration(
+                                            seconds: 5), //올라와있는 시간
+                                        action: SnackBarAction(
+                                          //추가로 작업을 넣기. 버튼넣기라 생각하면 편하다.
+                                          label: 'Undo', //버튼이름
+                                          onPressed: () {}, //버튼 눌렀을때.
+                                        ),
+                                      ));
                                     }
-                                  } else if (userNameCheck != '0') {
-                                    if (context.mounted) {
-                                      showUserNameDuplicateDialog(context);
+                                  } on FirebaseAuthException catch (error) {
+                                    // logger.e(error.code);
+                                    String? errorCode;
+                                    switch (error.code) {
+                                      case "email-already-in-use":
+                                        errorCode = error.code;
+                                        break;
+                                      case "invalid-email":
+                                        errorCode = error.code;
+                                        break;
+                                      case "weak-password":
+                                        errorCode = error.code;
+                                        break;
+                                      case "operation-not-allowed":
+                                        errorCode = error.code;
+                                        break;
+                                      default:
+                                        errorCode = null;
                                     }
-                                  } else {
-                                    if (context.mounted) {
-                                      showSuccessDialog(context);
-                                      context.pop();
+                                    if (errorCode != null) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                            errorCode), //snack bar의 내용. icon, button같은것도 가능하다.
+                                        duration: const Duration(
+                                            seconds: 5), //올라와있는 시간
+                                        action: SnackBarAction(
+                                          //추가로 작업을 넣기. 버튼넣기라 생각하면 편하다.
+                                          label: 'Undo', //버튼이름
+                                          onPressed: () {}, //버튼 눌렀을때.
+                                        ),
+                                      ));
                                     }
-                                    // insertMember(
-                                    //     // classNumController.text,
-                                    //     // nameController.text,
-                                    //     emailController.text,
-                                    //     passwordController.text
-                                    //     // userNameController.text
-                                    //     );
                                   }
                                 } else {
                                   showFailDialog(context);
