@@ -5,6 +5,7 @@ import 'package:tongtong/Register/register.dart';
 import 'package:tongtong/db/loginDB.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tongtong/mainpage/homepage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // final GoRouter _goroute = GoRouter(
 //   routes: <RouteBase>[
@@ -106,6 +107,7 @@ class BuildLoginState extends State<BuildLogin> {
   Widget build(BuildContext context) {
     final TextEditingController id = TextEditingController();
     final TextEditingController pw = TextEditingController();
+      final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -156,21 +158,83 @@ class BuildLoginState extends State<BuildLogin> {
               child: FloatingActionButton(
                 backgroundColor: Colors.white,
                 onPressed: () async {
-                  final loginCheck = await login(id.text, pw.text);
-                  if (loginCheck == '-1') {
-                    if (context.mounted) {
-                      showFailDialog(context);
-                    }
-                  } else {
-                    if (context.mounted) {
-                      if (switchValue == true) {
-                        _setAutoLogin(loginCheck!);
-                      } else {
-                        _delAutoLogin();
-                      }
-                      context.go('/homepage');
-                    }
-                  }
+                  // final loginCheck = await login(id.text, pw.text);
+                  // if (loginCheck == '-1') {
+                  //   if (context.mounted) {
+                  //     showFailDialog(context);
+                  //   }
+                  // } else {
+                  //   if (context.mounted) {
+                  //     if (switchValue == true) {
+                  //       _setAutoLogin(loginCheck!);
+                  //     } else {
+                  //       _delAutoLogin();
+                  //     }
+                  //     context.go('/homepage');
+                  //   }
+                  // }
+                  try {
+                                    UserCredential credential =
+                                        await _firebaseAuth
+                                            .signInWithEmailAndPassword(
+                                                email: id.text,
+                                                password:
+                                                    pw.text);
+                                    if (credential.user != null) {
+                                      // user:
+                                      // credential.user;
+                                      // if (context.mounted) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                            '통통의 일원이 되신걸 축하드립니다!'), //snack bar의 내용. icon, button같은것도 가능하다.
+                                        duration: const Duration(
+                                            seconds: 3), //올라와있는 시간
+                                        action: SnackBarAction( //추가로 작업을 넣기. 버튼넣기라 생각하면 편하다.
+                  label: '초기화면으로', //버튼이름
+                  onPressed: ()=> context.push('/'), //버튼 눌렀을때.
+                ),
+                                      ));
+                                      // }
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: const Text(
+                                            'Server Error'), //snack bar의 내용. icon, button같은것도 가능하다.
+                                        duration: const Duration(
+                                            seconds: 5), //올라와있는 시간
+                                      ));
+                                    }
+                                  } on FirebaseAuthException catch (error) {
+                                    // logger.e(error.code);
+                                    String? errorCode;
+                                    switch (error.code) {
+                                      case "invalid-email":
+                                        errorCode = ('이메일의 형식이 올바르지 않습니다');
+                                        break;
+                                      case "user-not-found":
+                                        errorCode = ('유저 정보가 없습니다');
+                                        break;
+                                      case "wrong-password":
+                                        errorCode = ('비밀번호가 옳바르지 않습니다');
+                                        break;
+                                      case "user-disabled":
+                                        errorCode = error.code;
+                                        break;
+                                      default:
+                                        errorCode = null;
+                                    }
+                                    if (errorCode != null) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                            errorCode), //snack bar의 내용. icon, button같은것도 가능하다.
+                                        duration: const Duration(
+                                            seconds: 3), //올라와있는 시간
+                                        
+                                      ));
+                                    }
+                                  }
                 },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(100)),

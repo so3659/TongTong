@@ -278,7 +278,7 @@ class AggState extends State<Agg> {
                                         duration: const Duration(
                                             seconds: 3), //올라와있는 시간
                                         action: SnackBarAction( //추가로 작업을 넣기. 버튼넣기라 생각하면 편하다.
-                  label: '로그인 화면으로', //버튼이름
+                  label: '초기화면으로', //버튼이름
                   onPressed: ()=> context.push('/'), //버튼 눌렀을때.
                 ),
                                       ));
