@@ -181,21 +181,7 @@ class BuildLoginState extends State<BuildLogin> {
                                                 password:
                                                     pw.text);
                                     if (credential.user != null) {
-                                      // user:
-                                      // credential.user;
-                                      // if (context.mounted) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content: Text(
-                                            '통통의 일원이 되신걸 축하드립니다!'), //snack bar의 내용. icon, button같은것도 가능하다.
-                                        duration: const Duration(
-                                            seconds: 3), //올라와있는 시간
-                                        action: SnackBarAction( //추가로 작업을 넣기. 버튼넣기라 생각하면 편하다.
-                  label: '초기화면으로', //버튼이름
-                  onPressed: ()=> context.push('/'), //버튼 눌렀을때.
-                ),
-                                      ));
-                                      // }
+                                      context.go('/homepage');
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
@@ -216,7 +202,7 @@ class BuildLoginState extends State<BuildLogin> {
                                         errorCode = ('유저 정보가 없습니다');
                                         break;
                                       case "wrong-password":
-                                        errorCode = ('비밀번호가 옳바르지 않습니다');
+                                        errorCode = ('비밀번호가 올바르지 않습니다');
                                         break;
                                       case "user-disabled":
                                         errorCode = error.code;

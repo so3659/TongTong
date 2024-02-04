@@ -36,10 +36,10 @@ class MainpageState extends State<Mainpage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Container(
-                            padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
+                            padding: const EdgeInsets.fromLTRB(10, 50, 10, 30),
                             child: SizedBox(
-                              height: 150,
-                              width: 150,
+                              height: 170,
+                              width: 170,
                               child: FloatingActionButton(
                                 heroTag: 'insta',
                                 backgroundColor: Colors.white,
@@ -51,19 +51,25 @@ class MainpageState extends State<Mainpage> {
                                         mode: LaunchMode.externalApplication);
                                   }
                                 },
-                                child: const Image(
-                                  image: AssetImage('assets/images/insta.png'),
+                                                          child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Image(
+                                  image: AssetImage(
+                                      'assets/images/insta.png'),
                                   height: 100,
                                   width: 100,
                                 ),
+                                Text('인스타그램')
+                              ]),
                               ),
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.all(10.0),
+                            padding: const EdgeInsets.fromLTRB(10, 30, 10, 30),
                             child: SizedBox(
-                              height: 250,
-                              width: 150,
+                              height: 170,
+                              width: 170,
                               child: FloatingActionButton(
                                 heroTag: 'booking',
                                 backgroundColor: Colors.white,
@@ -75,12 +81,17 @@ class MainpageState extends State<Mainpage> {
                                         mode: LaunchMode.externalApplication);
                                   }
                                 },
-                                child: const Image(
-                                  image:
-                                      AssetImage('assets/images/booking.png'),
+                                child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Image(
+                                  image: AssetImage(
+                                      'assets/images/booking.png'),
                                   height: 100,
                                   width: 100,
                                 ),
+                                Text('연습실 예약')
+                              ]),
                               ),
                             ),
                           ),
@@ -90,10 +101,10 @@ class MainpageState extends State<Mainpage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Container(
-                            padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
+                            padding: const EdgeInsets.fromLTRB(10, 50, 10, 30),
                             child: SizedBox(
-                              height: 250,
-                              width: 150,
+                              height: 170,
+                              width: 170,
                               child: FloatingActionButton(
                                 heroTag: 'chat',
                                 backgroundColor: Colors.white,
@@ -102,20 +113,26 @@ class MainpageState extends State<Mainpage> {
                                 // },
                                 onPressed: () =>
                                     Get.to(() => const MyMemoPage()),
-                                child: const Image(
-                                  image:
-                                      AssetImage('assets/images/community.png'),
+                              
+                                child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Image(
+                                  image: AssetImage(
+                                      'assets/images/community.png'),
                                   height: 100,
                                   width: 100,
                                 ),
+                                Text('자유게시판')
+                              ]),
                               ),
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.all(10.0),
+                            padding: const EdgeInsets.fromLTRB(10, 30, 10, 30),
                             child: SizedBox(
-                              height: 150,
-                              width: 150,
+                              height: 170,
+                              width: 170,
                               child: FloatingActionButton(
                                 heroTag: 'navercafe',
                                 backgroundColor: Colors.white,
@@ -127,12 +144,18 @@ class MainpageState extends State<Mainpage> {
                                         mode: LaunchMode.externalApplication);
                                   }
                                 },
-                                child: const Image(
-                                  image:
-                                      AssetImage('assets/images/navercafe.png'),
+                                
+                                child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Image(
+                                  image: AssetImage(
+                                      'assets/images/navercafe.png'),
                                   height: 100,
                                   width: 100,
                                 ),
+                                Text('네이버 카페')
+                              ]),
                               ),
                             ),
                           ),
