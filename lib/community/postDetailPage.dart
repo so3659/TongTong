@@ -4,14 +4,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tongtong/community/memoListProvider.dart';
-import 'package:tongtong/community/memoMainPage.dart';
+import 'package:tongtong/community/postListProvider.dart';
+import 'package:tongtong/community/postMainPage.dart';
 import 'package:tongtong/db/memoDB.dart';
 
 class ContentPage extends StatefulWidget {
   // 생성자 초기화
   final dynamic content;
-  const ContentPage({Key? key, required this.content}) : super(key: key);
+  const ContentPage({super.key, required this.content});
 
   @override
   State<ContentPage> createState() => _ContentState(content: content);

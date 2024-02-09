@@ -3,7 +3,7 @@ import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tongtong/community/memoListProvider.dart';
+import 'package:tongtong/community/postListProvider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class FeedPage extends StatelessWidget {

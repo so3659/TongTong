@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tongtong/community/memoMainPage.dart';
+import 'package:tongtong/community/postMainPage.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get/get.dart';
 
 class Mainpage extends StatefulWidget {
-  const Mainpage({Key? key}) : super(key: key);
+  const Mainpage({super.key});
 
   @override
   State<Mainpage> createState() => MainpageState();
@@ -36,7 +36,7 @@ class MainpageState extends State<Mainpage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Container(
-                            padding: const EdgeInsets.fromLTRB(10, 50, 10, 30),
+                            padding: const EdgeInsets.fromLTRB(10, 40, 10, 20),
                             child: SizedBox(
                               height: 170,
                               width: 170,
@@ -51,22 +51,23 @@ class MainpageState extends State<Mainpage> {
                                         mode: LaunchMode.externalApplication);
                                   }
                                 },
-                                                          child: const Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Image(
-                                  image: AssetImage(
-                                      'assets/images/insta.png'),
-                                  height: 100,
-                                  width: 100,
-                                ),
-                                Text('인스타그램')
-                              ]),
+                                child: const Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Image(
+                                        image: AssetImage(
+                                            'assets/images/insta.png'),
+                                        height: 100,
+                                        width: 100,
+                                      ),
+                                      Text('인스타그램')
+                                    ]),
                               ),
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.fromLTRB(10, 30, 10, 30),
+                            padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
                             child: SizedBox(
                               height: 170,
                               width: 170,
@@ -82,16 +83,17 @@ class MainpageState extends State<Mainpage> {
                                   }
                                 },
                                 child: const Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Image(
-                                  image: AssetImage(
-                                      'assets/images/booking.png'),
-                                  height: 100,
-                                  width: 100,
-                                ),
-                                Text('연습실 예약')
-                              ]),
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Image(
+                                        image: AssetImage(
+                                            'assets/images/booking.png'),
+                                        height: 100,
+                                        width: 100,
+                                      ),
+                                      Text('연습실 예약')
+                                    ]),
                               ),
                             ),
                           ),
@@ -101,7 +103,7 @@ class MainpageState extends State<Mainpage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Container(
-                            padding: const EdgeInsets.fromLTRB(10, 50, 10, 30),
+                            padding: const EdgeInsets.fromLTRB(10, 40, 10, 20),
                             child: SizedBox(
                               height: 170,
                               width: 170,
@@ -113,23 +115,24 @@ class MainpageState extends State<Mainpage> {
                                 // },
                                 onPressed: () =>
                                     Get.to(() => const MyMemoPage()),
-                              
+
                                 child: const Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Image(
-                                  image: AssetImage(
-                                      'assets/images/community.png'),
-                                  height: 100,
-                                  width: 100,
-                                ),
-                                Text('자유게시판')
-                              ]),
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Image(
+                                        image: AssetImage(
+                                            'assets/images/community.png'),
+                                        height: 100,
+                                        width: 100,
+                                      ),
+                                      Text('자유게시판')
+                                    ]),
                               ),
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.fromLTRB(10, 30, 10, 30),
+                            padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
                             child: SizedBox(
                               height: 170,
                               width: 170,
@@ -144,18 +147,18 @@ class MainpageState extends State<Mainpage> {
                                         mode: LaunchMode.externalApplication);
                                   }
                                 },
-                                
                                 child: const Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Image(
-                                  image: AssetImage(
-                                      'assets/images/navercafe.png'),
-                                  height: 100,
-                                  width: 100,
-                                ),
-                                Text('네이버 카페')
-                              ]),
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Image(
+                                        image: AssetImage(
+                                            'assets/images/navercafe.png'),
+                                        height: 100,
+                                        width: 100,
+                                      ),
+                                      Text('네이버 카페')
+                                    ]),
                               ),
                             ),
                           ),

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tongtong/calendar/calendarMain.dart';
-import 'package:tongtong/community/memoMainPage.dart';
+import 'package:tongtong/community/postMainPage.dart';
 import 'package:tongtong/community/postBody.dart';
 import 'package:tongtong/info/infoMain.dart';
 import 'package:tongtong/mainpage/mainpage.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => HomePageState();

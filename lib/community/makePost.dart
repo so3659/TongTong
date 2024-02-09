@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:io';
@@ -6,10 +8,11 @@ import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tongtong/db/memoDB.dart';
 import 'package:provider/provider.dart';
-import 'package:tongtong/community/memoListProvider.dart';
+import 'package:tongtong/community/postListProvider.dart';
+import 'dart:math';
 
 class MakePost extends StatefulWidget {
-  const MakePost({Key? key}) : super(key: key);
+  const MakePost({super.key});
 
   @override
   State<MakePost> createState() => MakePostState();
@@ -17,6 +20,14 @@ class MakePost extends StatefulWidget {
 
 class MakePostState extends State<MakePost> {
   final TextEditingController contentController = TextEditingController();
+  FirebaseFirestore fireStore = FirebaseFirestore.instance;
+
+  final String _chars =
+      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+  final Random _rnd = Random();
+
+  String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+      length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
   @override
   void dispose() {
@@ -24,33 +35,33 @@ class MakePostState extends State<MakePost> {
     super.dispose();
   }
 
-  Future<void> getMemoList() async {
-    List memoList = [];
-    // DB에서 메모 정보 호출
-    var result = await selectMemoALL();
+  // Future<void> getMemoList() async {
+  //   List memoList = [];
+  //   // DB에서 메모 정보 호출
+  //   var result = await selectMemoALL();
 
-    print(result?.numOfRows);
+  //   print(result?.numOfRows);
 
-    // 메모 리스트 저장
-    if (result != null) {
-      for (final row in result.rows) {
-        print('Row: $row');
-        var memoInfo = {
-          'id': row.colByName('id'),
-          'userIndex': row.colByName('userIndex'),
-          'userName': row.colByName('userName'),
-          'memoContent': row.colByName('memoContent'),
-          'createDate': row.colByName('createDate'),
-        };
-        memoList.add(memoInfo);
-      }
-    }
+  //   // 메모 리스트 저장
+  //   if (result != null) {
+  //     for (final row in result.rows) {
+  //       print('Row: $row');
+  //       var memoInfo = {
+  //         'id': row.colByName('id'),
+  //         'userIndex': row.colByName('userIndex'),
+  //         'userName': row.colByName('userName'),
+  //         'memoContent': row.colByName('memoContent'),
+  //         'createDate': row.colByName('createDate'),
+  //       };
+  //       memoList.add(memoInfo);
+  //     }
+  //   }
 
-    print('MemoMainPage - getMemoList : $memoList');
-    if (mounted) {
-      context.read<MemoUpdator>().updateList(memoList);
-    }
-  }
+  //   print('MemoMainPage - getMemoList : $memoList');
+  //   if (mounted) {
+  //     context.read<MemoUpdator>().updateList(memoList);
+  //   }
+  // }
 
   void _onImageIconSelected(File file) {
     setState(() {
@@ -82,13 +93,17 @@ class MakePostState extends State<MakePost> {
           IconButton(
             onPressed: () async {
               String content = contentController.text;
-              await addMemo(content);
+              String postKey = getRandomString(16);
 
-              setState(() {
-                // 메모 리스트 새로고침
-                print("MemoMainPage - addMemo/setState");
-                getMemoList();
+              fireStore.collection('Posts').doc(postKey).set({
+                "contents": content,
               });
+
+              // setState(() {
+              //   // 메모 리스트 새로고침
+              //   print("MemoMainPage - addMemo/setState");
+              //   getMemoList();
+              // });
 
               Navigator.of(context, rootNavigator: true).pop();
             },
