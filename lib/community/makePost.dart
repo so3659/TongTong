@@ -1,14 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'dart:io';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
-import 'package:go_router/go_router.dart';
-import 'package:tongtong/db/memoDB.dart';
-import 'package:provider/provider.dart';
-import 'package:tongtong/community/postListProvider.dart';
 import 'dart:math';
 
 class MakePost extends StatefulWidget {
@@ -35,34 +29,6 @@ class MakePostState extends State<MakePost> {
     super.dispose();
   }
 
-  // Future<void> getMemoList() async {
-  //   List memoList = [];
-  //   // DB에서 메모 정보 호출
-  //   var result = await selectMemoALL();
-
-  //   print(result?.numOfRows);
-
-  //   // 메모 리스트 저장
-  //   if (result != null) {
-  //     for (final row in result.rows) {
-  //       print('Row: $row');
-  //       var memoInfo = {
-  //         'id': row.colByName('id'),
-  //         'userIndex': row.colByName('userIndex'),
-  //         'userName': row.colByName('userName'),
-  //         'memoContent': row.colByName('memoContent'),
-  //         'createDate': row.colByName('createDate'),
-  //       };
-  //       memoList.add(memoInfo);
-  //     }
-  //   }
-
-  //   print('MemoMainPage - getMemoList : $memoList');
-  //   if (mounted) {
-  //     context.read<MemoUpdator>().updateList(memoList);
-  //   }
-  // }
-
   void _onImageIconSelected(File file) {
     setState(() {
       _image = file;
@@ -73,13 +39,6 @@ class MakePostState extends State<MakePost> {
 
   @override
   Widget build(BuildContext context) {
-    // return MaterialApp(
-    //   debugShowCheckedModeBanner: false,
-    //   theme: ThemeData(
-    //       fontFamily: 'SunflowerMedium',
-    //       colorScheme:
-    //           ColorScheme.fromSeed(seedColor: (Colors.lightBlue[200])!)),
-    //   home:
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -98,13 +57,6 @@ class MakePostState extends State<MakePost> {
               fireStore.collection('Posts').doc(postKey).set({
                 "contents": content,
               });
-
-              // setState(() {
-              //   // 메모 리스트 새로고침
-              //   print("MemoMainPage - addMemo/setState");
-              //   getMemoList();
-              // });
-
               Navigator.of(context, rootNavigator: true).pop();
             },
             icon: const Icon(Icons.send),

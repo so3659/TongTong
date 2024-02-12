@@ -6,32 +6,35 @@ import 'package:provider/provider.dart';
 import 'package:tongtong/community/postListProvider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class FeedPage extends StatelessWidget {
-  const FeedPage({super.key});
+// class FeedPage extends StatelessWidget {
+//   const FeedPage({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          fontFamily: 'SunflowerMedium',
-        ),
-        home: Scaffold(
-            body: SizedBox(
-          height: context.height,
-          width: context.width,
-          child: FeedPageBody(),
-        )));
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//         debugShowCheckedModeBanner: false,
+//         theme: ThemeData(
+//           fontFamily: 'SunflowerMedium',
+//         ),
+//         home: Scaffold(
+//             body: SizedBox(
+//           height: context.height,
+//           width: context.width,
+//           child: FeedPageBody(),
+//         )));
+//   }
+// }
 
 class FeedPageBody extends StatelessWidget {
-  FeedPageBody({super.key});
-  List memoInfo = [];
+  const FeedPageBody({
+    super.key,
+    required this.content,
+  });
+
+  final String content;
 
   @override
   Widget build(BuildContext context) {
-    memoInfo = context.watch<MemoUpdator>().memoList;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -83,8 +86,7 @@ class FeedPageBody extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  // memoInfo[0]['memoContent'],
-                  '내용',
+                  content,
                   style: GoogleFonts.mulish(
                       color: Colors.black,
                       fontSize: 14,

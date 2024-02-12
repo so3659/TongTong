@@ -1,6 +1,3 @@
-// 선택한 항목의 내용을 보여주는 추가 페이지
-// ignore_for_file: use_build_context_synchronously, avoid_print
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
