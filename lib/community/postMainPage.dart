@@ -20,53 +20,47 @@ class MyMemoPage extends StatefulWidget {
 }
 
 class MyMemoState extends State<MyMemoPage> {
-  FirebaseFirestore posts = FirebaseFirestore.instance;
+  FirebaseFirestore fireStore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
-          children: [
-            Expanded(
-              child: Builder(
-                builder: (context) {
-                  posts.collection("Posts").get().then(
-                    (querySnapshot) {
-                      print("Successfully completed");
-                      if (querySnapshot.docs.isEmpty) {
-                        print("Empty");
-                        return const Center(
-                          child: Text(
-                            "표시할 게시물이 없어요",
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        );
-                      } else {
-                        print("Not Empty");
-                        return ListView.builder(
-                          itemCount: querySnapshot.docs.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Column(
-                              children: [
-                                FeedPageBody(
-                                    content: querySnapshot.docs[index]
-                                        ['contents'])
-                              ],
-                            );
-                          },
-                        );
-                      }
-                    },
-                    onError: (e) => print("Error completing: $e"),
-                  );
-                  return const Divider();
-                },
-              ),
+      body: Column(
+        children: [
+          Expanded(
+            child: FutureBuilder<QuerySnapshot>(
+              future: FirebaseFirestore.instance.collection("Posts").get(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.hasError) {
+                  return const Center(child: Text("오류가 발생했습니다."));
+                }
+
+                if (snapshot.data?.docs.isEmpty ?? true) {
+                  return const Center(
+                      child:
+                          Text("표시할 게시물이 없어요", style: TextStyle(fontSize: 20)));
+                }
+
+                return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    var doc = snapshot.data!.docs[index];
+                    return Column(
+                      children: [FeedPageBody(content: doc['contents'])],
+                    );
+                  },
+                );
+              },
             ),
-          ],
-        ),
-        // 플로팅 액션 버튼
-        floatingActionButton: _floatingActionButton(context));
+          ),
+        ],
+      ),
+      floatingActionButton: _floatingActionButton(context),
+    );
   }
 }
 
