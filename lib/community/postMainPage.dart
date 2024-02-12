@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tongtong/community/makePost.dart';
-import 'package:tongtong/community/postListProvider.dart';
-import 'package:provider/provider.dart';
 import 'package:tongtong/community/postBody.dart';
-import 'package:tongtong/db/memoDB.dart';
-import 'package:tongtong/helper/utility.dart';
-import 'postDetailPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tongtong/theme/theme.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 class MyMemoPage extends StatefulWidget {
   const MyMemoPage({super.key});
