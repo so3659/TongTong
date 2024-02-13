@@ -45,7 +45,7 @@ dependencies:
   url_launcher: ^6.2.1
   provider: ^6.1.1
   table_calendar: ^3.0.9
-  image_picker: ^1.0.4
+  image_picker: ^1.0.7
   timeago: ^3.6.0
   google_fonts: ^6.1.0
   http: ^1.1.2
@@ -54,6 +54,7 @@ dependencies:
   get: ^4.6.6
   cloud_firestore: ^4.15.4
   firebase_storage: ^11.6.5
+  permission_handler: ^11.3.0
 
 dev_dependencies:
   flutter_test:
