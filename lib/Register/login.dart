@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tongtong/Register/register.dart';
-import 'package:tongtong/db/loginDB.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tongtong/mainpage/homepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,7 +25,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 // );
 
 class Login extends StatelessWidget {
-  const Login({Key? key}) : super(key: key);
+  const Login({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +80,7 @@ Widget _buildTitle() {
 }
 
 class BuildLogin extends StatefulWidget {
-  const BuildLogin({Key? key}) : super(key: key);
+  const BuildLogin({super.key});
 
   @override
   State<BuildLogin> createState() => BuildLoginState();
@@ -107,7 +106,7 @@ class BuildLoginState extends State<BuildLogin> {
   Widget build(BuildContext context) {
     final TextEditingController id = TextEditingController();
     final TextEditingController pw = TextEditingController();
-      final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+    final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -174,53 +173,45 @@ class BuildLoginState extends State<BuildLogin> {
                   //   }
                   // }
                   try {
-                                    UserCredential credential =
-                                        await _firebaseAuth
-                                            .signInWithEmailAndPassword(
-                                                email: id.text,
-                                                password:
-                                                    pw.text);
-                                    if (credential.user != null) {
-                                      context.go('/homepage');
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content: const Text(
-                                            'Server Error'), //snack bar의 내용. icon, button같은것도 가능하다.
-                                        duration: const Duration(
-                                            seconds: 5), //올라와있는 시간
-                                      ));
-                                    }
-                                  } on FirebaseAuthException catch (error) {
-                                    // logger.e(error.code);
-                                    String? errorCode;
-                                    switch (error.code) {
-                                      case "invalid-email":
-                                        errorCode = ('이메일의 형식이 올바르지 않습니다');
-                                        break;
-                                      case "user-not-found":
-                                        errorCode = ('유저 정보가 없습니다');
-                                        break;
-                                      case "wrong-password":
-                                        errorCode = ('비밀번호가 올바르지 않습니다');
-                                        break;
-                                      case "user-disabled":
-                                        errorCode = error.code;
-                                        break;
-                                      default:
-                                        errorCode = null;
-                                    }
-                                    if (errorCode != null) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content: Text(
-                                            errorCode), //snack bar의 내용. icon, button같은것도 가능하다.
-                                        duration: const Duration(
-                                            seconds: 3), //올라와있는 시간
-                                        
-                                      ));
-                                    }
-                                  }
+                    UserCredential credential =
+                        await firebaseAuth.signInWithEmailAndPassword(
+                            email: id.text, password: pw.text);
+                    if (credential.user != null) {
+                      context.go('/homepage');
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text(
+                            'Server Error'), //snack bar의 내용. icon, button같은것도 가능하다.
+                        duration: Duration(seconds: 5), //올라와있는 시간
+                      ));
+                    }
+                  } on FirebaseAuthException catch (error) {
+                    // logger.e(error.code);
+                    String? errorCode;
+                    switch (error.code) {
+                      case "invalid-email":
+                        errorCode = ('이메일의 형식이 올바르지 않습니다');
+                        break;
+                      case "user-not-found":
+                        errorCode = ('유저 정보가 없습니다');
+                        break;
+                      case "wrong-password":
+                        errorCode = ('비밀번호가 올바르지 않습니다');
+                        break;
+                      case "user-disabled":
+                        errorCode = error.code;
+                        break;
+                      default:
+                        errorCode = null;
+                    }
+                    if (errorCode != null) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                            errorCode), //snack bar의 내용. icon, button같은것도 가능하다.
+                        duration: const Duration(seconds: 3), //올라와있는 시간
+                      ));
+                    }
+                  }
                 },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(100)),

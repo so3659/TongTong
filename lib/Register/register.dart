@@ -3,7 +3,6 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tongtong/Register/login.dart';
-import 'package:tongtong/db/loginDB.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -273,23 +272,25 @@ class AggState extends State<Agg> {
                                       // if (context.mounted) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
-                                        content: Text(
+                                        content: const Text(
                                             '통통의 일원이 되신걸 축하드립니다!'), //snack bar의 내용. icon, button같은것도 가능하다.
                                         duration: const Duration(
                                             seconds: 3), //올라와있는 시간
-                                        action: SnackBarAction( //추가로 작업을 넣기. 버튼넣기라 생각하면 편하다.
-                  label: '초기화면으로', //버튼이름
-                  onPressed: ()=> context.push('/'), //버튼 눌렀을때.
-                ),
+                                        action: SnackBarAction(
+                                          //추가로 작업을 넣기. 버튼넣기라 생각하면 편하다.
+                                          label: '초기화면으로', //버튼이름
+                                          onPressed: () =>
+                                              context.push('/'), //버튼 눌렀을때.
+                                        ),
                                       ));
                                       // }
                                     } else {
                                       ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content: const Text(
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
                                             'Server Error'), //snack bar의 내용. icon, button같은것도 가능하다.
-                                        duration: const Duration(
-                                            seconds: 5), //올라와있는 시간
+                                        duration:
+                                            Duration(seconds: 5), //올라와있는 시간
                                       ));
                                     }
                                   } on FirebaseAuthException catch (error) {
@@ -311,27 +312,21 @@ class AggState extends State<Agg> {
                                       default:
                                         errorCode = null;
                                     }
-                                    if (error.code != null) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content: Text(
-                                            errorCode!), //snack bar의 내용. icon, button같은것도 가능하다.
-                                        duration: const Duration(
-                                            seconds: 3), //올라와있는 시간
-                                        
-                                      ));
-                                    }
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                          errorCode!), //snack bar의 내용. icon, button같은것도 가능하다.
+                                      duration:
+                                          const Duration(seconds: 3), //올라와있는 시간
+                                    ));
                                   }
-                                }
-                                else {
+                                } else {
                                   ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content: Text(
-                                            '양식을 제대로 채워주세요'), //snack bar의 내용. icon, button같은것도 가능하다.
-                                        duration: const Duration(
-                                            seconds: 3), //올라와있는 시간
-                                        
-                                      ));
+                                      .showSnackBar(const SnackBar(
+                                    content: Text(
+                                        '양식을 제대로 채워주세요'), //snack bar의 내용. icon, button같은것도 가능하다.
+                                    duration: Duration(seconds: 3), //올라와있는 시간
+                                  ));
                                 }
                               },
                               child: const Text('회원가입'),
