@@ -6,24 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tongtong/mainpage/homepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-// final GoRouter _goroute = GoRouter(
-//   routes: <RouteBase>[
-//     GoRoute(
-//       path: '/',
-//       builder: (context, state) => Login(),
-// pageBuilder: (context, state) => MaterialPage<void>(child: Login()),
-//     ),
-//     GoRoute(
-//       path: '/register',
-// pageBuilder: (context, state) => MaterialPage<void>(child: Register()),
-//     ),
-//     GoRoute(
-//       path: '/homepage',
-// pageBuilder: (context, state) => MaterialPage<void>(child: HomePage()),
-//     ),
-//   ],
-// );
-
 class Login extends StatelessWidget {
   const Login({super.key});
   @override
@@ -41,11 +23,6 @@ class Login extends StatelessWidget {
 }
 
 Widget _firstpage() {
-  // return MaterialApp(
-  //   debugShowCheckedModeBanner: false,
-  //   theme: ThemeData(
-  //       fontFamily: 'SunflowerMedium',
-  //       colorScheme: ColorScheme.fromSeed(seedColor: (Colors.lightBlue[200])!)),
   return Scaffold(
     backgroundColor: Colors.white,
     body: ListView(
@@ -157,21 +134,6 @@ class BuildLoginState extends State<BuildLogin> {
               child: FloatingActionButton(
                 backgroundColor: Colors.white,
                 onPressed: () async {
-                  // final loginCheck = await login(id.text, pw.text);
-                  // if (loginCheck == '-1') {
-                  //   if (context.mounted) {
-                  //     showFailDialog(context);
-                  //   }
-                  // } else {
-                  //   if (context.mounted) {
-                  //     if (switchValue == true) {
-                  //       _setAutoLogin(loginCheck!);
-                  //     } else {
-                  //       _delAutoLogin();
-                  //     }
-                  //     context.go('/homepage');
-                  //   }
-                  // }
                   try {
                     UserCredential credential =
                         await firebaseAuth.signInWithEmailAndPassword(

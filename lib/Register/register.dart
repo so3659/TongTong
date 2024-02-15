@@ -1,20 +1,7 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tongtong/Register/login.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-// final GoRouter _goroute = GoRouter(
-//   routes: <RouteBase>[
-//     GoRoute(path: '/login', builder: (context, state) => const Login())
-//   ],
-// );
-
-// void main() {
-//   runApp(const Register());
-// }
 
 class Register extends StatelessWidget {
   const Register({super.key});
@@ -42,24 +29,17 @@ class Agg extends StatefulWidget {
 class AggState extends State<Agg> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  // final TextEditingController classNumController = TextEditingController();
-  // final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController passwordConfirmController =
       TextEditingController();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  // final TextEditingController userNameController = TextEditingController();
   String? _classNum, _name, _id, _password, _passwordConfirm, _userName;
 
   @override
   void dispose() {
-    // classNumController.dispose();
-    // nameController.dispose();
-    // idController.dispose();
     passwordController.dispose();
     passwordConfirmController.dispose();
-    // userNameController.dispose();
     super.dispose();
   }
 
@@ -84,52 +64,6 @@ class AggState extends State<Agg> {
                                     AssetImage('assets/images/tong_logo.png')),
                           ),
                           const SizedBox(height: 30.0),
-                          // SizedBox(
-                          //   width: 350,
-                          //   child: TextFormField(
-                          //     controller: classNumController,
-                          //     textAlign: TextAlign.center,
-                          //     decoration: const InputDecoration(
-                          //       hintText: '학번',
-                          //       hintStyle: TextStyle(color: Colors.black),
-                          //     ),
-                          //     autovalidateMode: AutovalidateMode.always,
-                          //     onSaved: (value) {
-                          //       setState(() {
-                          //         _classNum = value as String;
-                          //       });
-                          //     },
-                          //     validator: (value) {
-                          //       if (value == null || value.isEmpty) {
-                          //         return '학번을 입력해주세요';
-                          //       }
-                          //       return null;
-                          //     },
-                          //   ),
-                          // ),
-                          // SizedBox(
-                          //   width: 350,
-                          //   child: TextFormField(
-                          //     controller: nameController,
-                          //     textAlign: TextAlign.center,
-                          //     decoration: const InputDecoration(
-                          //       hintText: '이름',
-                          //       hintStyle: TextStyle(color: Colors.black),
-                          //     ),
-                          //     autovalidateMode: AutovalidateMode.always,
-                          //     onSaved: (value) {
-                          //       setState(() {
-                          //         _name = value as String;
-                          //       });
-                          //     },
-                          //     validator: (value) {
-                          //       if (value == null || value.isEmpty) {
-                          //         return '이름을 입력해주세요';
-                          //       }
-                          //       return null;
-                          //     },
-                          //   ),
-                          // ),
                           SizedBox(
                             width: 350,
                             child: TextFormField(
@@ -202,29 +136,6 @@ class AggState extends State<Agg> {
                               },
                             ),
                           ),
-                          // SizedBox(
-                          //   width: 350,
-                          //   child: TextFormField(
-                          //     controller: userNameController,
-                          //     textAlign: TextAlign.center,
-                          //     decoration: const InputDecoration(
-                          //       hintText: '닉네임',
-                          //       hintStyle: TextStyle(color: Colors.black),
-                          //     ),
-                          //     autovalidateMode: AutovalidateMode.always,
-                          //     onSaved: (value) {
-                          //       setState(() {
-                          //         _userName = value as String;
-                          //       });
-                          //     },
-                          //     validator: (value) {
-                          //       if (value == null || value.isEmpty) {
-                          //         return '닉네임을 입력해주세요';
-                          //       }
-                          //       return null;
-                          //     },
-                          //   ),
-                          // ),
                           const SizedBox(
                             height: 10,
                           ),
@@ -235,30 +146,6 @@ class AggState extends State<Agg> {
                               backgroundColor: Colors.white,
                               onPressed: () async {
                                 if (formKey.currentState!.validate()) {
-                                  // formKey.currentState!.save();
-                                  // final idCheck = await confirmIdCheck(_id!);
-                                  // final userNameCheck =
-                                  //     await confirmUserNameCheck(_userName!);
-                                  // if (idCheck != '0') {
-                                  //   if (context.mounted) {
-                                  //     showIdDuplicateDialog(context);
-                                  //   }
-                                  // } else if (userNameCheck != '0') {
-                                  //   if (context.mounted) {
-                                  //     showUserNameDuplicateDialog(context);
-                                  //   }
-                                  // } else {
-                                  //   if (context.mounted) {
-                                  //     showSuccessDialog(context);
-                                  //     context.pop();
-                                  //   }
-                                  //   // insertMember(
-                                  //   //     // classNumController.text,
-                                  //   //     // nameController.text,
-                                  //   //     emailController.text,
-                                  //   //     passwordController.text
-                                  //   //     // userNameController.text
-                                  //   //     );
                                   try {
                                     UserCredential credential =
                                         await _firebaseAuth

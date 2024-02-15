@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tongtong/community/postMainPage.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:go_router/go_router.dart';
 import 'package:get/get.dart';
 
 class Mainpage extends StatefulWidget {
@@ -113,7 +112,8 @@ class MainpageState extends State<Mainpage> {
                                 // onPressed: () async {
                                 //   // context.push('/memo');
                                 // },
-                                onPressed: () => Get.to(() => MyMemoPage()),
+                                onPressed: () =>
+                                    Get.to(() => const MyMemoPage()),
 
                                 child: const Column(
                                     mainAxisAlignment:
