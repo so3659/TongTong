@@ -50,12 +50,6 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // return MaterialApp(
-    //   debugShowCheckedModeBanner: false,
-    //   theme: ThemeData(
-    //     fontFamily: 'SunflowerMedium',
-    //   ),
-    //   home:
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text('통통')),
@@ -143,42 +137,6 @@ class HomePageState extends State<HomePage> {
     );
   }
 }
-
-// Widget _createDrawer() {
-//   return Drawer(
-//     child: Column(
-//       children: [
-//         const SizedBox(
-//           height: 200,
-//         ),
-//         Container(
-//             width: 200,
-//             height: 200,
-//             decoration: const BoxDecoration(
-//               image: DecorationImage(
-//                 image: AssetImage('assets/images/tong_logo.png'),
-//                 fit: BoxFit.cover,
-//               ),
-//             )),
-//         Container(
-//             width: 200,
-//             height: 100,
-//             decoration: const BoxDecoration(
-//               image: DecorationImage(
-//                 image: AssetImage('assets/images/tong_logo_name.png'),
-//                 fit: BoxFit.cover,
-//               ),
-//             )),
-//         Expanded(
-//             child: Align(
-//           alignment: Alignment.bottomCenter,
-//           child: TextButton('로그아웃',
-//           onPressed: (){GoRouter.of(context).go('/login');},),
-//         ))
-//       ],
-//     ),
-//   );
-// }
 
 Widget _createFolderInDrawer(String folderName) {
   return Container(

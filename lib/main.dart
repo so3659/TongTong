@@ -45,7 +45,7 @@ final GoRouter _goroute = GoRouter(
     ),
     GoRoute(
       path: '/memo',
-      builder: (context, state) => const MyMemoPage(),
+      builder: (context, state) => MyMemoPage(),
     ),
     GoRoute(
       path: '/mainpage',
