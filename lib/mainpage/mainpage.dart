@@ -113,8 +113,7 @@ class MainpageState extends State<Mainpage> {
                                 // onPressed: () async {
                                 //   // context.push('/memo');
                                 // },
-                                onPressed: () =>
-                                    Get.to(() => const MyMemoPage()),
+                                onPressed: () => Get.to(() => MyMemoPage()),
 
                                 child: const Column(
                                     mainAxisAlignment:
