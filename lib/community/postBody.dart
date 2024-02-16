@@ -1,15 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class FeedPageBody extends StatelessWidget {
   const FeedPageBody({
     super.key,
+    required this.uid,
     required this.content,
+    this.photoUrl,
+    required this.dateTime,
   });
 
+  final String uid;
   final String content;
+  final String? photoUrl;
+  final Timestamp dateTime;
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +50,7 @@ class FeedPageBody extends StatelessWidget {
                     Container(
                       margin: const EdgeInsets.only(right: 5),
                       child: Text(
-                        // memoInfo[0]['userName'],
-                        '이름',
+                        uid,
                         style: GoogleFonts.mulish(
                           fontSize: 16,
                           fontWeight: FontWeight.w800,
@@ -53,11 +60,7 @@ class FeedPageBody extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      // "@${timeago.format(
-                      //   DateTime.parse(memoInfo[0]['createDate']),
-                      //   locale: "en_short",
-                      // )}",
-                      '시간',
+                      timeago.format(dateTime.toDate(), locale: "en_short"),
                       style:
                           GoogleFonts.mulish(fontSize: 12, color: Colors.grey),
                     )

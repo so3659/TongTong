@@ -4,6 +4,10 @@ import 'dart:io';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
 import 'dart:math';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MakePost extends StatefulWidget {
   const MakePost({super.key});
@@ -15,6 +19,9 @@ class MakePost extends StatefulWidget {
 class MakePostState extends State<MakePost> {
   final TextEditingController contentController = TextEditingController();
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
+  final String? _uid = FirebaseAuth.instance.currentUser!.email;
+  bool _isUpload = false;
+  Map<String, String>? _images;
 
   final String _chars =
       'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
@@ -23,19 +30,61 @@ class MakePostState extends State<MakePost> {
   String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
       length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
-  @override
-  void dispose() {
-    contentController.dispose();
-    super.dispose();
-  }
-
-  void _onImageIconSelected(File file) {
+  Future<Map<String, String>> _imagePickerToUpload() async {
     setState(() {
-      _image = file;
+      _isUpload = true;
     });
+    if (Platform.isIOS) {
+      await Permission.photosAddOnly.request();
+    }
+    final String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
+    ImagePicker picker = ImagePicker();
+    XFile? images = await picker.pickImage(source: ImageSource.gallery);
+    if (images != null) {
+      String imageRef = "posts/${_uid}_$dateTime";
+      File file = File(images.path);
+      await FirebaseStorage.instance.ref(imageRef).putFile(file);
+      final String urlString =
+          await FirebaseStorage.instance.ref(imageRef).getDownloadURL();
+      return {
+        "image": urlString,
+        "path": imageRef,
+      };
+    } else {
+      return {
+        "image": "",
+        "path": "",
+      };
+    }
   }
 
-  File? _image;
+  Future<void> _toFirestore(
+      Map<String, String>? images, String postKey, String contents) async {
+    try {
+      DocumentReference<Map<String, dynamic>> reference =
+          FirebaseFirestore.instance.collection("Posts").doc(postKey);
+      if (images != null) {
+        await reference.set({
+          "uid": _uid,
+          "contents": contents,
+          "image": images["image"].toString(),
+          "path": images["path"].toString(),
+          "dateTime": Timestamp.now(),
+        });
+      } else if (images == null) {
+        await reference.set({
+          "uid": _uid,
+          "contents": contents,
+          "image": null,
+          "path": null,
+          "dateTime": Timestamp.now(),
+        });
+      }
+    } on FirebaseException catch (error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error.message ?? "")));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +103,7 @@ class MakePostState extends State<MakePost> {
               String content = contentController.text;
               String postKey = getRandomString(16);
 
-              fireStore.collection('Posts').doc(postKey).set({
-                "contents": content,
-              });
+              _toFirestore(_images, postKey, content);
               Navigator.of(context, rootNavigator: true).pop();
             },
             icon: const Icon(Icons.send),
@@ -91,7 +138,9 @@ class MakePostState extends State<MakePost> {
                 child: Row(
                   children: <Widget>[
                     IconButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          _images = await _imagePickerToUpload();
+                        },
                         icon: customIcon(context,
                             icon: AppIcon.image,
                             isTwitterIcon: true,
@@ -108,5 +157,11 @@ class MakePostState extends State<MakePost> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    contentController.dispose();
+    super.dispose();
   }
 }

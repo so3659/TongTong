@@ -91,8 +91,8 @@ class MyMemoState extends State<MyMemoPage> {
     // 새로고침을 통해 가장 최신 데이터를 가져오되, 기존 데이터는 유지합니다.
     QuerySnapshot newSnapshot = await fireStore
         .collection("Posts")
-        // .orderBy('timestamp', descending: true) // timestamp 필드를 기준으로 내림차순 정렬 가정
-        .startAfter([firstDocument?['timestamp']])
+        .orderBy('dateTime', descending: true) // timestamp 필드를 기준으로 내림차순 정렬 가정
+        .startAfter([firstDocument?['dateTime']])
         .limit(10)
         .get();
 
@@ -124,9 +124,27 @@ class MyMemoState extends State<MyMemoPage> {
                         : Container();
                   }
                   var doc = _documents[index];
-                  return Column(
-                    children: [FeedPageBody(content: doc['contents'])],
-                  );
+                  if (doc['image'] != null) {
+                    return Column(
+                      children: [
+                        FeedPageBody(
+                            uid: doc['uid'],
+                            content: doc['contents'],
+                            photoUrl: doc['image'],
+                            dateTime: doc['dateTime'])
+                      ],
+                    );
+                  } else if (doc['image'] == null) {
+                    return Column(
+                      children: [
+                        FeedPageBody(
+                            uid: doc['uid'],
+                            content: doc['contents'],
+                            dateTime: doc['dateTime'])
+                      ],
+                    );
+                  }
+                  return null;
                 },
               ),
       ),
