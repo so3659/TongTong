@@ -14,139 +14,116 @@ class MyMemoPage extends StatefulWidget {
 
 class MyMemoState extends State<MyMemoPage> {
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
-  List<DocumentSnapshot> _documents = [];
+  final List<DocumentSnapshot> _documents = [];
   final ScrollController _scrollController = ScrollController();
   bool _isFetchingMore = false;
   bool _hasMoreData = true;
   DocumentSnapshot? _lastDocument;
+  late Future<QuerySnapshot> postsFuture;
 
   @override
   void initState() {
     super.initState();
-    _loadInitialData();
-    _scrollController.addListener(_loadMoreDataIfNeeded);
+    // 스크롤 이벤트 리스너를 추가합니다.
+    _scrollController.addListener(_onScroll);
   }
 
-  Future<void> _loadInitialData() async {
-    QuerySnapshot snapshot =
-        await fireStore.collection("Posts").limit(10).get();
-    if (snapshot.docs.isEmpty) {
-      _hasMoreData = false; // 더 이상 로드할 데이터가 없음
-    } else {
-      _documents = snapshot.docs;
-      _lastDocument = _documents.last;
-    }
-    setState(() {}); // 상태 업데이트하여 UI 갱신
-  }
-
-  void _loadMoreDataIfNeeded() {
+  // 스크롤 리스너 메서드
+  void _onScroll() {
     if (_scrollController.position.pixels >=
             _scrollController.position.maxScrollExtent &&
-        !_isFetchingMore &&
-        _hasMoreData) {
+        !_isFetchingMore) {
+      // 스크롤이 최하단에 도달하면 추가 데이터 로드를 시도합니다.
       _loadMoreData();
     }
   }
 
   Future<void> _loadMoreData() async {
-    if (_isFetchingMore || !_hasMoreData) return;
+    // 로딩 상태 확인
+    if (_isFetchingMore) return;
 
+    // 로딩 상태를 true로 설정하여 로딩 인디케이터를 표시합니다.
     setState(() {
       _isFetchingMore = true;
     });
 
-    QuerySnapshot snapshot;
-    // 마지막 문서가 있다면, 그 문서 이후의 데이터를 로드합니다.
-    if (_lastDocument != null) {
-      snapshot = await fireStore
-          .collection("Posts")
-          .startAfterDocument(_lastDocument!)
-          .limit(10)
-          .get();
-    } else {
-      // _lastDocument가 null이라면, 초기 데이터 로드를 의미합니다.
-      snapshot = await fireStore.collection("Posts").limit(10).get();
-    }
-
-    // 새로운 데이터가 있으면, 기존 데이터 리스트에 추가합니다.
-    if (snapshot.docs.isNotEmpty) {
-      _lastDocument = snapshot.docs.last;
-      _documents.addAll(snapshot.docs);
-      _hasMoreData =
-          snapshot.docs.length == 10; // 10개 미만이 로드되면 더 이상 데이터가 없는 것으로 간주
-    } else {
-      _hasMoreData = false;
-    }
-
-    setState(() {
-      _isFetchingMore = false;
-    });
-  }
-
-  Future<void> refreshPosts() async {
-    // 새로고침 로직. 기존 데이터를 유지하고 싶다면 이 부분을 수정합니다.
-    DocumentSnapshot? firstDocument =
-        _documents.isNotEmpty ? _documents.first : null;
-
-    // 새로고침을 통해 가장 최신 데이터를 가져오되, 기존 데이터는 유지합니다.
-    QuerySnapshot newSnapshot = await fireStore
+    // 마지막 문서 다음의 데이터를 로드합니다.
+    QuerySnapshot snapshot = await fireStore
         .collection("Posts")
-        .orderBy('dateTime', descending: true) // timestamp 필드를 기준으로 내림차순 정렬 가정
-        .startAfter([firstDocument?['dateTime']])
+        .startAfterDocument(_lastDocument!)
         .limit(10)
         .get();
 
-    // 새로운 데이터를 기존 데이터 앞에 추가합니다.
-    if (newSnapshot.docs.isNotEmpty) {
+    // 새로운 데이터가 있으면 리스트에 추가합니다.
+    if (snapshot.docs.isNotEmpty) {
+      _lastDocument = snapshot.docs.last;
       setState(() {
-        _documents.insertAll(0, newSnapshot.docs);
+        _documents.addAll(snapshot.docs);
+        _isFetchingMore = false; // 로딩 상태를 false로 설정합니다.
+        _hasMoreData = snapshot.docs.length == 10; // 추가 데이터가 더 있는지 확인합니다.
+      });
+    } else {
+      setState(() {
+        _hasMoreData = false; // 더 이상 데이터가 없음을 설정합니다.
+        _isFetchingMore = false;
       });
     }
+  }
+
+  Future<void> _refreshPosts() async {
+    setState(() {
+      // Firestore에서 새 데이터를 가져오기 위한 새 Future를 할당합니다.
+      postsFuture = fireStore
+          .collection("Posts")
+          .orderBy("dateTime", descending: true)
+          .get();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: refreshPosts,
-        child: _documents.isEmpty && !_isFetchingMore
-            ? const Center(
-                child: Text("표시할 게시물이 없어요", style: TextStyle(fontSize: 20)))
-            : ListView.builder(
-                controller: _scrollController,
-                physics: const AlwaysScrollableScrollPhysics(),
-                itemCount: _documents.length + (_hasMoreData ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index == _documents.length) {
-                    // 마지막 아이템일 경우 로딩 인디케이터를 표시
-                    return _hasMoreData
-                        ? const Center(child: CircularProgressIndicator())
-                        : Container();
-                  }
-                  var doc = _documents[index];
-                  if (doc['image'] != null) {
-                    return Column(
-                      children: [
-                        FeedPageBody(
-                            uid: doc['uid'],
-                            content: doc['contents'],
-                            photoUrl: doc['image'],
-                            dateTime: doc['dateTime'])
-                      ],
-                    );
-                  } else if (doc['image'] == null) {
-                    return Column(
-                      children: [
-                        FeedPageBody(
-                            uid: doc['uid'],
-                            content: doc['contents'],
-                            dateTime: doc['dateTime'])
-                      ],
-                    );
-                  }
-                  return null;
-                },
-              ),
+        onRefresh: _refreshPosts,
+        child: StreamBuilder<QuerySnapshot>(
+          stream: fireStore.collection("Posts").snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return const Center(child: Text("오류가 발생했습니다."));
+            }
+            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return const Center(
+                  child: Text("표시할 게시물이 없어요", style: TextStyle(fontSize: 20)));
+            }
+
+            List<DocumentSnapshot> documents = snapshot.data!.docs;
+
+            return ListView.builder(
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: documents.length,
+              itemBuilder: (context, index) {
+                var doc = documents[index];
+                if (doc['image'] != null) {
+                  return FeedPageBody(
+                      uid: doc['uid'],
+                      content: doc['contents'],
+                      photoUrl: doc['image'],
+                      dateTime: doc['dateTime']);
+                } else if (doc['image'] == null) {
+                  return FeedPageBody(
+                      uid: doc['uid'],
+                      content: doc['contents'],
+                      dateTime: doc['dateTime']);
+                }
+                return null;
+              },
+            );
+          },
+        ),
       ),
       floatingActionButton: _floatingActionButton(context),
     );
@@ -154,6 +131,7 @@ class MyMemoState extends State<MyMemoPage> {
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll); // 리스너를 제거합니다.
     _scrollController.dispose();
     super.dispose();
   }

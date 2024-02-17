@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tongtong/Register/login.dart';
 import 'package:tongtong/Register/register.dart';
 import 'package:tongtong/community/makePost.dart';
-import 'package:tongtong/community/postListProvider.dart';
-import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tongtong/community/postMainPage.dart';
 import 'package:tongtong/mainpage/homepage.dart';
@@ -17,12 +15,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => MemoUpdator()),
-      ],
-      child: const MyApp(),
-    ),
+    const MyApp(),
   );
 }
 
@@ -30,8 +23,7 @@ final GoRouter _goroute = GoRouter(
   routes: <RouteBase>[
     GoRoute(
       path: '/',
-      pageBuilder: (context, state) =>
-          const MaterialPage<void>(child: TokenCheck()),
+      pageBuilder: (context, state) => const MaterialPage<void>(child: Login()),
     ),
     GoRoute(
       path: '/register',
@@ -45,7 +37,7 @@ final GoRouter _goroute = GoRouter(
     ),
     GoRoute(
       path: '/memo',
-      builder: (context, state) => MyMemoPage(),
+      builder: (context, state) => const MyMemoPage(),
     ),
     GoRoute(
       path: '/mainpage',
