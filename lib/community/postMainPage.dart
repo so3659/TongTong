@@ -86,7 +86,10 @@ class MyMemoState extends State<MyMemoPage> {
       body: RefreshIndicator(
         onRefresh: _refreshPosts,
         child: StreamBuilder<QuerySnapshot>(
-          stream: fireStore.collection("Posts").snapshots(),
+          stream: fireStore
+              .collection("Posts")
+              .orderBy("dateTime", descending: true)
+              .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
