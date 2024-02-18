@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:tongtong/community/makePost.dart';
 import 'package:tongtong/community/postBody.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
 
@@ -13,119 +14,71 @@ class MyMemoPage extends StatefulWidget {
 }
 
 class MyMemoState extends State<MyMemoPage> {
-  FirebaseFirestore fireStore = FirebaseFirestore.instance;
-  final List<DocumentSnapshot> _documents = [];
-  final ScrollController _scrollController = ScrollController();
-  bool _isFetchingMore = false;
-  bool _hasMoreData = true;
-  DocumentSnapshot? _lastDocument;
-  late Future<QuerySnapshot> postsFuture;
+  final FirebaseFirestore fireStore = FirebaseFirestore.instance;
+  static const _pageSize = 10;
+  final PagingController<DocumentSnapshot?, DocumentSnapshot>
+      _pagingController = PagingController(firstPageKey: null);
 
   @override
   void initState() {
     super.initState();
-    // 스크롤 이벤트 리스너를 추가합니다.
-    _scrollController.addListener(_onScroll);
-  }
-
-  // 스크롤 리스너 메서드
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent &&
-        !_isFetchingMore) {
-      // 스크롤이 최하단에 도달하면 추가 데이터 로드를 시도합니다.
-      _loadMoreData();
-    }
-  }
-
-  Future<void> _loadMoreData() async {
-    // 로딩 상태 확인
-    if (_isFetchingMore) return;
-
-    // 로딩 상태를 true로 설정하여 로딩 인디케이터를 표시합니다.
-    setState(() {
-      _isFetchingMore = true;
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
     });
-
-    // 마지막 문서 다음의 데이터를 로드합니다.
-    QuerySnapshot snapshot = await fireStore
-        .collection("Posts")
-        .startAfterDocument(_lastDocument!)
-        .limit(10)
-        .get();
-
-    // 새로운 데이터가 있으면 리스트에 추가합니다.
-    if (snapshot.docs.isNotEmpty) {
-      _lastDocument = snapshot.docs.last;
-      setState(() {
-        _documents.addAll(snapshot.docs);
-        _isFetchingMore = false; // 로딩 상태를 false로 설정합니다.
-        _hasMoreData = snapshot.docs.length == 10; // 추가 데이터가 더 있는지 확인합니다.
-      });
-    } else {
-      setState(() {
-        _hasMoreData = false; // 더 이상 데이터가 없음을 설정합니다.
-        _isFetchingMore = false;
-      });
-    }
   }
 
-  Future<void> _refreshPosts() async {
-    setState(() {
-      // Firestore에서 새 데이터를 가져오기 위한 새 Future를 할당합니다.
-      postsFuture = fireStore
+  Future<void> _fetchPage(DocumentSnapshot? lastDocument) async {
+    try {
+      final query = fireStore
           .collection("Posts")
           .orderBy("dateTime", descending: true)
-          .get();
-    });
+          .limit(_pageSize);
+
+      final snapshot = lastDocument == null
+          ? await query.get()
+          : await query.startAfterDocument(lastDocument).get();
+
+      await Future.delayed(const Duration(seconds: 1));
+      print('1');
+
+      final isLastPage = snapshot.docs.length < _pageSize;
+      if (isLastPage) {
+        _pagingController.appendLastPage(snapshot.docs);
+      } else {
+        final nextPageKey = snapshot.docs.last;
+        _pagingController.appendPage(snapshot.docs, nextPageKey);
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: _refreshPosts,
-        child: StreamBuilder<QuerySnapshot>(
-          stream: fireStore
-              .collection("Posts")
-              .orderBy("dateTime", descending: true)
-              .snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError) {
-              return const Center(child: Text("오류가 발생했습니다."));
-            }
-            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return const Center(
-                  child: Text("표시할 게시물이 없어요", style: TextStyle(fontSize: 20)));
-            }
-
-            List<DocumentSnapshot> documents = snapshot.data!.docs;
-
-            return ListView.builder(
-              controller: _scrollController,
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: documents.length,
-              itemBuilder: (context, index) {
-                var doc = documents[index];
-                if (doc['image'] != null) {
-                  return FeedPageBody(
-                      uid: doc['uid'],
-                      content: doc['contents'],
-                      photoUrl: doc['image'],
-                      dateTime: doc['dateTime']);
-                } else if (doc['image'] == null) {
-                  return FeedPageBody(
-                      uid: doc['uid'],
-                      content: doc['contents'],
-                      dateTime: doc['dateTime']);
-                }
-                return null;
-              },
-            );
-          },
+        onRefresh: () => Future.sync(
+          () => _pagingController.refresh(),
+        ),
+        child: PagedListView<DocumentSnapshot?, DocumentSnapshot>(
+          pagingController: _pagingController,
+          builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot>(
+            itemBuilder: (context, item, index) {
+              return (item['image'] != null
+                  ? (FeedPageBody(
+                      uid: item['uid'],
+                      content: item['contents'],
+                      photoUrl: item['image'],
+                      dateTime: item['dateTime']))
+                  : (FeedPageBody(
+                      uid: item['uid'],
+                      content: item['contents'],
+                      dateTime: item['dateTime'])));
+            },
+            noItemsFoundIndicatorBuilder: (context) => const Center(
+              child: Text("표시할 게시물이 없어요", style: TextStyle(fontSize: 20)),
+            ),
+          ),
         ),
       ),
       floatingActionButton: _floatingActionButton(context),
@@ -134,8 +87,7 @@ class MyMemoState extends State<MyMemoPage> {
 
   @override
   void dispose() {
-    _scrollController.removeListener(_onScroll); // 리스너를 제거합니다.
-    _scrollController.dispose();
+    _pagingController.dispose();
     super.dispose();
   }
 }
