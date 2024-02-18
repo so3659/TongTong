@@ -39,7 +39,6 @@ class MyMemoState extends State<MyMemoPage> {
           : await query.startAfterDocument(lastDocument).get();
 
       await Future.delayed(const Duration(seconds: 1));
-      print('1');
 
       final isLastPage = snapshot.docs.length < _pageSize;
       if (isLastPage) {
@@ -68,7 +67,7 @@ class MyMemoState extends State<MyMemoPage> {
                   ? (FeedPageBody(
                       uid: item['uid'],
                       content: item['contents'],
-                      photoUrl: item['image'],
+                      photoUrls: item['image'],
                       dateTime: item['dateTime']))
                   : (FeedPageBody(
                       uid: item['uid'],

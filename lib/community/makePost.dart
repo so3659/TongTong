@@ -21,7 +21,7 @@ class MakePostState extends State<MakePost> {
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
   final String? _uid = FirebaseAuth.instance.currentUser!.email;
   bool _isUpload = false;
-  Map<String, String>? _images;
+  List<Map<String, String>>? _images;
 
   final String _chars =
       'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
@@ -30,45 +30,54 @@ class MakePostState extends State<MakePost> {
   String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
       length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
-  Future<Map<String, String>> _imagePickerToUpload() async {
+  Future<List<Map<String, String>>> _imagePickerToUpload() async {
     setState(() {
       _isUpload = true;
     });
     if (Platform.isIOS) {
       await Permission.photosAddOnly.request();
     }
-    final String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
     ImagePicker picker = ImagePicker();
-    XFile? images = await picker.pickImage(source: ImageSource.gallery);
-    if (images != null) {
-      String imageRef = "posts/${_uid}_$dateTime";
-      File file = File(images.path);
+    List<XFile>? images = await picker.pickMultiImage(); // 여러 이미지 선택
+    List<Map<String, String>> uploadedImages = [];
+    for (XFile image in images) {
+      String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
+      String imageRef = "posts/$_uid/$dateTime";
+      File file = File(image.path);
       await FirebaseStorage.instance.ref(imageRef).putFile(file);
       final String urlString =
           await FirebaseStorage.instance.ref(imageRef).getDownloadURL();
-      return {
+      uploadedImages.add({
         "image": urlString,
         "path": imageRef,
-      };
-    } else {
-      return {
-        "image": "",
-        "path": "",
-      };
+      });
     }
+    return uploadedImages;
   }
 
-  Future<void> _toFirestore(
-      Map<String, String>? images, String postKey, String contents) async {
+  Future<void> _toFirestore(List<Map<String, String>>? images, String postKey,
+      String contents) async {
     try {
       DocumentReference<Map<String, dynamic>> reference =
           FirebaseFirestore.instance.collection("Posts").doc(postKey);
+      List<String>? imageUrls = images
+          ?.map((imageMap) => imageMap["image"])
+          .where((url) => url != null) // null이 아닌 URL만 필터링
+          .map((url) => url!) // null 체크 후, String?에서 String으로 변환
+          .toList();
+
+      List<String>? imagePaths = images
+          ?.map((imageMap) => imageMap["path"])
+          .where((url) => url != null) // null이 아닌 경로만 필터링
+          .map((url) => url!) // null 체크 후, String?에서 String으로 변환
+          .toList();
+
       if (images != null) {
         await reference.set({
           "uid": _uid,
           "contents": contents,
-          "image": images["image"].toString(),
-          "path": images["path"].toString(),
+          "image": imageUrls,
+          "path": imagePaths,
           "dateTime": Timestamp.now(),
         });
       } else if (images == null) {
@@ -102,6 +111,7 @@ class MakePostState extends State<MakePost> {
             onPressed: () async {
               String content = contentController.text;
               String postKey = getRandomString(16);
+              print(_images);
 
               _toFirestore(_images, postKey, content);
               Navigator.of(context, rootNavigator: true).pop();
