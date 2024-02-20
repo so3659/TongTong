@@ -136,11 +136,11 @@ class _FeedPageBodyState extends State<FeedPageBody> {
                       height: 33, // 적절한 높이 값 설정
                       width: double.infinity, // 너비를 화면 너비와 동일하게 설정
                       child: Align(
-                          alignment: Alignment.centerRight, // Row를 오른쪽에 정렬
+                          alignment: Alignment.centerLeft, // Row를 오른쪽에 정렬
                           child: Stack(
                             children: [
                               Positioned(
-                                right: 0, // 아이콘과 텍스트 간의 간격을 조정
+                                left: -15, // 아이콘과 텍스트 간의 간격을 조정
                                 top: 3, // 아이콘의 상단 위치 조정
                                 child: IconButton(
                                   onPressed: () {},
@@ -156,19 +156,18 @@ class _FeedPageBodyState extends State<FeedPageBody> {
                                 ),
                               ),
                               const Positioned(
-                                right: 5, // 아이콘 오른쪽에 텍스트를 위치시키기 위해 조정
+                                left: 18, // 아이콘 오른쪽에 텍스트를 위치시키기 위해 조정
                                 top: 15, // 아이콘과 텍스트의 세로 위치를 맞추기 위해 조정
                                 child: Text(
                                   '0',
                                   style: TextStyle(
-                                    fontWeight: FontWeight.bold,
                                     color: Colors.grey,
                                     fontSize: 14,
                                   ),
                                 ),
                               ),
                               Positioned(
-                                right: 35, // 아이콘과 텍스트 간의 간격을 조정
+                                left: 25, // 아이콘과 텍스트 간의 간격을 조정
                                 top: 3, // 다음 아이콘의 시작점을 조정하세요
                                 child: IconButton(
                                   onPressed: () {},
@@ -184,12 +183,11 @@ class _FeedPageBodyState extends State<FeedPageBody> {
                                 ),
                               ),
                               const Positioned(
-                                right: 40, // 아이콘과 텍스트 간의 간격을 조정
+                                left: 58, // 아이콘과 텍스트 간의 간격을 조정
                                 top: 15, // 아이콘과 텍스트의 세로 위치를 맞추기 위해 조정하세요
                                 child: Text(
                                   '0',
                                   style: TextStyle(
-                                    fontWeight: FontWeight.bold,
                                     color: Colors.grey,
                                     fontSize: 14,
                                   ),
