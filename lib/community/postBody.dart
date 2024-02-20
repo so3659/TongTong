@@ -131,61 +131,72 @@ class _FeedPageBodyState extends State<FeedPageBody> {
                       ),
                     ]),
                   Container(
-                    color: Colors.transparent,
-                    padding: const EdgeInsets.only(bottom: 0, top: 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Expanded(
-                            child: Row(children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: customIcon(
-                              context,
-                              icon: AppIcon.reply,
-                              isTwitterIcon: true,
-                              size: 15,
-                              iconColor: Colors.grey,
-                            ),
-                          ),
-                          customText(
-                            '0',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey,
-                              fontSize: 10,
-                            ),
-                            context: context,
-                          ),
-                        ])),
-                        Expanded(
-                            child: Row(children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: customIcon(
-                              context,
-                              icon: AppIcon.heartEmpty,
-                              isTwitterIcon: true,
-                              size: 15,
-                              iconColor: Colors.grey,
-                            ),
-                          ),
-                          customText(
-                            '0',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey,
-                              fontSize: 10,
-                            ),
-                            context: context,
-                          ),
-                        ])),
-                      ],
-                    ),
-                  )
+                      color: Colors.transparent,
+                      // Stack의 크기를 제한하는 Container
+                      height: 33, // 적절한 높이 값 설정
+                      width: double.infinity, // 너비를 화면 너비와 동일하게 설정
+                      child: Align(
+                          alignment: Alignment.centerRight, // Row를 오른쪽에 정렬
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                right: 0, // 아이콘과 텍스트 간의 간격을 조정
+                                top: 3, // 아이콘의 상단 위치 조정
+                                child: IconButton(
+                                  onPressed: () {},
+                                  icon: customIcon(
+                                    context,
+                                    icon: AppIcon.heartEmpty,
+                                    isTwitterIcon: true,
+                                    size: 15,
+                                    iconColor: Colors.grey,
+                                  ),
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(),
+                                ),
+                              ),
+                              const Positioned(
+                                right: 5, // 아이콘 오른쪽에 텍스트를 위치시키기 위해 조정
+                                top: 15, // 아이콘과 텍스트의 세로 위치를 맞추기 위해 조정
+                                child: Text(
+                                  '0',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                right: 35, // 아이콘과 텍스트 간의 간격을 조정
+                                top: 3, // 다음 아이콘의 시작점을 조정하세요
+                                child: IconButton(
+                                  onPressed: () {},
+                                  icon: customIcon(
+                                    context,
+                                    icon: AppIcon.reply,
+                                    isTwitterIcon: true,
+                                    size: 15,
+                                    iconColor: Colors.grey,
+                                  ),
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(),
+                                ),
+                              ),
+                              const Positioned(
+                                right: 40, // 아이콘과 텍스트 간의 간격을 조정
+                                top: 15, // 아이콘과 텍스트의 세로 위치를 맞추기 위해 조정하세요
+                                child: Text(
+                                  '0',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )))
                 ],
               ))
             ],
