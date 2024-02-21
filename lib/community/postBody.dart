@@ -25,6 +25,7 @@ class FeedPageBody extends StatefulWidget {
 
 class _FeedPageBodyState extends State<FeedPageBody> {
   int currentPage = 0;
+  bool isPressed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -143,14 +144,26 @@ class _FeedPageBodyState extends State<FeedPageBody> {
                                 left: -15, // 아이콘과 텍스트 간의 간격을 조정
                                 top: 3, // 아이콘의 상단 위치 조정
                                 child: IconButton(
-                                  onPressed: () {},
-                                  icon: customIcon(
-                                    context,
-                                    icon: AppIcon.heartEmpty,
-                                    isTwitterIcon: true,
-                                    size: 15,
-                                    iconColor: Colors.grey,
-                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      isPressed = !isPressed;
+                                    });
+                                  },
+                                  icon: isPressed
+                                      ? customIcon(
+                                          context,
+                                          icon: AppIcon.heartFill,
+                                          isTwitterIcon: true,
+                                          size: 15,
+                                          iconColor: TwitterColor.ceriseRed,
+                                        )
+                                      : customIcon(
+                                          context,
+                                          icon: AppIcon.heartEmpty,
+                                          isTwitterIcon: true,
+                                          size: 15,
+                                          iconColor: Colors.grey,
+                                        ),
                                   padding: EdgeInsets.zero,
                                   constraints: const BoxConstraints(),
                                 ),
