@@ -71,7 +71,6 @@ class MyMemoState extends State<MyMemoPage> {
                       content: item['contents'],
                       photoUrls: item['image'],
                       dateTime: item['dateTime'],
-                      likes: item['likes'],
                       documentId: item.id,
                       currentUserId: currentUserId,
                     ))
@@ -79,7 +78,6 @@ class MyMemoState extends State<MyMemoPage> {
                       uid: item['uid'],
                       content: item['contents'],
                       dateTime: item['dateTime'],
-                      likes: item['likes'],
                       documentId: item.id,
                       currentUserId: currentUserId,
                     )));

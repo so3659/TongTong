@@ -12,7 +12,6 @@ class FeedPageBody extends StatefulWidget {
     required this.content,
     this.photoUrls, // 이제 photoUrls는 리스트입니다.
     required this.dateTime,
-    required this.likes,
     required this.documentId,
     required this.currentUserId,
   });
@@ -21,7 +20,6 @@ class FeedPageBody extends StatefulWidget {
   final String content;
   final List<dynamic>? photoUrls; // 변경: 리스트 타입으로
   final Timestamp dateTime;
-  final int likes;
   final String documentId;
   final String currentUserId;
 

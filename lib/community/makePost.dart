@@ -79,7 +79,6 @@ class MakePostState extends State<MakePost> {
           "image": imageUrls,
           "path": imagePaths,
           "dateTime": Timestamp.now(),
-          "likes": 0,
           'likedBy': [],
         });
       } else if (images == null) {
@@ -89,7 +88,6 @@ class MakePostState extends State<MakePost> {
           "image": null,
           "path": null,
           "dateTime": Timestamp.now(),
-          "likes": 0,
           'likedBy': [],
         });
       }
