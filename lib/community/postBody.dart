@@ -12,12 +12,18 @@ class FeedPageBody extends StatefulWidget {
     required this.content,
     this.photoUrls, // 이제 photoUrls는 리스트입니다.
     required this.dateTime,
+    required this.likes,
+    required this.documentId,
+    required this.currentUserId,
   });
 
   final String uid;
   final String content;
   final List<dynamic>? photoUrls; // 변경: 리스트 타입으로
   final Timestamp dateTime;
+  final int likes;
+  final String documentId;
+  final String currentUserId;
 
   @override
   State<FeedPageBody> createState() => _FeedPageBodyState();
@@ -26,6 +32,58 @@ class FeedPageBody extends StatefulWidget {
 class _FeedPageBodyState extends State<FeedPageBody> {
   int currentPage = 0;
   bool isPressed = false;
+  int likesCount = 0;
+  bool isLiked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Firestore에서 실시간 데이터를 구독합니다.
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(widget.documentId)
+        .snapshots()
+        .listen((snapshot) {
+      if (snapshot.exists && snapshot.data()!.containsKey('likedBy')) {
+        setState(() {
+          isLiked = snapshot.data()!['likedBy'].contains(widget.currentUserId);
+          likesCount = snapshot.data()!['likedBy'].length;
+        });
+      }
+    });
+  }
+
+  Future<void> handleLikeButtonPressed() async {
+    DocumentReference postRef =
+        FirebaseFirestore.instance.collection('Posts').doc(widget.documentId);
+    FirebaseFirestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot snapshot = await transaction.get(postRef);
+      if (!snapshot.exists) {
+        throw Exception("Post does not exist!");
+      }
+
+      Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+      List<dynamic> likedBy = List.from(data['likedBy'] ?? []);
+
+      if (isLiked) {
+        // 좋아요 취소 로직
+        likedBy.remove(widget.currentUserId);
+      } else {
+        // 좋아요 로직
+        likedBy.add(widget.currentUserId);
+      }
+
+      transaction.update(postRef, {
+        'likedBy': likedBy,
+      });
+
+      setState(() {
+        isLiked = !isLiked;
+        likesCount = likedBy.length;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -148,6 +206,7 @@ class _FeedPageBodyState extends State<FeedPageBody> {
                                     setState(() {
                                       isPressed = !isPressed;
                                     });
+                                    handleLikeButtonPressed();
                                   },
                                   icon: isPressed
                                       ? customIcon(
@@ -168,12 +227,12 @@ class _FeedPageBodyState extends State<FeedPageBody> {
                                   constraints: const BoxConstraints(),
                                 ),
                               ),
-                              const Positioned(
+                              Positioned(
                                 left: 18, // 아이콘 오른쪽에 텍스트를 위치시키기 위해 조정
                                 top: 15, // 아이콘과 텍스트의 세로 위치를 맞추기 위해 조정
                                 child: Text(
-                                  '0',
-                                  style: TextStyle(
+                                  likesCount.toString(),
+                                  style: const TextStyle(
                                     color: Colors.grey,
                                     fontSize: 14,
                                   ),

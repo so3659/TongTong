@@ -5,6 +5,7 @@ import 'package:tongtong/community/makePost.dart';
 import 'package:tongtong/community/postBody.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MyMemoPage extends StatefulWidget {
   const MyMemoPage({super.key});
@@ -15,6 +16,7 @@ class MyMemoPage extends StatefulWidget {
 
 class MyMemoState extends State<MyMemoPage> {
   final FirebaseFirestore fireStore = FirebaseFirestore.instance;
+  final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
   static const _pageSize = 10;
   final PagingController<DocumentSnapshot?, DocumentSnapshot>
       _pagingController = PagingController(firstPageKey: null);
@@ -68,11 +70,19 @@ class MyMemoState extends State<MyMemoPage> {
                       uid: item['uid'],
                       content: item['contents'],
                       photoUrls: item['image'],
-                      dateTime: item['dateTime']))
+                      dateTime: item['dateTime'],
+                      likes: item['likes'],
+                      documentId: item.id,
+                      currentUserId: currentUserId,
+                    ))
                   : (FeedPageBody(
                       uid: item['uid'],
                       content: item['contents'],
-                      dateTime: item['dateTime'])));
+                      dateTime: item['dateTime'],
+                      likes: item['likes'],
+                      documentId: item.id,
+                      currentUserId: currentUserId,
+                    )));
             },
             noItemsFoundIndicatorBuilder: (context) => const Center(
               child: Text("표시할 게시물이 없어요", style: TextStyle(fontSize: 20)),
