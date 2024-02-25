@@ -96,8 +96,8 @@ class _FeedPageBodyState extends State<FeedPageBody> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 40,
-                height: 40,
+                width: 55,
+                height: 55,
                 margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
                 child: GestureDetector(
                   onTap: () {},
@@ -119,11 +119,10 @@ class _FeedPageBodyState extends State<FeedPageBody> {
                         margin: const EdgeInsets.only(right: 5),
                         child: Text(
                           widget.uid,
-                          style: GoogleFonts.mulish(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.black,
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(color: Colors.black87),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),

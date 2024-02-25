@@ -6,6 +6,7 @@ import 'package:tongtong/community/postMainPage.dart';
 import 'package:tongtong/community/postBody.dart';
 import 'package:tongtong/info/infoMain.dart';
 import 'package:tongtong/mainpage/mainpage.dart';
+import 'package:tongtong/community/comment_list.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -26,10 +27,7 @@ class HomePageState extends State<HomePage> {
     Mainpage(),
     InfoMain(),
     Calendar(),
-    Text(
-      'Friends',
-      style: optionStyle,
-    ),
+    CommentList(),
     Text(
       'My',
       style: optionStyle,
