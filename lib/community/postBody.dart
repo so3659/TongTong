@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class FeedPageBody extends StatefulWidget {
@@ -239,7 +240,8 @@ class _FeedPageBodyState extends State<FeedPageBody> {
                                 left: 25, // 아이콘과 텍스트 간의 간격을 조정
                                 top: 3, // 다음 아이콘의 시작점을 조정하세요
                                 child: IconButton(
-                                  onPressed: () {},
+                                  onPressed: () =>
+                                      context.push('/postDetailPage'),
                                   icon: customIcon(
                                     context,
                                     icon: AppIcon.reply,

@@ -7,6 +7,7 @@ import 'package:tongtong/community/postMainPage.dart';
 import 'package:tongtong/mainpage/homepage.dart';
 import 'package:tongtong/mainpage/mainpage.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:tongtong/community/postDetailPage.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -50,6 +51,10 @@ final GoRouter _goroute = GoRouter(
     GoRoute(
       path: '/makePost',
       builder: (context, state) => const MakePost(),
+    ),
+    GoRoute(
+      path: '/postDetailPage',
+      builder: (context, state) => const PostDetailPage(),
     ),
   ],
   debugLogDiagnostics: true,

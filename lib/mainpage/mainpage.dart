@@ -107,14 +107,10 @@ class MainpageState extends State<Mainpage> {
                               height: 170,
                               width: 170,
                               child: FloatingActionButton(
-                                heroTag: 'chat',
+                                heroTag: 'community',
                                 backgroundColor: Colors.white,
-                                // onPressed: () async {
-                                //   // context.push('/memo');
-                                // },
                                 onPressed: () =>
                                     Get.to(() => const MyMemoPage()),
-
                                 child: const Column(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,

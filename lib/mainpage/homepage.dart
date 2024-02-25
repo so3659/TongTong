@@ -6,7 +6,7 @@ import 'package:tongtong/community/postMainPage.dart';
 import 'package:tongtong/community/postBody.dart';
 import 'package:tongtong/info/infoMain.dart';
 import 'package:tongtong/mainpage/mainpage.dart';
-import 'package:tongtong/community/comment_list.dart';
+import 'package:tongtong/community/comment_list_body.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
