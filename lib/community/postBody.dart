@@ -240,8 +240,13 @@ class _FeedPageBodyState extends State<FeedPageBody> {
                                 left: 25, // 아이콘과 텍스트 간의 간격을 조정
                                 top: 3, // 다음 아이콘의 시작점을 조정하세요
                                 child: IconButton(
-                                  onPressed: () =>
-                                      context.push('/postDetailPage'),
+                                  onPressed: () {
+                                    var documentId = documentId;
+                                    context.goNamed('/postDetailPage',
+                                        queryParameters: {
+                                          'documentId': documentId
+                                        });
+                                  },
                                   icon: customIcon(
                                     context,
                                     icon: AppIcon.reply,

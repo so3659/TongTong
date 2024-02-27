@@ -54,7 +54,9 @@ final GoRouter _goroute = GoRouter(
     ),
     GoRoute(
       path: '/postDetailPage',
-      builder: (context, state) => const PostDetailPage(),
+      name: 'postDetailPage',
+      builder: (context, state) =>
+          PostDetailPage(documentId: state.uri.queryParameters['documentId']),
     ),
   ],
   debugLogDiagnostics: true,
