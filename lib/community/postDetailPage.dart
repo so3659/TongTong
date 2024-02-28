@@ -4,7 +4,7 @@ import 'package:tongtong/theme/theme.dart';
 class PostDetailPage extends StatefulWidget {
   String? documentId;
 
-  PostDetailPage({super.key, super.documentId});
+  PostDetailPage({super.key, this.documentId});
 
   @override
   State<PostDetailPage> createState() => PostDetailPageState();
