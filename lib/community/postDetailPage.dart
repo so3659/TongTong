@@ -33,6 +33,7 @@ class PostDetailPageState extends State<PostDetailPage> {
             delegate: SliverChildListDelegate(
               [
                 Container(),
+                const Text('ㅅㄷㄴㅅ'),
                 Container(
                   height: 6,
                   width: double.infinity,

@@ -241,7 +241,7 @@ class _FeedPageBodyState extends State<FeedPageBody> {
                                 top: 3, // 다음 아이콘의 시작점을 조정하세요
                                 child: IconButton(
                                   onPressed: () {
-                                    context.goNamed('/postDetailPage',
+                                    context.pushNamed('postDetailPage',
                                         queryParameters: {
                                           'documentId': widget.documentId
                                         });
