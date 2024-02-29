@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/parameter/postParameter.dart';
-import 'package:tongtong/community/postBody.dart';
+import 'package:tongtong/community/postDetailPageBody.dart';
 
 class PostDetailPage extends StatefulWidget {
   final FeedPost post;
@@ -38,7 +38,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                   width: double.infinity,
                 ),
                 widget.post.photoUrls != null
-                    ? FeedPageBody(
+                    ? FeedDetailPageBody(
                         uid: widget.post.uid,
                         content: widget.post.content,
                         photoUrls: widget.post.photoUrls,
@@ -46,7 +46,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                         documentId: widget.post.documentId,
                         currentUserId: widget.post.currentUserId,
                       )
-                    : FeedPageBody(
+                    : FeedDetailPageBody(
                         uid: widget.post.uid,
                         content: widget.post.content,
                         dateTime: widget.post.dateTime,
