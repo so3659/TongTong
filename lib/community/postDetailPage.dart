@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tongtong/theme/theme.dart';
+import 'package:tongtong/parameter/postParameter.dart';
+import 'package:tongtong/community/postBody.dart';
 
 class PostDetailPage extends StatefulWidget {
-  String? documentId;
-
-  PostDetailPage({super.key, this.documentId});
+  final FeedPost post;
+  const PostDetailPage({super.key, required this.post});
 
   @override
   State<PostDetailPage> createState() => PostDetailPageState();
@@ -32,8 +33,26 @@ class PostDetailPageState extends State<PostDetailPage> {
           SliverList(
             delegate: SliverChildListDelegate(
               [
-                Container(),
-                const Text('ㅅㄷㄴㅅ'),
+                const SizedBox(
+                  height: 6,
+                  width: double.infinity,
+                ),
+                widget.post.photoUrls != null
+                    ? FeedPageBody(
+                        uid: widget.post.uid,
+                        content: widget.post.content,
+                        photoUrls: widget.post.photoUrls,
+                        dateTime: widget.post.dateTime,
+                        documentId: widget.post.documentId,
+                        currentUserId: widget.post.currentUserId,
+                      )
+                    : FeedPageBody(
+                        uid: widget.post.uid,
+                        content: widget.post.content,
+                        dateTime: widget.post.dateTime,
+                        documentId: widget.post.documentId,
+                        currentUserId: widget.post.currentUserId,
+                      ),
                 Container(
                   height: 6,
                   width: double.infinity,

@@ -5,6 +5,7 @@ import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:tongtong/parameter/postParameter.dart';
 
 class FeedPageBody extends StatefulWidget {
   const FeedPageBody({
@@ -33,6 +34,7 @@ class _FeedPageBodyState extends State<FeedPageBody> {
   bool isPressed = false;
   int likesCount = 0;
   bool isLiked = false;
+  late FeedPost post;
 
   @override
   void initState() {
@@ -50,6 +52,28 @@ class _FeedPageBodyState extends State<FeedPageBody> {
         });
       }
     });
+    postParameter();
+  }
+
+  void postParameter() {
+    if (widget.photoUrls != null) {
+      post = FeedPost(
+        uid: widget.uid,
+        content: widget.content,
+        photoUrls: widget.photoUrls,
+        dateTime: widget.dateTime,
+        documentId: widget.documentId,
+        currentUserId: widget.currentUserId,
+      );
+    } else {
+      post = FeedPost(
+        uid: widget.uid,
+        content: widget.content,
+        dateTime: widget.dateTime,
+        documentId: widget.documentId,
+        currentUserId: widget.currentUserId,
+      );
+    }
   }
 
   Future<void> handleLikeButtonPressed() async {
@@ -241,10 +265,8 @@ class _FeedPageBodyState extends State<FeedPageBody> {
                                 top: 3, // 다음 아이콘의 시작점을 조정하세요
                                 child: IconButton(
                                   onPressed: () {
-                                    context.pushNamed('postDetailPage',
-                                        queryParameters: {
-                                          'documentId': widget.documentId
-                                        });
+                                    GoRouter.of(context)
+                                        .push('/postDetailPage', extra: post);
                                   },
                                   icon: customIcon(
                                     context,

@@ -9,6 +9,7 @@ import 'package:tongtong/mainpage/mainpage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:tongtong/community/postDetailPage.dart';
 import 'firebase_options.dart';
+import 'package:tongtong/parameter/postParameter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,8 +56,12 @@ final GoRouter _goroute = GoRouter(
     GoRoute(
       path: '/postDetailPage',
       name: 'postDetailPage',
-      builder: (context, state) =>
-          PostDetailPage(documentId: state.uri.queryParameters['documentId']),
+      builder: (context, state) {
+        // extra에서 post 객체를 추출합니다.
+        final post = state.extra as FeedPost;
+        // 추출한 post 객체를 PostDetailPage 생성자에 전달합니다.
+        return PostDetailPage(post: post);
+      },
     ),
   ],
   debugLogDiagnostics: true,

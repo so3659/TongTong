@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FeedPost {
   final String uid;
   final String content;
-  final List<String>? photoUrls;
+  final List<dynamic>? photoUrls;
   final Timestamp dateTime;
   final String documentId;
   final String currentUserId;
