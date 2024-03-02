@@ -10,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:tongtong/community/postDetailPage.dart';
 import 'firebase_options.dart';
 import 'package:tongtong/parameter/postParameter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +18,9 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(
-    const MyApp(),
+    const ProviderScope(
+      child: MyApp(),
+    ),
   );
 }
 

@@ -6,8 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:tongtong/parameter/postParameter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FeedPageBody extends StatefulWidget {
+final isPressedProvider = StateProvider<bool>((ref) => false);
+
+class FeedPageBody extends ConsumerStatefulWidget {
   const FeedPageBody({
     super.key,
     required this.uid,
@@ -26,10 +29,10 @@ class FeedPageBody extends StatefulWidget {
   final String currentUserId;
 
   @override
-  State<FeedPageBody> createState() => _FeedPageBodyState();
+  _FeedPageBodyState createState() => _FeedPageBodyState();
 }
 
-class _FeedPageBodyState extends State<FeedPageBody> {
+class _FeedPageBodyState extends ConsumerState<FeedPageBody> {
   int currentPage = 0;
   bool isPressed = false;
   int likesCount = 0;
@@ -111,6 +114,7 @@ class _FeedPageBodyState extends State<FeedPageBody> {
   @override
   Widget build(BuildContext context) {
     final bool hasImages = widget.photoUrls?.isNotEmpty ?? false;
+    final isPressed = ref.watch(isPressedProvider);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -230,12 +234,6 @@ class _FeedPageBodyState extends State<FeedPageBody> {
                                     left: -15, // 아이콘과 텍스트 간의 간격을 조정
                                     top: 3, // 아이콘의 상단 위치 조정
                                     child: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          isPressed = !isPressed;
-                                        });
-                                        handleLikeButtonPressed();
-                                      },
                                       icon: isPressed
                                           ? customIcon(
                                               context,
@@ -253,6 +251,12 @@ class _FeedPageBodyState extends State<FeedPageBody> {
                                             ),
                                       padding: EdgeInsets.zero,
                                       constraints: const BoxConstraints(),
+                                      onPressed: () {
+                                        handleLikeButtonPressed();
+                                        ref
+                                            .read(isPressedProvider.notifier)
+                                            .state = !isPressed;
+                                      },
                                     ),
                                   ),
                                   Positioned(
