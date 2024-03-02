@@ -8,8 +8,6 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:tongtong/parameter/postParameter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final isPressedProvider = StateProvider<bool>((ref) => false);
-
 class FeedPageBody extends ConsumerStatefulWidget {
   const FeedPageBody({
     super.key,
@@ -49,13 +47,15 @@ class _FeedPageBodyState extends ConsumerState<FeedPageBody> {
         .snapshots()
         .listen((snapshot) {
       if (snapshot.exists && snapshot.data()!.containsKey('likedBy')) {
+        List<dynamic> likedBy = snapshot.data()!['likedBy'] as List<dynamic>;
         setState(() {
-          isLiked = snapshot.data()!['likedBy'].contains(widget.currentUserId);
-          likesCount = snapshot.data()!['likedBy'].length;
+          isLiked = likedBy.contains(widget.currentUserId);
+          likesCount = likedBy.length; // 서버의 likedBy 배열 길이로 likesCount를 설정
         });
       }
     });
     postParameter();
+    isPressed = isLiked;
   }
 
   void postParameter() {
@@ -107,6 +107,7 @@ class _FeedPageBodyState extends ConsumerState<FeedPageBody> {
       setState(() {
         isLiked = !isLiked;
         likesCount = likedBy.length;
+        isPressed = isLiked;
       });
     });
   }
@@ -114,7 +115,6 @@ class _FeedPageBodyState extends ConsumerState<FeedPageBody> {
   @override
   Widget build(BuildContext context) {
     final bool hasImages = widget.photoUrls?.isNotEmpty ?? false;
-    final isPressed = ref.watch(isPressedProvider);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -253,9 +253,11 @@ class _FeedPageBodyState extends ConsumerState<FeedPageBody> {
                                       constraints: const BoxConstraints(),
                                       onPressed: () {
                                         handleLikeButtonPressed();
-                                        ref
-                                            .read(isPressedProvider.notifier)
-                                            .state = !isPressed;
+                                        // setState(() {
+                                        //   isPressed = isLiked;
+                                        //   print(isLiked);
+                                        //   print(isPressed);
+                                        // });
                                       },
                                     ),
                                   ),
