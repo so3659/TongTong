@@ -6,9 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:tongtong/parameter/postParameter.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FeedPageBody extends ConsumerStatefulWidget {
+class FeedPageBody extends StatefulWidget {
   const FeedPageBody({
     super.key,
     required this.uid,
@@ -27,10 +26,10 @@ class FeedPageBody extends ConsumerStatefulWidget {
   final String currentUserId;
 
   @override
-  _FeedPageBodyState createState() => _FeedPageBodyState();
+  FeedPageBodyState createState() => FeedPageBodyState();
 }
 
-class _FeedPageBodyState extends ConsumerState<FeedPageBody> {
+class FeedPageBodyState extends State<FeedPageBody> {
   int currentPage = 0;
   bool isPressed = false;
   int likesCount = 0;
@@ -253,11 +252,6 @@ class _FeedPageBodyState extends ConsumerState<FeedPageBody> {
                                       constraints: const BoxConstraints(),
                                       onPressed: () {
                                         handleLikeButtonPressed();
-                                        // setState(() {
-                                        //   isPressed = isLiked;
-                                        //   print(isLiked);
-                                        //   print(isPressed);
-                                        // });
                                       },
                                     ),
                                   ),
