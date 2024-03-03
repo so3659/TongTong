@@ -125,8 +125,8 @@ class MakePostState extends State<MakePost> {
       ),
       body: Stack(
         children: <Widget>[
-          const SingleChildScrollView(),
-          Expanded(
+          Positioned.fill(
+              child: SingleChildScrollView(
             child: TextField(
               decoration: const InputDecoration(
                 hintText: 'What\'s happening?',
@@ -137,7 +137,7 @@ class MakePostState extends State<MakePost> {
               maxLines: null,
               controller: contentController,
             ),
-          ),
+          )),
           Align(
               alignment: Alignment.bottomCenter,
               child: Container(
