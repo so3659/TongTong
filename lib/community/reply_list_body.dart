@@ -1,30 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-final focusManagerProvider = ChangeNotifierProvider((ref) => FocusManager());
-
-class FocusManager extends ChangeNotifier {
-  bool _shouldFocusCommentField = false;
-
-  bool get shouldFocusCommentField => _shouldFocusCommentField;
-
-  void requestFocusToCommentField() {
-    _shouldFocusCommentField = true;
-    notifyListeners();
-  }
-
-  void resetFocusRequest() {
-    _shouldFocusCommentField = false;
-    notifyListeners();
-  }
-}
-
-class CommentList extends ConsumerStatefulWidget {
+class CommentList extends StatefulWidget {
   const CommentList({
     super.key,
     required this.uid,
@@ -41,37 +22,13 @@ class CommentList extends ConsumerStatefulWidget {
   final String commentId;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => CommentListState();
+  State<CommentList> createState() => CommentListState();
 }
 
-class CommentListState extends ConsumerState<CommentList> {
+class CommentListState extends State<CommentList> {
   @override
   void initState() {
     super.initState();
-  }
-
-  void showReplyDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: const Text('대댓글을 작성하시겠습니까?'),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                ref.read(focusManagerProvider).requestFocusToCommentField();
-                Navigator.of(context).pop();
-              },
-              child: const Text('네'),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('아니요'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   Future<void> handleLikeButtonPressed(
@@ -213,35 +170,6 @@ class CommentListState extends ConsumerState<CommentList> {
                                       child: Text(
                                         likesCount.toString(),
                                         style: const TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      left: 25, // 아이콘과 텍스트 간의 간격을 조정
-                                      top: 3, // 다음 아이콘의 시작점을 조정하세요
-                                      child: IconButton(
-                                        onPressed: () {
-                                          showReplyDialog();
-                                        },
-                                        icon: customIcon(
-                                          context,
-                                          icon: AppIcon.reply,
-                                          isTwitterIcon: true,
-                                          size: 15,
-                                          iconColor: Colors.grey,
-                                        ),
-                                        padding: EdgeInsets.zero,
-                                        constraints: const BoxConstraints(),
-                                      ),
-                                    ),
-                                    const Positioned(
-                                      left: 58, // 아이콘과 텍스트 간의 간격을 조정
-                                      top: 15, // 아이콘과 텍스트의 세로 위치를 맞추기 위해 조정하세요
-                                      child: Text(
-                                        '0',
-                                        style: TextStyle(
                                           color: Colors.grey,
                                           fontSize: 14,
                                         ),
