@@ -1,101 +1,223 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:tongtong/theme/theme.dart';
+import 'package:tongtong/widgets/customWidgets.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class CommentList extends StatefulWidget {
-  const CommentList({super.key});
+  const CommentList({
+    super.key,
+    required this.uid,
+    required this.content,
+    required this.dateTime,
+    required this.postId,
+    required this.commentId,
+  });
+
+  final String uid;
+  final String content;
+  final Timestamp dateTime;
+  final String postId;
+  final String commentId;
 
   @override
   State<CommentList> createState() => CommentListState();
 }
 
 class CommentListState extends State<CommentList> {
-  bool myComments = true;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> handleLikeButtonPressed(
+      List<dynamic> currentLikedBy, bool isCurrentlyLiked) async {
+    DocumentReference postRef = FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(widget.postId)
+        .collection('comments')
+        .doc(widget.commentId);
+    List<dynamic> updatedLikedBy = List.from(currentLikedBy);
+
+    if (isCurrentlyLiked) {
+      updatedLikedBy.remove(widget.uid); // 좋아요 취소
+    } else {
+      updatedLikedBy.add(widget.uid); // 좋아요 추가
+    }
+
+    await postRef.update({'likedBy': updatedLikedBy}); // Firestore 업데이트
+    // UI 업데이트는 StreamBuilder가 담당하므로 여기서는 setState() 호출 없음
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // SizedBox(width: comment.level * defaultPadding * 2),
-        const SizedBox(width: 9.0 * 2),
-        Padding(
-          padding: const EdgeInsets.only(top: 2),
-          child: CircleAvatar(
-            backgroundColor: Theme.of(context).cardColor,
-            backgroundImage: const AssetImage('assets/images/tong_logo.png'),
-            radius: 35,
-          ),
-        ),
-        const SizedBox(width: 9.0),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('Posts')
+          .doc(widget.postId)
+          .collection('comments')
+          .doc(widget.commentId)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return const Center(child: Text("오류가 발생했습니다."));
+        }
+
+        if (snapshot.hasData && snapshot.data!.data() != null) {
+          var data = snapshot.data!.data() as Map<String, dynamic>;
+          List<dynamic> likedBy = data['likedBy'] ?? [];
+          bool isLiked = likedBy.contains(widget.uid);
+          int likesCount = likedBy.length;
+          return Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                '이름  •  시간',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall!
-                    .copyWith(color: Colors.black54),
-              ),
-              const SizedBox(height: 3),
-              Text(
-                'Comment',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall!
-                    .copyWith(color: Colors.black87),
-              ),
-              Row(
-                children: [
-                  const Text('좋아요'),
-                  // if (comment.likedCount > 0)
-                  //   const SizedBox(width: 9.0)
-                  // else
-                  const SizedBox(),
-                  if (myComments == true)
-                    const SizedBox()
-                  else
-                    Row(
-                      children: [
-                        InkWell(
-                          highlightColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                          onTap: null,
-                          child: Padding(
-                            padding: const EdgeInsets.all(9.0),
-                            child: Icon(
-                              Icons.more_horiz,
-                              color: Colors.grey[400],
-                              size: 17,
-                            ),
-                          ),
+              Container(
+                margin: const EdgeInsets.only(right: 20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(width: 9.0 * 2),
+                    Container(
+                      width: 55,
+                      height: 55,
+                      margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
+                      child: GestureDetector(
+                        onTap: () {},
+                        child: CircleAvatar(
+                          backgroundColor: Theme.of(context).cardColor,
+                          backgroundImage:
+                              const AssetImage('assets/images/tong_logo.png'),
+                          radius: 20,
                         ),
-                        const SizedBox(width: 9.0),
-                        // 1레벨 댓글만 가능
-                        // if (comment.level > 0)
-                        //   const SizedBox()
-                        // else
-                        InkWell(
-                          highlightColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                          onTap: null,
-                          child: Padding(
-                            padding: const EdgeInsets.all(9.0),
-                            child: Icon(
-                              Icons.reply,
-                              color: Colors.grey[400],
-                              size: 17,
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                ],
-              )
+                    Flexible(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(right: 5),
+                              child: Text(
+                                widget.uid,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(color: Colors.black87),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            Text(
+                              timeago.format(widget.dateTime.toDate(),
+                                  locale: "en_short"),
+                              style: GoogleFonts.mulish(
+                                  fontSize: 12, color: Colors.grey),
+                            )
+                          ],
+                        ),
+                        Text(
+                          widget.content,
+                          style: GoogleFonts.mulish(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w300),
+                        ),
+                        Container(
+                            color: Colors.transparent,
+                            // Stack의 크기를 제한하는 Container
+                            height: 33, // 적절한 높이 값 설정
+                            width: double.infinity, // 너비를 화면 너비와 동일하게 설정
+                            child: Align(
+                                alignment: Alignment.centerLeft, // Row를 오른쪽에 정렬
+                                child: Stack(
+                                  children: [
+                                    Positioned(
+                                      left: -15, // 아이콘과 텍스트 간의 간격을 조정
+                                      top: 3, // 아이콘의 상단 위치 조정
+                                      child: IconButton(
+                                        icon: isLiked
+                                            ? customIcon(
+                                                context,
+                                                icon: AppIcon.heartFill,
+                                                isTwitterIcon: true,
+                                                size: 15,
+                                                iconColor:
+                                                    TwitterColor.ceriseRed,
+                                              )
+                                            : customIcon(
+                                                context,
+                                                icon: AppIcon.heartEmpty,
+                                                isTwitterIcon: true,
+                                                size: 15,
+                                                iconColor: Colors.grey,
+                                              ),
+                                        padding: EdgeInsets.zero,
+                                        constraints: const BoxConstraints(),
+                                        onPressed: () {
+                                          handleLikeButtonPressed(
+                                              likedBy, isLiked);
+                                        },
+                                      ),
+                                    ),
+                                    Positioned(
+                                      left: 18, // 아이콘 오른쪽에 텍스트를 위치시키기 위해 조정
+                                      top: 15, // 아이콘과 텍스트의 세로 위치를 맞추기 위해 조정
+                                      child: Text(
+                                        likesCount.toString(),
+                                        style: const TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      left: 25, // 아이콘과 텍스트 간의 간격을 조정
+                                      top: 3, // 다음 아이콘의 시작점을 조정하세요
+                                      child: IconButton(
+                                        onPressed: () {},
+                                        icon: customIcon(
+                                          context,
+                                          icon: AppIcon.reply,
+                                          isTwitterIcon: true,
+                                          size: 15,
+                                          iconColor: Colors.grey,
+                                        ),
+                                        padding: EdgeInsets.zero,
+                                        constraints: const BoxConstraints(),
+                                      ),
+                                    ),
+                                    const Positioned(
+                                      left: 58, // 아이콘과 텍스트 간의 간격을 조정
+                                      top: 15, // 아이콘과 텍스트의 세로 위치를 맞추기 위해 조정하세요
+                                      child: Text(
+                                        '0',
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )))
+                      ],
+                    ))
+                  ],
+                ),
+              ),
+              Divider(
+                color: Colors.grey[200],
+              ),
             ],
-          ),
-        ),
-      ],
+          );
+        } else {
+          return Container();
+        }
+      },
     );
   }
 }

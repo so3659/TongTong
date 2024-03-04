@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/parameter/postParameter.dart';
 import 'package:tongtong/community/postDetailPageBody.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:math';
+import 'package:tongtong/community/comment_list_body.dart';
 
 class PostDetailPage extends StatefulWidget {
   final FeedPost post;
@@ -12,8 +16,35 @@ class PostDetailPage extends StatefulWidget {
 }
 
 class PostDetailPageState extends State<PostDetailPage> {
+  final String _chars =
+      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+  final Random _rnd = Random();
+
+  String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+      length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+
+  Future<void> addComment(String postId, String content) async {
+    DocumentReference postRef =
+        FirebaseFirestore.instance.collection('Posts').doc(postId);
+
+    CollectionReference commentsRef = postRef.collection('comments');
+
+    String commentId = getRandomString(16); // Unique ID
+
+    await commentsRef.doc(commentId).set({
+      'uid': FirebaseAuth.instance.currentUser!.uid,
+      'content': content,
+      'dateTime': Timestamp.now(),
+      'subComments': [],
+      'postId': postId,
+      'commentId': commentId,
+      'likedBy': [],
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final TextEditingController contents = TextEditingController();
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
@@ -65,17 +96,62 @@ class PostDetailPageState extends State<PostDetailPage> {
                               documentId: widget.post.documentId,
                               currentUserId: widget.post.currentUserId,
                             ),
-                      Container(
-                        height: 6,
-                        width: double.infinity,
-                        color: TwitterColor.mystic,
-                      )
                     ],
                   ),
                 ),
                 SliverList(
-                  delegate: SliverChildListDelegate(
-                      [const Text('dfa'), const Text('dfa'), const Center()]),
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      return StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('Posts')
+                            .doc(widget.post.documentId)
+                            .collection('comments')
+                            .orderBy('dateTime', descending: false)
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                          if (snapshot.hasError) {
+                            return const Center(
+                                child: Text('댓글을 불러오는데 문제가 발생했습니다.'));
+                          }
+                          if (!snapshot.hasData ||
+                              snapshot.data!.docs.isEmpty) {
+                            return const Center(child: Text('댓글이 없습니다.'));
+                          }
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics:
+                                const NeverScrollableScrollPhysics(), // 스크롤 중첩 문제 방지
+                            itemCount:
+                                snapshot.data!.docs.length, // 리스트에 있는 항목의 수
+                            itemBuilder: (context, index) {
+                              // 각 항목을 어떻게 빌드할지 정의
+                              DocumentSnapshot document =
+                                  snapshot.data!.docs[index];
+                              Map<String, dynamic> comment =
+                                  document.data() as Map<String, dynamic>;
+
+                              return CommentList(
+                                  // 여기서 CommentList는 직접 정의한 위젯이어야 합니다.
+                                  uid: comment['uid'],
+                                  content: comment['content'],
+                                  dateTime: comment['dateTime'],
+                                  postId: comment['postId'],
+                                  commentId: comment['commentId']
+                                  // 여기에 댓글에 대댓글을 추가하는 UI를 구현할 수 있습니다.
+                                  );
+                            },
+                          );
+                        },
+                      );
+                    },
+                    childCount: 1,
+                  ),
                 ),
               ],
             ),
@@ -84,6 +160,7 @@ class PostDetailPageState extends State<PostDetailPage> {
             alignment: Alignment.bottomCenter,
             margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: TextFormField(
+              controller: contents,
               decoration: InputDecoration(
                 hintText: "댓글을 입력하세요",
                 hintStyle: const TextStyle(color: Colors.grey),
@@ -93,7 +170,11 @@ class PostDetailPageState extends State<PostDetailPage> {
                     gapPadding: 10,
                     borderSide: BorderSide(color: Colors.lightBlue[200]!)),
                 suffixIcon: IconButton(
-                  onPressed: () async {},
+                  onPressed: () async {
+                    String content = contents.text;
+                    await addComment(widget.post.documentId, content);
+                    contents.clear();
+                  },
                   icon: const Icon(Icons.send),
                   color: Colors.lightBlue[200],
                 ),

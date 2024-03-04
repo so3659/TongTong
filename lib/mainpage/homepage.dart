@@ -27,7 +27,10 @@ class HomePageState extends State<HomePage> {
     Mainpage(),
     InfoMain(),
     Calendar(),
-    CommentList(),
+    Text(
+      'My',
+      style: optionStyle,
+    ),
     Text(
       'My',
       style: optionStyle,
