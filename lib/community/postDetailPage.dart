@@ -6,6 +6,7 @@ import 'package:tongtong/community/postDetailPageBody.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math';
 import 'package:tongtong/community/comment_list_body.dart';
+import 'package:tongtong/community/reply_list_body.dart';
 
 class PostDetailPage extends ConsumerStatefulWidget {
   final FeedPost post;
@@ -20,35 +21,66 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
       'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
   final Random _rnd = Random();
   final FocusNode _focusNode = FocusNode();
+  String? _replyingToCommentId;
 
   String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
       length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
-  Future<void> addComment(String postId, String content) async {
+  Future<void> addComment(
+      String postId, String commentId, String content) async {
     DocumentReference postRef =
         FirebaseFirestore.instance.collection('Posts').doc(postId);
 
     CollectionReference commentsRef = postRef.collection('comments');
 
-    String commentId = getRandomString(16); // Unique ID
-
     await commentsRef.doc(commentId).set({
       'uid': FirebaseAuth.instance.currentUser!.uid,
       'content': content,
       'dateTime': Timestamp.now(),
-      'subComments': [],
       'postId': postId,
       'commentId': commentId,
       'likedBy': [],
     });
   }
 
+  Future<void> addReplyToComment(
+      String postId, String commentId, String replyContent) async {
+    DocumentReference commentRef = FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(widget.post.documentId) // 게시글 ID
+        .collection('comments')
+        .doc(commentId);
+
+    String replyId = getRandomString(16); // Unique ID
+
+    // 대댓글 추가 로직
+    await commentRef.collection('Replies').doc(replyId).set({
+      'uid': FirebaseAuth.instance.currentUser!.uid,
+      'content': replyContent,
+      'dateTime': Timestamp.now(),
+      'postId': postId,
+      'commentId': commentId,
+      'replyId': replyId,
+      'likedBy': [],
+    });
+
+    // UI 업데이트 등의 후속 처리
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, child) {
       final focusManager = ref.watch(focusManagerProvider);
+      final currentReplyingCommentId = ref.watch(replyProvider);
+
       final TextEditingController contents = TextEditingController();
+      String commentId = getRandomString(16); // Unique ID
+      void startReplyingToComment(String commentId) {
+        _replyingToCommentId = commentId; // 대댓글을 달 댓글의 ID를 저장
+      }
+
       if (focusManager.shouldFocusCommentField) {
+        startReplyingToComment(currentReplyingCommentId!);
         // 포커스 요청이 있으면 포커스를 주고 상태를 리셋
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _focusNode.requestFocus();
@@ -183,7 +215,15 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
                   suffixIcon: IconButton(
                     onPressed: () async {
                       String content = contents.text;
-                      await addComment(widget.post.documentId, content);
+                      if (_replyingToCommentId != null) {
+                        addReplyToComment(widget.post.documentId,
+                            _replyingToCommentId!, content);
+                        _replyingToCommentId = null; // 대댓글 추가 대상 초기화
+                      } else {
+                        await addComment(
+                            widget.post.documentId, commentId, content);
+                      }
+
                       contents.clear();
                     },
                     icon: const Icon(Icons.send),

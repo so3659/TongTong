@@ -5,14 +5,15 @@ import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class CommentList extends StatefulWidget {
-  const CommentList({
+class ReplyList extends StatefulWidget {
+  const ReplyList({
     super.key,
     required this.uid,
     required this.content,
     required this.dateTime,
     required this.postId,
     required this.commentId,
+    required this.replyId,
   });
 
   final String uid;
@@ -20,12 +21,13 @@ class CommentList extends StatefulWidget {
   final Timestamp dateTime;
   final String postId;
   final String commentId;
+  final String replyId;
 
   @override
-  State<CommentList> createState() => CommentListState();
+  State<ReplyList> createState() => ReplyListState();
 }
 
-class CommentListState extends State<CommentList> {
+class ReplyListState extends State<ReplyList> {
   @override
   void initState() {
     super.initState();
@@ -37,7 +39,9 @@ class CommentListState extends State<CommentList> {
         .collection('Posts')
         .doc(widget.postId)
         .collection('comments')
-        .doc(widget.commentId);
+        .doc(widget.commentId)
+        .collection('replies')
+        .doc(widget.replyId);
     List<dynamic> updatedLikedBy = List.from(currentLikedBy);
 
     if (isCurrentlyLiked) {
@@ -58,6 +62,8 @@ class CommentListState extends State<CommentList> {
           .doc(widget.postId)
           .collection('comments')
           .doc(widget.commentId)
+          .collection('replies')
+          .doc(widget.replyId)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -80,7 +86,7 @@ class CommentListState extends State<CommentList> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(width: 9.0 * 2),
+                    const SizedBox(width: 9.0 * 4),
                     Container(
                       width: 55,
                       height: 55,
