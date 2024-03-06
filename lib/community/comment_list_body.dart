@@ -288,44 +288,6 @@ class CommentListState extends ConsumerState<CommentList> {
           }
         },
       ),
-      StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('Posts')
-              .doc(widget.postId)
-              .collection('comments')
-              .doc(widget.commentId)
-              .collection('Replies')
-              .snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError) {
-              return const Center(child: Text('대댓글을 불러오는데 문제가 발생했습니다.'));
-            }
-            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return Container();
-            }
-            var replies = snapshot.data!.docs;
-
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: replies.length,
-              itemBuilder: (context, index) {
-                var reply = replies[index].data() as Map<String, dynamic>;
-                // 각 답글을 표시하는 UI 구성
-                return ReplyList(
-                  uid: reply['uid'],
-                  content: reply['content'],
-                  dateTime: reply['dateTime'],
-                  postId: reply['postId'],
-                  commentId: reply['commentId'],
-                  replyId: reply['replyId'],
-                );
-              },
-            );
-          })
     ]);
   }
 }

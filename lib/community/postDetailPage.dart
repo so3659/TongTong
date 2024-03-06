@@ -26,12 +26,12 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
   String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
       length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
-  Future<void> addComment(
-      String postId, String commentId, String content) async {
+  Future<void> addComment(String postId, String content) async {
     DocumentReference postRef =
         FirebaseFirestore.instance.collection('Posts').doc(postId);
 
     CollectionReference commentsRef = postRef.collection('comments');
+    String commentId = getRandomString(16);
 
     await commentsRef.doc(commentId).set({
       'uid': FirebaseAuth.instance.currentUser!.uid,
@@ -74,7 +74,6 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
       final currentReplyingCommentId = ref.watch(replyProvider);
 
       final TextEditingController contents = TextEditingController();
-      String commentId = getRandomString(16); // Unique ID
       void startReplyingToComment(String commentId) {
         _replyingToCommentId = commentId; // 대댓글을 달 댓글의 ID를 저장
       }
@@ -178,15 +177,69 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
                                 Map<String, dynamic> comment =
                                     document.data() as Map<String, dynamic>;
 
-                                return CommentList(
-                                    // 여기서 CommentList는 직접 정의한 위젯이어야 합니다.
-                                    uid: comment['uid'],
-                                    content: comment['content'],
-                                    dateTime: comment['dateTime'],
-                                    postId: comment['postId'],
-                                    commentId: comment['commentId']
-                                    // 여기에 댓글에 대댓글을 추가하는 UI를 구현할 수 있습니다.
-                                    );
+                                return Column(
+                                  children: [
+                                    CommentList(
+                                      // 댓글 정보를 사용하여 CommentList 위젯 생성
+                                      uid: comment['uid'],
+                                      content: comment['content'],
+                                      dateTime: comment['dateTime'],
+                                      postId: comment['postId'],
+                                      commentId: comment['commentId'],
+                                    ),
+                                    StreamBuilder<QuerySnapshot>(
+                                      // 대댓글 목록을 가져오는 스트림
+                                      stream: document.reference
+                                          .collection('Replies')
+                                          .orderBy('dateTime',
+                                              descending: false)
+                                          .snapshots(),
+                                      builder: (context, repliesSnapshot) {
+                                        if (repliesSnapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return const Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        }
+                                        if (repliesSnapshot.hasError) {
+                                          return const Center(
+                                              child: Text(
+                                                  '대댓글을 불러오는데 문제가 발생했습니다.'));
+                                        }
+                                        if (!repliesSnapshot.hasData ||
+                                            repliesSnapshot
+                                                .data!.docs.isEmpty) {
+                                          return Container(); // 대댓글이 없으면 비어 있는 컨테이너를 반환
+                                        }
+
+                                        // 대댓글 목록을 나타내는 위젯을 빌드합니다.
+                                        return ListView.builder(
+                                          physics:
+                                              const NeverScrollableScrollPhysics(), // 중첩 스크롤 방지
+                                          shrinkWrap: true, // 내부 컨텐츠에 맞춰 크기 조절
+                                          itemCount: repliesSnapshot
+                                              .data!.docs.length, // 대댓글의 수
+                                          itemBuilder: (context, replyIndex) {
+                                            DocumentSnapshot replyDoc =
+                                                repliesSnapshot
+                                                    .data!.docs[replyIndex];
+                                            Map<String, dynamic> reply =
+                                                replyDoc.data()
+                                                    as Map<String, dynamic>;
+                                            return ReplyList(
+                                              uid: reply['uid'],
+                                              content: reply['content'],
+                                              dateTime: reply['dateTime'],
+                                              postId: reply['postId'],
+                                              commentId: reply['commentId'],
+                                              replyId: reply['replyId'],
+                                            );
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                );
                               },
                             );
                           },
@@ -220,8 +273,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
                             _replyingToCommentId!, content);
                         _replyingToCommentId = null; // 대댓글 추가 대상 초기화
                       } else {
-                        await addComment(
-                            widget.post.documentId, commentId, content);
+                        await addComment(widget.post.documentId, content);
                       }
 
                       contents.clear();

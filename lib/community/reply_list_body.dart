@@ -40,7 +40,7 @@ class ReplyListState extends State<ReplyList> {
         .doc(widget.postId)
         .collection('comments')
         .doc(widget.commentId)
-        .collection('replies')
+        .collection('Replies')
         .doc(widget.replyId);
     List<dynamic> updatedLikedBy = List.from(currentLikedBy);
 
@@ -62,7 +62,7 @@ class ReplyListState extends State<ReplyList> {
           .doc(widget.postId)
           .collection('comments')
           .doc(widget.commentId)
-          .collection('replies')
+          .collection('Replies')
           .doc(widget.replyId)
           .snapshots(),
       builder: (context, snapshot) {
