@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tongtong/community/updatePost.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -184,8 +185,14 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
                                                             title: const Text(
                                                                 '수정'),
                                                             onTap: () {
-                                                              Navigator.pop(
-                                                                  context);
+                                                              Navigator.of(
+                                                                      context,
+                                                                      rootNavigator:
+                                                                          true)
+                                                                  .push(MaterialPageRoute(
+                                                                      builder:
+                                                                          (context) =>
+                                                                              const UpdatePost()));
                                                             },
                                                           ),
                                                           ListTile(
