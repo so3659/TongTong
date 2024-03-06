@@ -22,6 +22,7 @@ class MakePostState extends State<MakePost> {
   final String? _uid = FirebaseAuth.instance.currentUser!.email;
   bool _isUpload = false;
   List<Map<String, String>>? _images;
+  bool checkboxValue = false;
 
   final String _chars =
       'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
@@ -74,7 +75,7 @@ class MakePostState extends State<MakePost> {
 
       if (images != null) {
         await reference.set({
-          "uid": _uid,
+          "uid": checkboxValue ? '익명' : _uid,
           "contents": contents,
           "image": imageUrls,
           "path": imagePaths,
@@ -83,7 +84,7 @@ class MakePostState extends State<MakePost> {
         });
       } else if (images == null) {
         await reference.set({
-          "uid": _uid,
+          "uid": checkboxValue ? '익명' : _uid,
           "contents": contents,
           "image": null,
           "path": null,
@@ -163,6 +164,34 @@ class MakePostState extends State<MakePost> {
                             icon: AppIcon.camera,
                             isTwitterIcon: true,
                             iconColor: Colors.lightBlue[200])),
+                    const Spacer(),
+                    Row(
+                      children: [
+                        Checkbox(
+                          activeColor: Colors.lightBlue[200],
+                          value: checkboxValue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          side: BorderSide(
+                            color: Colors.lightBlue[200]!,
+                            width: 1,
+                          ),
+                          onChanged: (bool? value) {
+                            setState(() {
+                              checkboxValue = value!;
+                            });
+                          },
+                        ),
+                        Text(
+                          '익명',
+                          style: TextStyle(color: Colors.lightBlue[200]!),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        )
+                      ],
+                    )
                   ],
                 ),
               ))

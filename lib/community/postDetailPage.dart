@@ -22,6 +22,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
   final Random _rnd = Random();
   final FocusNode _focusNode = FocusNode();
   String? _replyingToCommentId;
+  bool checkboxValue = false;
 
   String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
       length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
@@ -34,7 +35,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
     String commentId = getRandomString(16);
 
     await commentsRef.doc(commentId).set({
-      'uid': FirebaseAuth.instance.currentUser!.uid,
+      "uid": checkboxValue ? '익명' : FirebaseAuth.instance.currentUser!.uid,
       'content': content,
       'dateTime': Timestamp.now(),
       'postId': postId,
@@ -55,7 +56,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
 
     // 대댓글 추가 로직
     await commentRef.collection('Replies').doc(replyId).set({
-      'uid': FirebaseAuth.instance.currentUser!.uid,
+      "uid": checkboxValue ? '익명' : FirebaseAuth.instance.currentUser!.uid,
       'content': replyContent,
       'dateTime': Timestamp.now(),
       'postId': postId,
@@ -162,7 +163,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
                             }
                             if (!snapshot.hasData ||
                                 snapshot.data!.docs.isEmpty) {
-                              return const Center(child: Text('댓글이 없습니다.'));
+                              return Container();
                             }
                             return ListView.builder(
                               shrinkWrap: true,
@@ -252,43 +253,84 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
               ),
             ),
             Container(
-              alignment: Alignment.bottomCenter,
-              margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-              child: TextFormField(
-                focusNode: _focusNode,
-                controller: contents,
-                decoration: InputDecoration(
-                  hintText: "댓글을 입력하세요",
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      gapPadding: 10,
-                      borderSide: BorderSide(color: Colors.lightBlue[200]!)),
-                  suffixIcon: IconButton(
-                    onPressed: () async {
-                      String content = contents.text;
-                      if (_replyingToCommentId != null) {
-                        addReplyToComment(widget.post.documentId,
-                            _replyingToCommentId!, content);
-                        _replyingToCommentId = null; // 대댓글 추가 대상 초기화
-                      } else {
-                        await addComment(widget.post.documentId, content);
-                      }
-
-                      contents.clear();
-                    },
-                    icon: const Icon(Icons.send),
-                    color: Colors.lightBlue[200],
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.lightBlue[200]!,
+                alignment: Alignment.bottomCenter,
+                margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                child: Row(
+                  children: <Widget>[
+                    Row(
+                      children: [
+                        Checkbox(
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          visualDensity: const VisualDensity(
+                            horizontal: VisualDensity.minimumDensity,
+                            vertical: VisualDensity.minimumDensity,
+                          ),
+                          activeColor: Colors.lightBlue[200],
+                          value: checkboxValue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          side: BorderSide(
+                            color: Colors.lightBlue[200]!,
+                            width: 1,
+                          ),
+                          onChanged: (bool? value) {
+                            setState(() {
+                              checkboxValue = value!;
+                            });
+                          },
+                        ),
+                        Text(
+                          '익명',
+                          style: TextStyle(color: Colors.lightBlue[200]!),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        )
+                      ],
                     ),
-                  ),
-                ),
-              ),
-            ),
+                    Expanded(
+                      child: TextFormField(
+                        focusNode: _focusNode,
+                        controller: contents,
+                        decoration: InputDecoration(
+                          hintText: "댓글을 입력하세요",
+                          hintStyle: const TextStyle(color: Colors.grey),
+                          contentPadding:
+                              const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              gapPadding: 10,
+                              borderSide:
+                                  BorderSide(color: Colors.lightBlue[200]!)),
+                          suffixIcon: IconButton(
+                            onPressed: () async {
+                              String content = contents.text;
+                              if (_replyingToCommentId != null) {
+                                addReplyToComment(widget.post.documentId,
+                                    _replyingToCommentId!, content);
+                                _replyingToCommentId = null; // 대댓글 추가 대상 초기화
+                              } else {
+                                await addComment(
+                                    widget.post.documentId, content);
+                              }
+
+                              contents.clear();
+                            },
+                            icon: const Icon(Icons.send),
+                            color: Colors.lightBlue[200],
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.lightBlue[200]!,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ))
           ],
         ),
       );
