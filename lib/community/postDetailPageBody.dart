@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
@@ -141,7 +142,89 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
                                   locale: "en_short"),
                               style: GoogleFonts.mulish(
                                   fontSize: 12, color: Colors.grey),
-                            )
+                            ),
+                            const Spacer(),
+                            InkWell(
+                              highlightColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              onTap: widget.uid ==
+                                      FirebaseAuth.instance.currentUser!.uid
+                                  ? () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return SizedBox(
+                                              height: 200,
+                                              child: Center(
+                                                  child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: <Widget>[
+                                                    Align(
+                                                      alignment:
+                                                          Alignment.topRight,
+                                                      child: IconButton(
+                                                        icon: const Icon(
+                                                            Icons.close),
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      child: Column(
+                                                        children: [
+                                                          ListTile(
+                                                            leading: const Icon(
+                                                                Icons.update),
+                                                            title: const Text(
+                                                                '수정'),
+                                                            onTap: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                          ),
+                                                          ListTile(
+                                                            leading: const Icon(
+                                                                Icons.delete),
+                                                            title: const Text(
+                                                                '삭제'),
+                                                            onTap: () {
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'Posts')
+                                                                  .doc(widget
+                                                                      .documentId)
+                                                                  .delete();
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ])));
+                                        },
+                                      );
+                                    }
+                                  : null,
+                              child: Padding(
+                                padding: EdgeInsets.zero,
+                                child: Icon(
+                                  Icons.more_horiz,
+                                  color: widget.uid ==
+                                          FirebaseAuth.instance.currentUser!.uid
+                                      ? Colors.black87
+                                      : Colors.grey[400],
+                                  size: 17,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                         Text(

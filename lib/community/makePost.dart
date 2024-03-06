@@ -19,7 +19,7 @@ class MakePost extends StatefulWidget {
 class MakePostState extends State<MakePost> {
   final TextEditingController contentController = TextEditingController();
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
-  final String? _uid = FirebaseAuth.instance.currentUser!.email;
+  final String _uid = FirebaseAuth.instance.currentUser!.uid;
   bool _isUpload = false;
   List<Map<String, String>>? _images;
   bool checkboxValue = false;
