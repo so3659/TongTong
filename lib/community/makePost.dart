@@ -128,64 +128,63 @@ class MakePostState extends State<MakePost> {
         children: <Widget>[
           Positioned.fill(
               child: SingleChildScrollView(
-            child: TextField(
-              decoration: const InputDecoration(
-                hintText: 'What\'s happening?',
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.only(left: 16),
+                  child: Column(
+            children: [
+              TextField(
+                decoration: const InputDecoration(
+                  hintText: 'What\'s happening?',
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.only(left: 16),
+                ),
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                controller: contentController,
               ),
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
-              controller: contentController,
-            ),
-          )),
-          Positioned(
-            right: 0,
-            top: 0,
-            child: images != null && images!.isNotEmpty
-                ? SizedBox(
-                    height: 100, // 이미지 미리보기의 높이
-                    width: MediaQuery.of(context).size.width,
-                    child: ListView.builder(
-                        itemCount: images!.length,
-                        itemBuilder: (context, index) {
-                          return Stack(
-                            alignment: Alignment.topRight,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  image: DecorationImage(
-                                    image:
-                                        FileImage(File(images![index]!.path)),
-                                    fit: BoxFit.cover,
+              images != null
+                  ? SizedBox(
+                      height: 100,
+                      child: ListView.builder(
+                          itemCount: images!.length,
+                          itemBuilder: (context, index) {
+                            return Stack(
+                              alignment: Alignment.topRight,
+                              children: [
+                                Container(
+                                  width: 200,
+                                  height: 200,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    image: DecorationImage(
+                                      image:
+                                          FileImage(File(images![index]!.path)),
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.black,
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  //삭제 버튼
-                                  child: IconButton(
-                                    padding: EdgeInsets.zero,
-                                    constraints: const BoxConstraints(),
-                                    icon: const Icon(Icons.close,
-                                        color: Colors.white, size: 15),
-                                    onPressed: () {
-                                      //버튼을 누르면 해당 이미지가 삭제됨
-                                      setState(() {
-                                        images!.remove(images![index]);
-                                      });
-                                    },
-                                  ))
-                            ],
-                          );
-                        }),
-                  )
-                : const SizedBox(),
-          ),
+                                Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.black,
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    //삭제 버튼
+                                    child: IconButton(
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(),
+                                      icon: const Icon(Icons.close,
+                                          color: Colors.white, size: 15),
+                                      onPressed: () {
+                                        //버튼을 누르면 해당 이미지가 삭제됨
+                                        setState(() {
+                                          images!.remove(images![index]);
+                                        });
+                                      },
+                                    ))
+                              ],
+                            );
+                          }))
+                  : const Text('1'),
+            ],
+          ))),
           Align(
               alignment: Alignment.bottomCenter,
               child: Container(
