@@ -20,9 +20,12 @@ class MakePostState extends State<MakePost> {
   final TextEditingController contentController = TextEditingController();
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
   final String _uid = FirebaseAuth.instance.currentUser!.uid;
-  bool _isUpload = false;
   List<Map<String, String>>? _images;
   bool checkboxValue = false;
+  XFile? image;
+  List<XFile?>? multiImage = [];
+  List<XFile?>? images = [];
+  final picker = ImagePicker();
 
   final String _chars =
       'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
@@ -31,17 +34,12 @@ class MakePostState extends State<MakePost> {
   String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
       length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
-  Future<List<Map<String, String>>> _imagePickerToUpload() async {
-    setState(() {
-      _isUpload = true;
-    });
-    if (Platform.isIOS) {
-      await Permission.photosAddOnly.request();
-    }
-    ImagePicker picker = ImagePicker();
-    List<XFile>? images = await picker.pickMultiImage(); // 여러 이미지 선택
+  Future<List<Map<String, String>>> _imagePickerToUpload(
+      List<XFile?>? images) async {
     List<Map<String, String>> uploadedImages = [];
-    for (XFile image in images) {
+    var nonNullableImages =
+        images!.where((image) => image != null).cast<XFile>();
+    for (XFile image in nonNullableImages) {
       String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
       String imageRef = "posts/$_uid/$dateTime";
       File file = File(image.path);
@@ -114,7 +112,9 @@ class MakePostState extends State<MakePost> {
             onPressed: () async {
               String content = contentController.text;
               String postKey = getRandomString(16);
-              print(_images);
+              if (image != null) {
+                _images = await _imagePickerToUpload(images);
+              }
 
               _toFirestore(_images, postKey, content);
               Navigator.of(context, rootNavigator: true).pop();
@@ -139,6 +139,53 @@ class MakePostState extends State<MakePost> {
               controller: contentController,
             ),
           )),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: images != null && images!.isNotEmpty
+                ? SizedBox(
+                    height: 100, // 이미지 미리보기의 높이
+                    width: MediaQuery.of(context).size.width,
+                    child: ListView.builder(
+                        itemCount: images!.length,
+                        itemBuilder: (context, index) {
+                          return Stack(
+                            alignment: Alignment.topRight,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  image: DecorationImage(
+                                    image:
+                                        FileImage(File(images![index]!.path)),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  //삭제 버튼
+                                  child: IconButton(
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    icon: const Icon(Icons.close,
+                                        color: Colors.white, size: 15),
+                                    onPressed: () {
+                                      //버튼을 누르면 해당 이미지가 삭제됨
+                                      setState(() {
+                                        images!.remove(images![index]);
+                                      });
+                                    },
+                                  ))
+                            ],
+                          );
+                        }),
+                  )
+                : const SizedBox(),
+          ),
           Align(
               alignment: Alignment.bottomCenter,
               child: Container(
@@ -152,14 +199,32 @@ class MakePostState extends State<MakePost> {
                   children: <Widget>[
                     IconButton(
                         onPressed: () async {
-                          _images = await _imagePickerToUpload();
+                          multiImage = await picker.pickMultiImage();
+                          if (multiImage != null) {
+                            setState(() {
+                              //갤러리에서 가지고 온 사진들은 리스트 변수에 저장되므로 addAll()을 사용해서 images와 multiImage 리스트를 합쳐줍니다.
+                              images?.addAll(multiImage!);
+                            });
+                          }
                         },
                         icon: customIcon(context,
                             icon: AppIcon.image,
                             isTwitterIcon: true,
                             iconColor: Colors.lightBlue[200])),
                     IconButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          if (Platform.isIOS) {
+                            await Permission.photosAddOnly.request();
+                          }
+
+                          image = await picker.pickImage(
+                              source: ImageSource.camera);
+                          if (image != null) {
+                            setState(() {
+                              images?.add(image);
+                            });
+                          }
+                        },
                         icon: customIcon(context,
                             icon: AppIcon.camera,
                             isTwitterIcon: true,
