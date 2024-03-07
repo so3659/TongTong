@@ -5,7 +5,6 @@ import 'package:tongtong/community/updatePost.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:tongtong/parameter/postParameter.dart';
 

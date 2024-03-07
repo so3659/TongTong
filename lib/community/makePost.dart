@@ -141,48 +141,54 @@ class MakePostState extends State<MakePost> {
                 controller: contentController,
               ),
               images != null
-                  ? SizedBox(
-                      height: 100,
-                      child: ListView.builder(
-                          itemCount: images!.length,
-                          itemBuilder: (context, index) {
-                            return Stack(
-                              alignment: Alignment.topRight,
-                              children: [
-                                Container(
-                                  width: 200,
-                                  height: 200,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    image: DecorationImage(
-                                      image:
-                                          FileImage(File(images![index]!.path)),
-                                      fit: BoxFit.cover,
-                                    ),
+                  ? ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(0, 30, 0, 70),
+                      itemCount: images!.length,
+                      shrinkWrap: true, // ListView를 내용의 높이에 맞춤
+                      physics:
+                          const NeverScrollableScrollPhysics(), // 이 ListView가 스크롤되지 않도록 설정
+                      itemBuilder: (context, index) {
+                        return Center(
+                            child: Container(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                          child: Stack(
+                            alignment: Alignment.topRight,
+                            children: [
+                              Container(
+                                width: 300,
+                                height: 300,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  image: DecorationImage(
+                                    image:
+                                        FileImage(File(images![index]!.path)),
+                                    fit: BoxFit.fitWidth,
                                   ),
                                 ),
-                                Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    //삭제 버튼
-                                    child: IconButton(
-                                      padding: EdgeInsets.zero,
-                                      constraints: const BoxConstraints(),
-                                      icon: const Icon(Icons.close,
-                                          color: Colors.white, size: 15),
-                                      onPressed: () {
-                                        //버튼을 누르면 해당 이미지가 삭제됨
-                                        setState(() {
-                                          images!.remove(images![index]);
-                                        });
-                                      },
-                                    ))
-                              ],
-                            );
-                          }))
-                  : const Text('1'),
+                              ),
+                              Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.transparent,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  //삭제 버튼
+                                  child: IconButton(
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    icon: const Icon(Icons.close,
+                                        color: Colors.black, size: 15),
+                                    onPressed: () {
+                                      //버튼을 누르면 해당 이미지가 삭제됨
+                                      setState(() {
+                                        images!.remove(images![index]);
+                                      });
+                                    },
+                                  )),
+                            ],
+                          ),
+                        ));
+                      })
+                  : Container()
             ],
           ))),
           Align(
