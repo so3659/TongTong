@@ -58,6 +58,8 @@ dependencies:
   infinite_scroll_pagination: ^4.0.0
   cached_network_image: ^3.3.1
   flutter_riverpod: ^2.4.10
+  flutter_speed_dial: ^7.0.0
+  animate_icons: ^2.0.0
 
 dev_dependencies:
   flutter_test:

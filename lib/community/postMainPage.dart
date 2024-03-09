@@ -6,6 +6,7 @@ import 'package:tongtong/community/postBody.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class MyMemoPage extends StatefulWidget {
   const MyMemoPage({super.key});
@@ -54,6 +55,59 @@ class MyMemoState extends State<MyMemoPage> {
     }
   }
 
+  Widget? floatingButtons() {
+    return SpeedDial(
+      animatedIcon: AnimatedIcons.menu_close,
+      foregroundColor: Colors.white,
+      visible: true,
+      curve: Curves.bounceIn,
+      backgroundColor: Colors.lightBlue[200],
+      children: [
+        SpeedDialChild(
+            child: customIcon(
+              context,
+              icon: AppIcon.fabTweet,
+              isTwitterIcon: true,
+              iconColor: Theme.of(context).colorScheme.onPrimary,
+              size: 25,
+            ),
+            label: "글 작성",
+            labelStyle: const TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+                fontSize: 13.0),
+            backgroundColor: Colors.lightBlue[200],
+            labelBackgroundColor: Colors.lightBlue[200],
+            onTap: () {
+              Navigator.of(context, rootNavigator: true).push(
+                  MaterialPageRoute(builder: (context) => const MakePost()));
+            }),
+        SpeedDialChild(
+          child: const Icon(
+            Icons.search,
+            color: Colors.white,
+          ),
+          label: "검색",
+          backgroundColor: Colors.lightBlue[200],
+          labelBackgroundColor: Colors.lightBlue[200],
+          labelStyle: const TextStyle(
+              fontWeight: FontWeight.w500, color: Colors.white, fontSize: 13.0),
+          onTap: () {},
+        ),
+        SpeedDialChild(
+            child: const Icon(Icons.local_fire_department, color: Colors.white),
+            label: "핫게",
+            labelStyle: const TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+                fontSize: 13.0),
+            backgroundColor: Colors.lightBlue[200],
+            labelBackgroundColor: Colors.lightBlue[200],
+            onTap: () {}),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,7 +142,7 @@ class MyMemoState extends State<MyMemoPage> {
           ),
         ),
       ),
-      floatingActionButton: _floatingActionButton(context),
+      floatingActionButton: floatingButtons(),
     );
   }
 
