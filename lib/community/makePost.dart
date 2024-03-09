@@ -204,12 +204,40 @@ class MakePostState extends State<MakePost> {
                   children: <Widget>[
                     IconButton(
                         onPressed: () async {
-                          multiImage = await picker.pickMultiImage();
-                          if (multiImage != null) {
-                            setState(() {
-                              //갤러리에서 가지고 온 사진들은 리스트 변수에 저장되므로 addAll()을 사용해서 images와 multiImage 리스트를 합쳐줍니다.
-                              images?.addAll(multiImage!);
-                            });
+                          if (images?.length != null && images!.length >= 10) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                duration: const Duration(seconds: 2),
+                                content: const Text("이미지는 10개까지만 가능합니다!"),
+                                action: SnackBarAction(
+                                  label: "Done",
+                                  textColor: Colors.white,
+                                  onPressed: () {},
+                                ),
+                              ),
+                            );
+                          } else {
+                            multiImage = await picker.pickMultiImage();
+                            if (multiImage != null) {
+                              if (multiImage!.length + images!.length > 10) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    duration: const Duration(seconds: 2),
+                                    content: const Text("이미지는 10개까지만 가능합니다!"),
+                                    action: SnackBarAction(
+                                      label: "Done",
+                                      textColor: Colors.white,
+                                      onPressed: () {},
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                setState(() {
+                                  //갤러리에서 가지고 온 사진들은 리스트 변수에 저장되므로 addAll()을 사용해서 images와 multiImage 리스트를 합쳐줍니다.
+                                  images?.addAll(multiImage!);
+                                });
+                              }
+                            }
                           }
                         },
                         icon: customIcon(context,
@@ -218,16 +246,44 @@ class MakePostState extends State<MakePost> {
                             iconColor: Colors.lightBlue[200])),
                     IconButton(
                         onPressed: () async {
-                          if (Platform.isIOS) {
-                            await Permission.photosAddOnly.request();
-                          }
+                          if (images?.length != null && images!.length >= 10) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                duration: const Duration(seconds: 2),
+                                content: const Text("이미지는 10개까지만 가능합니다!"),
+                                action: SnackBarAction(
+                                  label: "Done",
+                                  textColor: Colors.white,
+                                  onPressed: () {},
+                                ),
+                              ),
+                            );
+                          } else {
+                            if (Platform.isIOS) {
+                              await Permission.photosAddOnly.request();
+                            }
 
-                          image = await picker.pickImage(
-                              source: ImageSource.camera);
-                          if (image != null) {
-                            setState(() {
-                              images?.add(image);
-                            });
+                            image = await picker.pickImage(
+                                source: ImageSource.camera);
+                            if (image != null) {
+                              if (1 + images!.length > 10) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    duration: const Duration(seconds: 2),
+                                    content: const Text("이미지는 10개까지만 가능합니다!"),
+                                    action: SnackBarAction(
+                                      label: "Done",
+                                      textColor: Colors.white,
+                                      onPressed: () {},
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                setState(() {
+                                  images?.add(image);
+                                });
+                              }
+                            }
                           }
                         },
                         icon: customIcon(context,
