@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:tongtong/community/makePost.dart';
 import 'package:tongtong/community/postBody.dart';
+import 'package:tongtong/community/searchPage.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -92,7 +94,10 @@ class MyMemoState extends State<MyMemoPage> {
           labelBackgroundColor: Colors.lightBlue[200],
           labelStyle: const TextStyle(
               fontWeight: FontWeight.w500, color: Colors.white, fontSize: 13.0),
-          onTap: () {},
+          onTap: () {
+            Navigator.of(context, rootNavigator: true).push(
+                MaterialPageRoute(builder: (context) => const SearchPage()));
+          },
         ),
         SpeedDialChild(
             child: const Icon(Icons.local_fire_department, color: Colors.white),
