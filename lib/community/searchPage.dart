@@ -1,5 +1,7 @@
-import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tongtong/community/postBody.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -9,18 +11,30 @@ class SearchPage extends StatefulWidget {
 }
 
 class SearchPageState extends State<SearchPage> {
-  late TextEditingController _textEditingController;
+  final TextEditingController _textEditingController = TextEditingController();
+  Future<QuerySnapshot>? futureSearchResults;
 
   @override
   void initState() {
     super.initState();
-    _textEditingController = TextEditingController();
   }
 
   @override
   void dispose() {
     _textEditingController.dispose();
     super.dispose();
+  }
+
+  controlSearching(str) {
+    Future<QuerySnapshot> searchResults = FirebaseFirestore.instance
+        .collection('Posts')
+        .where('contents', isGreaterThanOrEqualTo: str)
+        .where('contents', isLessThanOrEqualTo: str + '\uf8ff')
+        .limit(10)
+        .get();
+    setState(() {
+      futureSearchResults = searchResults;
+    });
   }
 
   @override
@@ -55,61 +69,51 @@ class SearchPageState extends State<SearchPage> {
             border: InputBorder.none,
             hintStyle: TextStyle(color: Colors.black),
           ),
+          onSubmitted: controlSearching,
         ),
       ),
-      // body: _textEditingController.text.isEmpty
-      //     ? Center(child: Text(LocaleKeys.enterSearchTerm.tr()))
-      //     : StreamBuilder<List<AlgoliaObjectSnapshot>>(
-      //         stream: Stream.fromFuture(_operation(searchTerm.state)),
-      //         builder: (context, snapshot) {
-      //           final List<AlgoliaObjectSnapshot>? currSearchStuff =
-      //               snapshot.data;
-      //           return CustomScrollView(
-      //             shrinkWrap: true,
-      //             slivers: [
-      //               SliverList(
-      //                 delegate: SliverChildBuilderDelegate(
-      //                   (context, i) {
-      //                     final post = Post(
-      //                       title: currSearchStuff?[i].data['title'] as String,
-      //                       content:
-      //                           currSearchStuff?[i].data['content'] as String,
-      //                       userId:
-      //                           currSearchStuff?[i].data['userId'] as String,
-      //                       id: currSearchStuff?[i].data['id'] as String,
-      //                       timestamp: DateTime.parse(
-      //                         currSearchStuff?[i].data['timestamp'] as String,
-      //                       ),
-      //                       commentCount:
-      //                           currSearchStuff?[i].data['commentCount'] as int,
-      //                       userDisplayName: currSearchStuff?[i]
-      //                           .data['userDisplayName'] as String,
-      //                     );
-      //                     if (searchTerm.state.isNotEmpty) {
-      //                       return Padding(
-      //                         padding: const EdgeInsets.all(defaultPadding),
-      //                         child: GestureDetector(
-      //                           onTap: () => PostDetailPage.show(context,
-      //                               postId: post.id),
-      //                           child: Column(
-      //                             children: [
-      //                               PostUserInfo(post: post),
-      //                               PostItemInfo(post: post),
-      //                             ],
-      //                           ),
-      //                         ),
-      //                       );
-      //                     } else {
-      //                       return const SizedBox();
-      //                     }
-      //                   },
-      //                   childCount: currSearchStuff?.length ?? 0,
-      //                 ),
-      //               ),
-      //             ],
-      //           );
-      //         },
-      //       ),
+      body: _textEditingController.text.isEmpty
+          ? Container()
+          : FutureBuilder(
+              future: futureSearchResults,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                }
+                if (snapshot.error != null) {
+                  return const Text('An error occurred');
+                }
+                if (!snapshot.hasData) {
+                  return const Text('해당 내용의 게시물이 없습니다');
+                }
+
+                var documents = snapshot.data!.docs;
+                return ListView.builder(
+                  itemCount: documents.length,
+                  itemBuilder: (context, index) {
+                    var post = documents[index];
+                    return (post['image'] != null
+                        ? (FeedPageBody(
+                            uid: post['uid'],
+                            content: post['contents'],
+                            photoUrls: post['image'],
+                            dateTime: post['dateTime'],
+                            documentId: post.id,
+                            currentUserId:
+                                FirebaseAuth.instance.currentUser!.uid,
+                          ))
+                        : (FeedPageBody(
+                            uid: post['uid'],
+                            content: post['contents'],
+                            dateTime: post['dateTime'],
+                            documentId: post.id,
+                            currentUserId:
+                                FirebaseAuth.instance.currentUser!.uid,
+                          )));
+                  },
+                );
+              },
+            ),
     );
   }
 }
