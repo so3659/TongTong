@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:tongtong/community/hotPostsPage.dart';
 import 'package:tongtong/community/makePost.dart';
 import 'package:tongtong/community/postBody.dart';
 import 'package:tongtong/community/searchPage.dart';
@@ -108,7 +109,10 @@ class MyMemoState extends State<MyMemoPage> {
                 fontSize: 13.0),
             backgroundColor: Colors.lightBlue[200],
             labelBackgroundColor: Colors.lightBlue[200],
-            onTap: () {}),
+            onTap: () {
+              Navigator.of(context, rootNavigator: true).push(
+                  MaterialPageRoute(builder: (context) => const HotPostPage()));
+            }),
       ],
     );
   }

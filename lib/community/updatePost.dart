@@ -10,7 +10,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UpdatePost extends StatefulWidget {
-  const UpdatePost({super.key});
+  const UpdatePost({super.key, required this.documentId});
+
+  final String documentId;
 
   @override
   State<UpdatePost> createState() => UpdatePostState();
@@ -23,13 +25,6 @@ class UpdatePostState extends State<UpdatePost> {
   bool _isUpload = false;
   List<Map<String, String>>? _images;
   bool checkboxValue = false;
-
-  final String _chars =
-      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-  final Random _rnd = Random();
-
-  String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
-      length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
   Future<List<Map<String, String>>> _imagePickerToUpload() async {
     setState(() {
@@ -113,10 +108,9 @@ class UpdatePostState extends State<UpdatePost> {
           IconButton(
             onPressed: () async {
               String content = contentController.text;
-              String postKey = getRandomString(16);
               print(_images);
 
-              _toFirestore(_images, postKey, content);
+              _toFirestore(_images, widget.documentId, content);
               Navigator.of(context, rootNavigator: true).pop();
             },
             icon: const Icon(Icons.send),
