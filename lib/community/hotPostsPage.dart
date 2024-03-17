@@ -31,8 +31,7 @@ class HotPostPageState extends ConsumerState<HotPostPage> {
     try {
       final query = fireStore
           .collection("Posts")
-          .orderBy("dateTime", descending: true)
-          //Where 추가 해야함. likedBy.length>=10
+          .where("likesCount", isGreaterThanOrEqualTo: 10)
           .limit(_pageSize);
 
       final snapshot = lastDocument == null
@@ -57,69 +56,58 @@ class HotPostPageState extends ConsumerState<HotPostPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: Column(
-        children: [
-          Expanded(
-            child: CustomScrollView(
-              slivers: <Widget>[
-                SliverAppBar(
-                  pinned: true,
-                  title: Text(
-                    'HOT 게시물',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
-                        .copyWith(color: Colors.black87),
-                  ),
-                  iconTheme:
-                      IconThemeData(color: Theme.of(context).primaryColor),
-                  backgroundColor:
-                      Theme.of(context).appBarTheme.backgroundColor,
-                  bottom: PreferredSize(
-                    preferredSize: const Size.fromHeight(0.0),
-                    child: Container(
-                      color: Colors.grey.shade200,
-                      height: 1.0,
-                    ),
-                  ),
-                ),
-                RefreshIndicator(
-                  onRefresh: () => Future.sync(
-                    () => _pagingController.refresh(),
-                  ),
-                  child: PagedListView<DocumentSnapshot?, DocumentSnapshot>(
-                    pagingController: _pagingController,
-                    builderDelegate:
-                        PagedChildBuilderDelegate<DocumentSnapshot>(
-                      itemBuilder: (context, item, index) {
-                        return (item['image'] != null
-                            ? (FeedPageBody(
-                                uid: item['uid'],
-                                content: item['contents'],
-                                photoUrls: item['image'],
-                                dateTime: item['dateTime'],
-                                documentId: item.id,
-                                currentUserId: currentUserId,
-                              ))
-                            : (FeedPageBody(
-                                uid: item['uid'],
-                                content: item['contents'],
-                                dateTime: item['dateTime'],
-                                documentId: item.id,
-                                currentUserId: currentUserId,
-                              )));
-                      },
-                      noItemsFoundIndicatorBuilder: (context) => const Center(
-                        child: Text("표시할 게시물이 없어요",
-                            style: TextStyle(fontSize: 20)),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+      appBar: AppBar(
+        title: Text(
+          'HOT 게시물',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(color: Colors.black87),
+        ),
+        iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(0.0),
+          child: Container(
+            color: Colors.grey.shade200,
+            height: 1.0,
           ),
-        ],
+        ),
+      ),
+      body: RefreshIndicator(
+        onRefresh: () => Future.sync(
+          () => _pagingController.refresh(),
+        ),
+        child: CustomScrollView(
+          slivers: <Widget>[
+            PagedSliverList<DocumentSnapshot?, DocumentSnapshot>(
+              pagingController: _pagingController,
+              builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot>(
+                itemBuilder: (context, item, index) {
+                  return (item['image'] != null
+                      ? (FeedPageBody(
+                          uid: item['uid'],
+                          content: item['contents'],
+                          photoUrls: item['image'],
+                          dateTime: item['dateTime'],
+                          documentId: item.id,
+                          currentUserId: currentUserId,
+                        ))
+                      : (FeedPageBody(
+                          uid: item['uid'],
+                          content: item['contents'],
+                          dateTime: item['dateTime'],
+                          documentId: item.id,
+                          currentUserId: currentUserId,
+                        )));
+                },
+                noItemsFoundIndicatorBuilder: (context) => const Center(
+                  child: Text("표시할 게시물이 없어요", style: TextStyle(fontSize: 20)),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

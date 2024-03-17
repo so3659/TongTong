@@ -75,7 +75,10 @@ class FeedPageBodyState extends State<FeedPageBody> {
       updatedLikedBy.add(widget.currentUserId); // 좋아요 추가
     }
 
-    await postRef.update({'likedBy': updatedLikedBy}); // Firestore 업데이트
+    await postRef.update({'likedBy': updatedLikedBy});
+    await postRef
+        .set({'likesCount': updatedLikedBy.length}, SetOptions(merge: true));
+    // Firestore 업데이트
     // UI 업데이트는 StreamBuilder가 담당하므로 여기서는 setState() 호출 없음
   }
 
@@ -99,7 +102,7 @@ class FeedPageBodyState extends State<FeedPageBody> {
           var data = snapshot.data!.data() as Map<String, dynamic>;
           List<dynamic> likedBy = data['likedBy'] ?? [];
           bool isLiked = likedBy.contains(widget.currentUserId);
-          int likesCount = likedBy.length;
+          int likesCount = data['likesCount'];
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -186,14 +189,14 @@ class FeedPageBodyState extends State<FeedPageBody> {
                                                             title: const Text(
                                                                 '수정'),
                                                             onTap: () {
-                                                              Navigator.of(
-                                                                      context,
-                                                                      rootNavigator:
-                                                                          true)
-                                                                  .push(MaterialPageRoute(
-                                                                      builder:
-                                                                          (context) =>
-                                                                              const UpdatePost()));
+                                                              // Navigator.of(
+                                                              //         context,
+                                                              //         rootNavigator:
+                                                              //             true)
+                                                              //     .push(MaterialPageRoute(
+                                                              //         builder:
+                                                              //             (context) =>
+                                                              //                 const UpdatePost()));
                                                             },
                                                           ),
                                                           ListTile(

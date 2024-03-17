@@ -184,14 +184,14 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
                                                             title: const Text(
                                                                 '수정'),
                                                             onTap: () {
-                                                              Navigator.of(
-                                                                      context,
-                                                                      rootNavigator:
-                                                                          true)
-                                                                  .push(MaterialPageRoute(
-                                                                      builder:
-                                                                          (context) =>
-                                                                              const UpdatePost()));
+                                                              // Navigator.of(
+                                                              //         context,
+                                                              //         rootNavigator:
+                                                              //             true)
+                                                              //     .push(MaterialPageRoute(
+                                                              //         builder:
+                                                              //             (context) =>
+                                                              //                 const UpdatePost()));
                                                             },
                                                           ),
                                                           ListTile(

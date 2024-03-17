@@ -79,6 +79,7 @@ class MakePostState extends State<MakePost> {
           "path": imagePaths,
           "dateTime": Timestamp.now(),
           'likedBy': [],
+          'likesCount': 0
         });
       } else if (images == null) {
         await reference.set({
@@ -88,6 +89,7 @@ class MakePostState extends State<MakePost> {
           "path": null,
           "dateTime": Timestamp.now(),
           'likedBy': [],
+          'likesCount': 0
         });
       }
     } on FirebaseException catch (error) {
