@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tongtong/community/updatePost.dart';
@@ -40,6 +41,31 @@ class FeedPageBodyState extends State<FeedPageBody> {
   void initState() {
     super.initState();
     postParameter();
+  }
+
+  Future<void> deletePost(String documentId) async {
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(widget.documentId)
+        .get();
+
+    // 문서가 존재하는 경우
+    if (snapshot.exists) {
+      List<dynamic> filePaths = snapshot['path'];
+
+      for (String filePath in filePaths) {
+        try {
+          await FirebaseStorage.instance.ref(filePath).delete();
+        } catch (e) {
+          print("Failed to delete file at $filePath: $e");
+        }
+      }
+    }
+
+    await FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(documentId)
+        .delete();
   }
 
   void postParameter() {
@@ -205,13 +231,8 @@ class FeedPageBodyState extends State<FeedPageBody> {
                                                             title: const Text(
                                                                 '삭제'),
                                                             onTap: () {
-                                                              FirebaseFirestore
-                                                                  .instance
-                                                                  .collection(
-                                                                      'Posts')
-                                                                  .doc(widget
-                                                                      .documentId)
-                                                                  .delete();
+                                                              deletePost(widget
+                                                                  .documentId);
                                                               Navigator.pop(
                                                                   context);
                                                             },

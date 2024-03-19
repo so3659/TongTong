@@ -25,6 +25,12 @@ class UpdatePostState extends State<UpdatePost> {
   List<Map<String, String>>? _images;
   bool checkboxValue = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _fetchPage();
+  }
+
   Future<List<Map<String, String>>> _imagePickerToUpload() async {
     setState(() {
       _isUpload = true;
@@ -90,6 +96,10 @@ class UpdatePostState extends State<UpdatePost> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(error.message ?? "")));
     }
+  }
+
+  Future<void> _fetchPage() async {
+    final data = fireStore.collection("Posts").doc(widget.documentId).get();
   }
 
   @override

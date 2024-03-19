@@ -114,7 +114,7 @@ class MakePostState extends State<MakePost> {
             onPressed: () async {
               String content = contentController.text;
               String postKey = getRandomString(16);
-              if (image != null) {
+              if (images != null) {
                 _images = await _imagePickerToUpload(images);
               }
 
