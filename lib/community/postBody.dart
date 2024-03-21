@@ -209,22 +209,22 @@ class FeedPageBodyState extends State<FeedPageBody> {
                                                     Container(
                                                       child: Column(
                                                         children: [
-                                                          ListTile(
-                                                            leading: const Icon(
-                                                                Icons.update),
-                                                            title: const Text(
-                                                                '수정'),
-                                                            onTap: () {
-                                                              // Navigator.of(
-                                                              //         context,
-                                                              //         rootNavigator:
-                                                              //             true)
-                                                              //     .push(MaterialPageRoute(
-                                                              //         builder:
-                                                              //             (context) =>
-                                                              //                 const UpdatePost()));
-                                                            },
-                                                          ),
+                                                          // ListTile(
+                                                          //   leading: const Icon(
+                                                          //       Icons.update),
+                                                          //   title: const Text(
+                                                          //       '수정'),
+                                                          //   onTap: () {
+                                                          //     // Navigator.of(
+                                                          //     //         context,
+                                                          //     //         rootNavigator:
+                                                          //     //             true)
+                                                          //     //     .push(MaterialPageRoute(
+                                                          //     //         builder:
+                                                          //     //             (context) =>
+                                                          //     //                 const UpdatePost()));
+                                                          //   },
+                                                          // ),
                                                           ListTile(
                                                             leading: const Icon(
                                                                 Icons.delete),
