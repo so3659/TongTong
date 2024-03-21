@@ -185,7 +185,7 @@ class FeedPageBodyState extends State<FeedPageBody> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return SizedBox(
-                                              height: 200,
+                                              height: 150,
                                               child: Center(
                                                   child: Column(
                                                       mainAxisAlignment:

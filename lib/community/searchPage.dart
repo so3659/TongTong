@@ -17,6 +17,9 @@ class SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showReplyDialog();
+    });
   }
 
   @override
@@ -35,6 +38,28 @@ class SearchPageState extends State<SearchPage> {
     setState(() {
       futureSearchResults = searchResults;
     });
+  }
+
+  void showReplyDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: const Text(
+              '현재 예산 문제로 인해 검색 시스템이 \n 완벽하지 않습니다. \n\n 중간에 끼어있는 문자열이나 뒤에 오는 문자열\n 대상으로 검색이 불가능합니다. \n\n ex) Guitar로 시작하는 문서가 있을경우 \n - Gui, Guir, Guitar으로 찾기 가능 \n - ui, uitar으로 찾기 불가능 \n\n 여러분의 후원이 더 좋은 통통 앱을 만듭니다 '),
+          actions: [
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('네'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('네'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
