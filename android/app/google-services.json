@@ -12,7 +12,20 @@
           "package_name": "com.example.tongtong"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "256107932838-cmaesnnta4t402q282edrea5lq539f5l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tongtong",
+            "certificate_hash": "662ab88237bef5fc751d10036a5945614df9b389"
+          }
+        },
+        {
+          "client_id": "256107932838-i6mcvkbrodlbdgumm66dbr26c5i3e4qm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDUJ9D3wAXYYecO0Z1RHJ4i5o6730zEEu4"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "256107932838-i6mcvkbrodlbdgumm66dbr26c5i3e4qm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "256107932838-jbg7go18t6v9odcc4lmaf857usanu47p.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tongtong.RunnerTests"
+              }
+            }
+          ]
         }
       }
     }
