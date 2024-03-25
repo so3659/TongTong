@@ -6,6 +6,7 @@ import 'package:tongtong/calendar/calendarMain.dart';
 import 'package:tongtong/info/infoMain.dart';
 import 'package:tongtong/mainpage/mainpage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:tongtong/profile/profilePage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,10 +28,7 @@ class HomePageState extends State<HomePage> {
     Mainpage(),
     InfoMain(),
     Calendar(),
-    Text(
-      'My',
-      style: optionStyle,
-    ),
+    ProfilePage()
   ];
 
   @override
