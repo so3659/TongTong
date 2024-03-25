@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:tongtong/calendar/calendarMain.dart';
 import 'package:tongtong/community/postMainPage.dart';
 import 'package:tongtong/community/postBody.dart';
@@ -31,10 +32,6 @@ class HomePageState extends State<HomePage> {
       'My',
       style: optionStyle,
     ),
-    Text(
-      'My',
-      style: optionStyle,
-    ),
   ];
 
   @override
@@ -47,6 +44,10 @@ class HomePageState extends State<HomePage> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  void signOut() async {
+    await GoogleSignIn().signOut();
   }
 
   @override
@@ -90,6 +91,7 @@ class HomePageState extends State<HomePage> {
                   '로그아웃',
                 ),
                 onPressed: () {
+                  signOut();
                   GoRouter.of(context).go('/login');
                 },
               ),
@@ -120,10 +122,6 @@ class HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month),
             label: 'Calendar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'Friends',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.perm_identity),

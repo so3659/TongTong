@@ -32,7 +32,7 @@ Widget _buildTitle() {
     child: FadeInUp(
         duration: const Duration(milliseconds: 1800),
         child: Container(
-          margin: const EdgeInsets.fromLTRB(0, 100, 0, 100),
+          margin: const EdgeInsets.fromLTRB(0, 100, 0, 50),
           child: Column(
             children: [
               Container(
@@ -45,8 +45,8 @@ Widget _buildTitle() {
                     ),
                   )),
               Container(
-                  width: 300,
-                  height: 100,
+                  width: 350,
+                  height: 150,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/images/tong_logo_name.png'),

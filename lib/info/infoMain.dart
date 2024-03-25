@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class InfoMain extends StatefulWidget {
-  const InfoMain({Key? key}) : super(key: key);
+  const InfoMain({super.key});
 
   @override
   State<InfoMain> createState() => InfoMainState();
@@ -84,8 +84,8 @@ class InfoMainState extends State<InfoMain> {
                             children: [
                               Image(
                                 image: AssetImage('assets/images/shop.png'),
-                                height: 100,
-                                width: 100,
+                                height: 80,
+                                width: 80,
                               ),
                               Text('리페어 샵 추천')
                             ]),

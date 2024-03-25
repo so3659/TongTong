@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tongtong/Register/googleLogin.dart';
-import 'package:tongtong/Register/login.dart';
 import 'package:tongtong/Register/register.dart';
 import 'package:tongtong/community/makePost.dart';
 import 'package:go_router/go_router.dart';
@@ -52,7 +51,7 @@ final GoRouter _goroute = GoRouter(
     ),
     GoRoute(
       path: '/login',
-      builder: (context, state) => const Login(),
+      builder: (context, state) => const GoogleLogin(),
     ),
     GoRoute(
       path: '/makePost',
