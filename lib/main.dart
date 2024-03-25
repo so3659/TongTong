@@ -83,7 +83,6 @@ class MyApp extends StatelessWidget {
           colorScheme:
               ColorScheme.fromSeed(seedColor: (Colors.lightBlue[200])!)),
       routerConfig: _goroute,
-      // home: Login(),
     );
   }
 }

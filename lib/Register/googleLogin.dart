@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_button/sign_in_button.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class GoogleLogin extends StatelessWidget {
   const GoogleLogin({super.key});
@@ -67,6 +68,31 @@ class BuildLogin extends StatefulWidget {
 }
 
 class BuildLoginState extends State<BuildLogin> {
+  String? userInfo;
+  static const storage =
+      FlutterSecureStorage(); //flutter_secure_storage 사용을 위한 초기화 작업
+
+  @override
+  void initState() {
+    super.initState();
+
+    //비동기로 flutter secure storage 정보를 불러오는 작업.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _asyncMethod();
+    });
+  }
+
+  _asyncMethod() async {
+    //read 함수를 통하여 key값에 맞는 정보를 불러오게 됩니다. 이때 불러오는 결과의 타입은 String 타입임을 기억해야 합니다.
+    //(데이터가 없을때는 null을 반환을 합니다.)
+    userInfo = await storage.read(key: "login");
+
+    //user의 정보가 있다면 바로 로그아웃 페이지로 넝어가게 합니다.
+    if (userInfo != null) {
+      context.go('/homepage');
+    }
+  }
+
   void _signInWithGoogle() async {
     try {
       final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -79,7 +105,8 @@ class BuildLoginState extends State<BuildLogin> {
       );
       final userCredential =
           await firebaseAuth.signInWithCredential(credential);
-      print("Logged in with Google: ${userCredential.user}");
+      // print("Logged in with Google: ${userCredential.user}");
+      await storage.write(key: "login", value: userCredential.user.toString());
       context.go('/homepage');
     } catch (e) {
       print(e);

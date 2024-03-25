@@ -3,11 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:tongtong/calendar/calendarMain.dart';
-import 'package:tongtong/community/postMainPage.dart';
-import 'package:tongtong/community/postBody.dart';
 import 'package:tongtong/info/infoMain.dart';
 import 'package:tongtong/mainpage/mainpage.dart';
-import 'package:tongtong/community/comment_list_body.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,6 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  static const storage = FlutterSecureStorage();
   final PageController _pageController = PageController();
 
   int _selectedIndex = 0;
@@ -47,6 +46,7 @@ class HomePageState extends State<HomePage> {
   }
 
   void signOut() async {
+    storage.delete(key: "login");
     await GoogleSignIn().signOut();
   }
 
