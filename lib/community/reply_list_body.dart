@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
@@ -32,6 +34,7 @@ class ReplyList extends StatefulWidget {
 }
 
 class ReplyListState extends State<ReplyList> {
+  String? profileImage = FirebaseAuth.instance.currentUser!.photoURL;
   @override
   void initState() {
     super.initState();
@@ -99,8 +102,10 @@ class ReplyListState extends State<ReplyList> {
                         onTap: () {},
                         child: CircleAvatar(
                           backgroundColor: Theme.of(context).cardColor,
-                          backgroundImage:
-                              const AssetImage('assets/images/tong_logo.png'),
+                          backgroundImage: widget.anoym
+                              ? const AssetImage('assets/images/tong_logo.png')
+                                  as ImageProvider<Object>
+                              : CachedNetworkImageProvider(profileImage!),
                           radius: 20,
                         ),
                       ),

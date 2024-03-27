@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tongtong/theme/theme.dart';
@@ -66,6 +68,7 @@ class CommentList extends ConsumerStatefulWidget {
 }
 
 class CommentListState extends ConsumerState<CommentList> {
+  String? profileImage = FirebaseAuth.instance.currentUser!.photoURL;
   @override
   void initState() {
     super.initState();
@@ -158,8 +161,11 @@ class CommentListState extends ConsumerState<CommentList> {
                           onTap: () {},
                           child: CircleAvatar(
                             backgroundColor: Theme.of(context).cardColor,
-                            backgroundImage:
-                                const AssetImage('assets/images/tong_logo.png'),
+                            backgroundImage: widget.anoym
+                                ? const AssetImage(
+                                        'assets/images/tong_logo.png')
+                                    as ImageProvider<Object>
+                                : CachedNetworkImageProvider(profileImage!),
                             radius: 20,
                           ),
                         ),

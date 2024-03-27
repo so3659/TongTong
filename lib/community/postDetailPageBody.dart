@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -38,6 +39,7 @@ class FeedDetailPageBody extends StatefulWidget {
 class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
   int currentPage = 0;
   late FeedPost post;
+  String? profileImage = FirebaseAuth.instance.currentUser!.photoURL;
 
   @override
   void initState() {
@@ -146,8 +148,10 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
                         onTap: () {},
                         child: CircleAvatar(
                           backgroundColor: Theme.of(context).cardColor,
-                          backgroundImage:
-                              const AssetImage('assets/images/tong_logo.png'),
+                          backgroundImage: widget.anoym
+                              ? const AssetImage('assets/images/tong_logo.png')
+                                  as ImageProvider<Object>
+                              : CachedNetworkImageProvider(profileImage!),
                           radius: 35,
                         ),
                       ),
