@@ -4,13 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tongtong/community/updatePost.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:tongtong/parameter/postParameter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FeedPageBody extends StatefulWidget {
   const FeedPageBody({
@@ -269,12 +270,23 @@ class FeedPageBodyState extends State<FeedPageBody> {
                             ),
                           ],
                         ),
-                        Text(
-                          widget.content,
+                        Linkify(
+                          onOpen: (link) async {
+                            if (!await launchUrl(Uri.parse(link.url))) {
+                              throw Exception('Could not launch ${link.url}');
+                            }
+                          },
+                          text: widget.content,
                           style: GoogleFonts.mulish(
                               color: Colors.black,
                               fontSize: 14,
                               fontWeight: FontWeight.w300),
+                          linkStyle: GoogleFonts.mulish(
+                            color: Colors.blue,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w300,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                         if (hasImages)
                           Column(children: [

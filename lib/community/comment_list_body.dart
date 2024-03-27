@@ -2,12 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:tongtong/community/reply_list_body.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 final focusManagerProvider = ChangeNotifierProvider((ref) => FocusManager());
 final replyProvider = StateNotifierProvider<ReplyNotifier, String?>((ref) {
@@ -195,12 +197,23 @@ class CommentListState extends ConsumerState<CommentList> {
                               )
                             ],
                           ),
-                          Text(
-                            widget.content,
+                          Linkify(
+                            onOpen: (link) async {
+                              if (!await launchUrl(Uri.parse(link.url))) {
+                                throw Exception('Could not launch ${link.url}');
+                              }
+                            },
+                            text: widget.content,
                             style: GoogleFonts.mulish(
                                 color: Colors.black,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w300),
+                            linkStyle: GoogleFonts.mulish(
+                              color: Colors.blue,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w300,
+                              decoration: TextDecoration.underline,
+                            ),
                           ),
                           Container(
                               color: Colors.transparent,
