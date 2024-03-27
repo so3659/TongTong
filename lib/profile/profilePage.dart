@@ -1,4 +1,11 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -8,8 +15,117 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  User? user;
+  late final TextEditingController userNameController;
+  final String _uid = FirebaseAuth.instance.currentUser!.uid;
+
+  @override
+  void initState() {
+    super.initState();
+    // Here you might be fetching the user info from FirebaseAuth
+    // or any other service your app is using.
+    user = FirebaseAuth.instance.currentUser;
+    userNameController = TextEditingController(text: user?.displayName);
+  }
+
+  _updateDisplayNameDialog() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('닉네임 변경'),
+            content: TextField(
+              maxLength: 20,
+              controller: userNameController,
+              decoration: const InputDecoration(hintText: '원하는 유저 이름을 적어주세요'),
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('취소'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  await user!.updateDisplayName(userNameController.text);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('확인'),
+              ),
+            ],
+          );
+        });
+  }
+
+  Future? _updateProfileImageDialog() async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          fixedSize: const Size(200, 30)),
+                      onPressed: () {
+                        updateProfileImage();
+                      },
+                      child: const Text('프로필 사진 변경')),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          fixedSize: const Size(200, 30)),
+                      onPressed: () {
+                        setDefaultProfileImage();
+                      },
+                      child: const Text('기본 프로필 사진')),
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('취소'),
+                ),
+              ]);
+        });
+  }
+
+  Future<void> setDefaultProfileImage() async {
+    await user!.updatePhotoURL(
+        "https://firebasestorage.googleapis.com/v0/b/tongtong-5936b.appspot.com/o/defaultProfileImage%2Ftong_logo.png?alt=media&token=b17f8452-66e6-43f4-8439-3c414b8691c6");
+    Navigator.of(context, rootNavigator: true).pop();
+  }
+
+  Future<void> updateProfileImage() async {
+    final ImagePicker picker = ImagePicker();
+    try {
+      final pickedFile = await picker.pickImage(
+        source: ImageSource.gallery,
+      );
+      if (Platform.isIOS) {
+        await Permission.photosAddOnly.request();
+      }
+
+      if (pickedFile != null) {
+        File file = File(pickedFile.path);
+        String imageRef = "profileImage/$_uid";
+        await FirebaseStorage.instance.ref(imageRef).putFile(file);
+        final String urlString =
+            await FirebaseStorage.instance.ref(imageRef).getDownloadURL();
+        await user?.updatePhotoURL(urlString);
+
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+    } catch (error) {
+      print('error: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    String username = user?.displayName ?? 'username';
+    String email = user?.email ?? 'user@domain.com';
+    String avatarUrl = user?.photoURL ?? 'https://via.placeholder.com/150';
+
     return Scaffold(
       body: ListView(
         children: [
@@ -22,39 +138,34 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 CircleAvatar(
                   backgroundColor: Theme.of(context).cardColor,
-                  backgroundImage: const AssetImage(
-                      'assets/images/tong_logo.png'), // 프로필 이미지 경로
+                  backgroundImage:
+                      CachedNetworkImageProvider(avatarUrl), // 프로필 이미지 경로
                   radius: 50, // 원하는 크기로 조절
                 ),
                 const SizedBox(height: 10), // 상하 여백
-                const Text(
-                  'kso3659@gmail.com', // 사용자 email
-                  style: TextStyle(
+                Text(
+                  email, // 사용자 email
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Text(
-                  '김성욱',
-                  style: TextStyle(
-                    fontSize: 15,
-                  ),
-                ),
                 const SizedBox(
-                  height: 10,
+                  height: 5,
                 ),
-                const Text(
-                  '동토리',
-                  style: TextStyle(
+                Text(
+                  username,
+                  style: const TextStyle(
                     fontSize: 15,
-                    color: Colors.grey,
                   ),
                 ),
+
                 const SizedBox(height: 15), // 상하 여백
                 _buildRoundedButton('내가 쓴 글'),
                 _buildRoundedButton('댓글 단 글'),
-                _buildRoundedButton('닉네임 변경'),
-                _buildRoundedButton('프로필 사진 변경'),
+                _builduserNameButton('닉네임 변경'),
+                _builduserProfileImageButton('프로필 사진 변경'),
+                _buildRoundedButton('앱 설정'),
               ],
             ),
           ),
@@ -62,33 +173,89 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
-}
 
-Widget _buildRoundedButton(String title) {
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 50), // 좌우 여백
-      child: OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          shape: const StadiumBorder(), // 버튼의 모서리를 둥글게
-          side: BorderSide(width: 2, color: Colors.lightBlue[200]!), // 테두리 색상
-        ),
-        onPressed: () {
-          // 버튼이 눌렸을 때의 액션
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15.0), // 버튼 내부 상하 패딩
-          child: Text(
-            title,
-            style: const TextStyle(
-              color: Colors.black, // 텍스트 색상
-              fontSize: 16, // 텍스트 크기
+  Widget _builduserNameButton(String title) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(horizontal: 50), // 좌우 여백
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            shape: const StadiumBorder(), // 버튼의 모서리를 둥글게
+            side: BorderSide(width: 2, color: Colors.lightBlue[200]!), // 테두리 색상
+          ),
+          onPressed: () {
+            _updateDisplayNameDialog();
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 15.0), // 버튼 내부 상하 패딩
+            child: Text(
+              title,
+              style: const TextStyle(
+                color: Colors.black, // 텍스트 색상
+                fontSize: 16, // 텍스트 크기
+              ),
             ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
+
+  Widget _builduserProfileImageButton(String title) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(horizontal: 50), // 좌우 여백
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            shape: const StadiumBorder(), // 버튼의 모서리를 둥글게
+            side: BorderSide(width: 2, color: Colors.lightBlue[200]!), // 테두리 색상
+          ),
+          onPressed: () {
+            _updateProfileImageDialog();
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 15.0), // 버튼 내부 상하 패딩
+            child: Text(
+              title,
+              style: const TextStyle(
+                color: Colors.black, // 텍스트 색상
+                fontSize: 16, // 텍스트 크기
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRoundedButton(String title) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(horizontal: 50), // 좌우 여백
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            shape: const StadiumBorder(), // 버튼의 모서리를 둥글게
+            side: BorderSide(width: 2, color: Colors.lightBlue[200]!), // 테두리 색상
+          ),
+          onPressed: () {},
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 15.0), // 버튼 내부 상하 패딩
+            child: Text(
+              title,
+              style: const TextStyle(
+                color: Colors.black, // 텍스트 색상
+                fontSize: 16, // 텍스트 크기
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
