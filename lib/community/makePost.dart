@@ -20,6 +20,7 @@ class MakePostState extends State<MakePost> {
   final TextEditingController contentController = TextEditingController();
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
   final String _uid = FirebaseAuth.instance.currentUser!.uid;
+  final String? _displayName = FirebaseAuth.instance.currentUser!.displayName;
   List<Map<String, String>>? _images;
   bool checkboxValue = false;
   XFile? image;
@@ -73,23 +74,27 @@ class MakePostState extends State<MakePost> {
 
       if (images != null) {
         await reference.set({
-          "uid": checkboxValue ? '익명' : _uid,
+          "uid": _uid,
+          "name": checkboxValue ? '익명' : _displayName,
           "contents": contents,
           "image": imageUrls,
           "path": imagePaths,
           "dateTime": Timestamp.now(),
           'likedBy': [],
-          'likesCount': 0
+          'likesCount': 0,
+          'anoym': checkboxValue
         });
       } else if (images == null) {
         await reference.set({
-          "uid": checkboxValue ? '익명' : _uid,
+          "uid": _uid,
+          "name": checkboxValue ? '익명' : _displayName,
           "contents": contents,
           "image": null,
           "path": null,
           "dateTime": Timestamp.now(),
           'likedBy': [],
-          'likesCount': 0
+          'likesCount': 0,
+          'anoym': checkboxValue
         });
       }
     } on FirebaseException catch (error) {

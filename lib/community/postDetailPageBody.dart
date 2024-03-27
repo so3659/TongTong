@@ -13,19 +13,23 @@ class FeedDetailPageBody extends StatefulWidget {
   const FeedDetailPageBody({
     super.key,
     required this.uid,
+    required this.name,
     required this.content,
     this.photoUrls,
     required this.dateTime,
     required this.documentId,
     required this.currentUserId,
+    required this.anoym,
   });
 
   final String uid;
+  final String name;
   final String content;
   final List<dynamic>? photoUrls;
   final Timestamp dateTime;
   final String documentId;
   final String currentUserId;
+  final bool anoym;
 
   @override
   State<FeedDetailPageBody> createState() => _FeedDetailPageBodyState();
@@ -69,21 +73,23 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
   void postParameter() {
     if (widget.photoUrls != null) {
       post = FeedPost(
-        uid: widget.uid,
-        content: widget.content,
-        photoUrls: widget.photoUrls,
-        dateTime: widget.dateTime,
-        documentId: widget.documentId,
-        currentUserId: widget.currentUserId,
-      );
+          uid: widget.uid,
+          name: widget.name,
+          content: widget.content,
+          photoUrls: widget.photoUrls,
+          dateTime: widget.dateTime,
+          documentId: widget.documentId,
+          currentUserId: widget.currentUserId,
+          anoym: widget.anoym);
     } else {
       post = FeedPost(
-        uid: widget.uid,
-        content: widget.content,
-        dateTime: widget.dateTime,
-        documentId: widget.documentId,
-        currentUserId: widget.currentUserId,
-      );
+          uid: widget.uid,
+          name: widget.name,
+          content: widget.content,
+          dateTime: widget.dateTime,
+          documentId: widget.documentId,
+          currentUserId: widget.currentUserId,
+          anoym: widget.anoym);
     }
   }
 
@@ -155,7 +161,7 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
                             Container(
                               margin: const EdgeInsets.only(right: 5),
                               child: Text(
-                                widget.uid,
+                                widget.name,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!

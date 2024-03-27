@@ -35,12 +35,15 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
     String commentId = getRandomString(16);
 
     await commentsRef.doc(commentId).set({
-      "uid": checkboxValue ? '익명' : FirebaseAuth.instance.currentUser!.uid,
+      "uid": FirebaseAuth.instance.currentUser!.uid,
+      "name":
+          checkboxValue ? '익명' : FirebaseAuth.instance.currentUser!.displayName,
       'content': content,
       'dateTime': Timestamp.now(),
       'postId': postId,
       'commentId': commentId,
       'likedBy': [],
+      'anoym': checkboxValue
     });
   }
 
@@ -56,13 +59,16 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
 
     // 대댓글 추가 로직
     await commentRef.collection('Replies').doc(replyId).set({
-      "uid": checkboxValue ? '익명' : FirebaseAuth.instance.currentUser!.uid,
+      "uid": FirebaseAuth.instance.currentUser!.uid,
+      "name":
+          checkboxValue ? '익명' : FirebaseAuth.instance.currentUser!.displayName,
       'content': replyContent,
       'dateTime': Timestamp.now(),
       'postId': postId,
       'commentId': commentId,
       'replyId': replyId,
       'likedBy': [],
+      'anoym': checkboxValue
     });
 
     // UI 업데이트 등의 후속 처리
@@ -125,18 +131,22 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
                         widget.post.photoUrls != null
                             ? FeedDetailPageBody(
                                 uid: widget.post.uid,
+                                name: widget.post.name,
                                 content: widget.post.content,
                                 photoUrls: widget.post.photoUrls,
                                 dateTime: widget.post.dateTime,
                                 documentId: widget.post.documentId,
                                 currentUserId: widget.post.currentUserId,
+                                anoym: widget.post.anoym,
                               )
                             : FeedDetailPageBody(
                                 uid: widget.post.uid,
+                                name: widget.post.name,
                                 content: widget.post.content,
                                 dateTime: widget.post.dateTime,
                                 documentId: widget.post.documentId,
                                 currentUserId: widget.post.currentUserId,
+                                anoym: widget.post.anoym,
                               ),
                       ],
                     ),
@@ -183,10 +193,12 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
                                     CommentList(
                                       // 댓글 정보를 사용하여 CommentList 위젯 생성
                                       uid: comment['uid'],
+                                      name: comment['name'],
                                       content: comment['content'],
                                       dateTime: comment['dateTime'],
                                       postId: comment['postId'],
                                       commentId: comment['commentId'],
+                                      anoym: comment['anoym'],
                                     ),
                                     StreamBuilder<QuerySnapshot>(
                                       // 대댓글 목록을 가져오는 스트림
@@ -229,11 +241,13 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
                                                     as Map<String, dynamic>;
                                             return ReplyList(
                                               uid: reply['uid'],
+                                              name: reply['name'],
                                               content: reply['content'],
                                               dateTime: reply['dateTime'],
                                               postId: reply['postId'],
                                               commentId: reply['commentId'],
                                               replyId: reply['replyId'],
+                                              anoym: reply['anoym'],
                                             );
                                           },
                                         );

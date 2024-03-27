@@ -9,19 +9,23 @@ class ReplyList extends StatefulWidget {
   const ReplyList({
     super.key,
     required this.uid,
+    required this.name,
     required this.content,
     required this.dateTime,
     required this.postId,
     required this.commentId,
     required this.replyId,
+    required this.anoym,
   });
 
   final String uid;
+  final String name;
   final String content;
   final Timestamp dateTime;
   final String postId;
   final String commentId;
   final String replyId;
+  final bool anoym;
 
   @override
   State<ReplyList> createState() => ReplyListState();
@@ -110,7 +114,7 @@ class ReplyListState extends State<ReplyList> {
                             Container(
                               margin: const EdgeInsets.only(right: 5),
                               child: Text(
-                                widget.uid,
+                                widget.name,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!

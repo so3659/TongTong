@@ -120,20 +120,24 @@ class SearchPageState extends State<SearchPage> {
                     return (post['image'] != null
                         ? (FeedPageBody(
                             uid: post['uid'],
+                            name: post['name'],
                             content: post['contents'],
                             photoUrls: post['image'],
                             dateTime: post['dateTime'],
                             documentId: post.id,
                             currentUserId:
                                 FirebaseAuth.instance.currentUser!.uid,
+                            anoym: post['anoym'],
                           ))
                         : (FeedPageBody(
                             uid: post['uid'],
+                            name: post['name'],
                             content: post['contents'],
                             dateTime: post['dateTime'],
                             documentId: post.id,
                             currentUserId:
                                 FirebaseAuth.instance.currentUser!.uid,
+                            anoym: post['anoym'],
                           )));
                   },
                 );

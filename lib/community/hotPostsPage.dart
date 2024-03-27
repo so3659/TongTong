@@ -87,18 +87,22 @@ class HotPostPageState extends ConsumerState<HotPostPage> {
                   return (item['image'] != null
                       ? (FeedPageBody(
                           uid: item['uid'],
+                          name: item['name'],
                           content: item['contents'],
                           photoUrls: item['image'],
                           dateTime: item['dateTime'],
                           documentId: item.id,
                           currentUserId: currentUserId,
+                          anoym: item['anoym'],
                         ))
                       : (FeedPageBody(
                           uid: item['uid'],
+                          name: item['name'],
                           content: item['contents'],
                           dateTime: item['dateTime'],
                           documentId: item.id,
                           currentUserId: currentUserId,
+                          anoym: item['anoym'],
                         )));
                 },
                 noItemsFoundIndicatorBuilder: (context) => const Center(

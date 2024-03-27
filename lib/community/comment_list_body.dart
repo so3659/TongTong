@@ -45,17 +45,21 @@ class CommentList extends ConsumerStatefulWidget {
   const CommentList({
     super.key,
     required this.uid,
+    required this.name,
     required this.content,
     required this.dateTime,
     required this.postId,
     required this.commentId,
+    required this.anoym,
   });
 
   final String uid;
+  final String name;
   final String content;
   final Timestamp dateTime;
   final String postId;
   final String commentId;
+  final bool anoym;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => CommentListState();
@@ -169,7 +173,7 @@ class CommentListState extends ConsumerState<CommentList> {
                               Container(
                                 margin: const EdgeInsets.only(right: 5),
                                 child: Text(
-                                  widget.uid,
+                                  widget.name,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium!
