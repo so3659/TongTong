@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:tongtong/community/updatePost.dart';
+import 'package:tongtong/services/customPageView.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -167,7 +168,10 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
                             Container(
                               margin: const EdgeInsets.only(right: 5),
                               child: Text(
-                                widget.name,
+                                widget.anoym
+                                    ? '익명'
+                                    : FirebaseAuth
+                                        .instance.currentUser!.displayName!,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
@@ -289,44 +293,7 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
                             const SizedBox(
                               height: 20,
                             ),
-                            AspectRatio(
-                                aspectRatio: 1.0,
-                                child: Stack(
-                                  alignment: Alignment.topRight,
-                                  children: [
-                                    ClipRRect(
-                                        // ClipRRect를 사용하여 이미지를 둥글게 잘라냅니다.
-                                        borderRadius: BorderRadius.circular(15),
-                                        child: PageView.builder(
-                                          onPageChanged: (value) {
-                                            setState(() {
-                                              currentPage = value;
-                                            });
-                                          },
-                                          itemCount: widget.photoUrls!.length,
-                                          itemBuilder: (context, index) {
-                                            return Image.network(
-                                              widget.photoUrls![index],
-                                              fit: BoxFit.fitWidth,
-                                            );
-                                          },
-                                        )),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 5, horizontal: 10),
-                                      margin: const EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.5),
-                                          borderRadius:
-                                              BorderRadius.circular(500)),
-                                      child: Text(
-                                        '${currentPage + 1} / ${widget.photoUrls!.length}', // 현재 페이지 / 전체 페이지
-                                        style: const TextStyle(
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                  ],
-                                )),
+                            CustomPageView(photoUrls: widget.photoUrls!),
                             const SizedBox(
                               height: 15,
                             ),

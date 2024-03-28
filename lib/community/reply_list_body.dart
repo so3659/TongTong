@@ -121,7 +121,10 @@ class ReplyListState extends State<ReplyList> {
                             Container(
                               margin: const EdgeInsets.only(right: 5),
                               child: Text(
-                                widget.name,
+                                widget.anoym
+                                    ? '익명'
+                                    : FirebaseAuth
+                                        .instance.currentUser!.displayName!,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
