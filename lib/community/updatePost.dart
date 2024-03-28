@@ -56,7 +56,6 @@ class UpdatePostState extends State<UpdatePost> {
         isLoading = false; // 데이터를 로드한 후 로딩 상태를 false로 설정
       });
     } catch (e) {
-      print("Error fetching post data: $e");
       setState(() {
         isLoading = false;
       });

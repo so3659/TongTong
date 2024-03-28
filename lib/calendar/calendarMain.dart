@@ -1,12 +1,8 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:tongtong/theme/theme.dart';
-import 'dart:collection';
 
 class Calendar extends StatefulWidget {
   const Calendar({super.key});
@@ -20,12 +16,6 @@ class CalendarState extends State<Calendar> {
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   Map<DateTime, List<dynamic>> _fetchedEvents = {};
-  final String _chars =
-      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-  final Random _rnd = Random();
-
-  String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
-      length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
   @override
   void initState() {
@@ -239,7 +229,7 @@ class CalendarState extends State<Calendar> {
       heroTag: 'MakeAppointment',
       shape: const CircleBorder(),
       onPressed: () {
-        _addEvent();
+        GoRouter.of(context).push('/makeAppointment');
       },
       backgroundColor: Colors.indigo.shade400,
       child: const Icon(
@@ -268,43 +258,5 @@ class CalendarState extends State<Calendar> {
         ),
       ),
     );
-  }
-
-  void _addEvent() async {
-    TextEditingController eventController = TextEditingController();
-    String postKey = getRandomString(16);
-    await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: const Text("새 이벤트 추가"),
-              content: TextField(
-                controller: eventController,
-                decoration: const InputDecoration(hintText: "이벤트 타이틀"),
-              ),
-              actions: [
-                TextButton(
-                  child: const Text("취소"),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                TextButton(
-                  child: const Text("저장"),
-                  onPressed: () async {
-                    if (eventController.text.isEmpty) return;
-                    await FirebaseFirestore.instance
-                        .collection('events')
-                        .doc(postKey)
-                        .set({
-                      'title': eventController.text,
-                      'date': Timestamp.fromDate(_selectedDay),
-                      'uid': FirebaseAuth.instance.currentUser!.uid,
-                      'documentId': postKey,
-                    });
-                    Navigator.pop(context);
-                    eventController.clear();
-                    setState(() {});
-                  },
-                ),
-              ],
-            ));
   }
 }

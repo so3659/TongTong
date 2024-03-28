@@ -65,6 +65,7 @@ dependencies:
   flutter_secure_storage: ^9.0.0
   flutter_linkify: ^6.0.0
   firebase_messaging: ^14.7.21
+  syncfusion_flutter_datepicker: ^25.1.37
 
 dev_dependencies:
   flutter_test:
