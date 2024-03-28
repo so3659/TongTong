@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -17,6 +20,12 @@ class CalendarState extends State<Calendar> {
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   Map<DateTime, List<dynamic>> _fetchedEvents = {};
+  final String _chars =
+      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+  final Random _rnd = Random();
+
+  String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+      length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
   @override
   void initState() {
@@ -32,15 +41,27 @@ class CalendarState extends State<Calendar> {
       var data = doc.data() as Map<String, dynamic>;
       DateTime date = (data['date'] as Timestamp).toDate();
       String title = data['title'];
+      String uid = data['uid'];
+      String documentId = data['documentId'];
       DateTime dateOnly = DateTime(date.year, date.month, date.day);
       if (events[dateOnly] != null) {
-        events[dateOnly]!.add(title);
+        events[dateOnly]!.add({
+          'title': title,
+          'uid': uid,
+          'documentId': documentId,
+        });
       } else {
-        events[dateOnly] = [title];
+        events[dateOnly] = [
+          {
+            'title': title,
+            'uid': uid,
+            'documentId': documentId,
+          }
+        ];
       }
     }
     setState(() {
-      _fetchedEvents = events; // 상태 변수 업데이트
+      _fetchedEvents = events; // Update the state variable
     });
   }
 
@@ -112,32 +133,97 @@ class CalendarState extends State<Calendar> {
               var value = _fetchedEvents[key];
               if (isSameDay(key, _selectedDay)) {
                 return Column(
-                  children: value!
-                      .map((event) => Container(
-                            margin: const EdgeInsets.all(8.0),
-                            child: Card(
-                                elevation: 2.0,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                    side: const BorderSide(
-                                      color: Colors.grey,
-                                      width: 0.5,
-                                    )),
-                                child: ListTile(
-                                  leading: Image.asset(
-                                    'assets/images/tong_logo.png',
-                                    width: 50, // Adjust the width as desired
-                                    height: 50, // Adjust the height as desired
-                                  ),
-                                  title: Text(event),
-                                  tileColor: Colors.white,
-                                  trailing: IconButton(
-                                    icon: const Icon(Icons.more_vert),
-                                    onPressed: () {},
-                                  ),
-                                )),
-                          ))
-                      .toList(),
+                  children: value!.map((event) {
+                    var data = event as Map<String, dynamic>;
+                    var eventTitle = data['title'];
+                    var eventUid = data['uid'];
+                    var eventDocumentId = data['documentId'];
+                    return Container(
+                      margin: const EdgeInsets.all(8.0),
+                      child: Card(
+                          elevation: 2.0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              side: const BorderSide(
+                                color: Colors.grey,
+                                width: 0.5,
+                              )),
+                          child: ListTile(
+                            leading: Image.asset(
+                              'assets/images/tong_logo.png',
+                              width: 50, // Adjust the width as desired
+                              height: 50, // Adjust the height as desired
+                            ),
+                            title: Text(eventTitle),
+                            tileColor: Colors.white,
+                            trailing: IconButton(
+                              icon: Icon(
+                                Icons.more_vert,
+                                color: eventUid ==
+                                        FirebaseAuth.instance.currentUser!.uid
+                                    ? Colors.black87
+                                    : Colors.grey[400],
+                              ),
+                              onPressed: () {
+                                eventUid ==
+                                        FirebaseAuth.instance.currentUser!.uid
+                                    ? showModalBottomSheet(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return SizedBox(
+                                              height: 150,
+                                              child: Center(
+                                                  child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: <Widget>[
+                                                    Align(
+                                                      alignment:
+                                                          Alignment.topRight,
+                                                      child: IconButton(
+                                                        icon: const Icon(
+                                                            Icons.close),
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      child: Column(
+                                                        children: [
+                                                          ListTile(
+                                                            leading: const Icon(
+                                                                Icons.delete),
+                                                            title: const Text(
+                                                                '삭제'),
+                                                            onTap: () async {
+                                                              await FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'events')
+                                                                  .doc(
+                                                                      eventDocumentId)
+                                                                  .delete();
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ])));
+                                        },
+                                      )
+                                    : null;
+                              },
+                            ),
+                          )),
+                    );
+                  }).toList(),
                 );
               } else {
                 return const SizedBox
@@ -186,6 +272,7 @@ class CalendarState extends State<Calendar> {
 
   void _addEvent() async {
     TextEditingController eventController = TextEditingController();
+    String postKey = getRandomString(16);
     await showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -203,9 +290,14 @@ class CalendarState extends State<Calendar> {
                   child: const Text("저장"),
                   onPressed: () async {
                     if (eventController.text.isEmpty) return;
-                    await FirebaseFirestore.instance.collection('events').add({
+                    await FirebaseFirestore.instance
+                        .collection('events')
+                        .doc(postKey)
+                        .set({
                       'title': eventController.text,
                       'date': Timestamp.fromDate(_selectedDay),
+                      'uid': FirebaseAuth.instance.currentUser!.uid,
+                      'documentId': postKey,
                     });
                     Navigator.pop(context);
                     eventController.clear();
