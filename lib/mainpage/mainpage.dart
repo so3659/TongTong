@@ -91,7 +91,7 @@ class MainpageState extends State<Mainpage> {
                                         height: 100,
                                         width: 100,
                                       ),
-                                      Text('연습실 예약')
+                                      Text('연습실 추천')
                                     ]),
                               ),
                             ),
