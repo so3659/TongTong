@@ -9,6 +9,7 @@ class FeedPost {
   final String documentId;
   final String currentUserId;
   final bool anoym;
+  final int commentsCount;
 
   FeedPost({
     required this.uid,
@@ -19,5 +20,6 @@ class FeedPost {
     required this.documentId,
     required this.currentUserId,
     required this.anoym,
+    required this.commentsCount,
   });
 }

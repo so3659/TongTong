@@ -128,6 +128,7 @@ class SearchPageState extends State<SearchPage> {
                             currentUserId:
                                 FirebaseAuth.instance.currentUser!.uid,
                             anoym: post['anoym'],
+                            commentsCount: post['commentsCount'],
                           ))
                         : (FeedPageBody(
                             uid: post['uid'],
@@ -138,6 +139,7 @@ class SearchPageState extends State<SearchPage> {
                             currentUserId:
                                 FirebaseAuth.instance.currentUser!.uid,
                             anoym: post['anoym'],
+                            commentsCount: post['commentsCount'],
                           )));
                   },
                 );

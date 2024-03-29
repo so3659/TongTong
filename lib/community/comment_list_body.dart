@@ -46,16 +46,16 @@ class ReplyNotifier extends StateNotifier<String?> {
 }
 
 class CommentList extends ConsumerStatefulWidget {
-  const CommentList({
-    super.key,
-    required this.uid,
-    required this.name,
-    required this.content,
-    required this.dateTime,
-    required this.postId,
-    required this.commentId,
-    required this.anoym,
-  });
+  const CommentList(
+      {super.key,
+      required this.uid,
+      required this.name,
+      required this.content,
+      required this.dateTime,
+      required this.postId,
+      required this.commentId,
+      required this.anoym,
+      required this.replyCount});
 
   final String uid;
   final String name;
@@ -64,6 +64,7 @@ class CommentList extends ConsumerStatefulWidget {
   final String postId;
   final String commentId;
   final bool anoym;
+  final int replyCount;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => CommentListState();

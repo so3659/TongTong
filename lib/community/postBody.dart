@@ -25,6 +25,7 @@ class FeedPageBody extends StatefulWidget {
     required this.documentId,
     required this.currentUserId,
     required this.anoym,
+    required this.commentsCount,
   });
 
   final String uid;
@@ -35,6 +36,7 @@ class FeedPageBody extends StatefulWidget {
   final String documentId;
   final String currentUserId;
   final bool anoym;
+  final int commentsCount;
 
   @override
   FeedPageBodyState createState() => FeedPageBodyState();
@@ -88,7 +90,8 @@ class FeedPageBodyState extends State<FeedPageBody> {
           dateTime: widget.dateTime,
           documentId: widget.documentId,
           currentUserId: widget.currentUserId,
-          anoym: widget.anoym);
+          anoym: widget.anoym,
+          commentsCount: widget.commentsCount);
     } else {
       post = FeedPost(
           uid: widget.uid,
@@ -97,7 +100,8 @@ class FeedPageBodyState extends State<FeedPageBody> {
           dateTime: widget.dateTime,
           documentId: widget.documentId,
           currentUserId: widget.currentUserId,
-          anoym: widget.anoym);
+          anoym: widget.anoym,
+          commentsCount: widget.commentsCount);
     }
   }
 

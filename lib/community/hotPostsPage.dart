@@ -95,6 +95,7 @@ class HotPostPageState extends ConsumerState<HotPostPage> {
                           documentId: item.id,
                           currentUserId: currentUserId,
                           anoym: item['anoym'],
+                          commentsCount: item['commentsCount'],
                         ))
                       : (FeedPageBody(
                           uid: item['uid'],
@@ -104,6 +105,7 @@ class HotPostPageState extends ConsumerState<HotPostPage> {
                           documentId: item.id,
                           currentUserId: currentUserId,
                           anoym: item['anoym'],
+                          commentsCount: item['commentsCount'],
                         )));
                 },
                 noItemsFoundIndicatorBuilder: (context) => const Center(

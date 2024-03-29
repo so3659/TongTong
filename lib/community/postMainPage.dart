@@ -138,6 +138,7 @@ class MyMemoState extends State<MyMemoPage> {
                       documentId: item.id,
                       currentUserId: currentUserId,
                       anoym: item['anoym'],
+                      commentsCount: item['commentsCount'],
                     ))
                   : (FeedPageBody(
                       uid: item['uid'],
@@ -147,6 +148,7 @@ class MyMemoState extends State<MyMemoPage> {
                       documentId: item.id,
                       currentUserId: currentUserId,
                       anoym: item['anoym'],
+                      commentsCount: item['commentsCount'],
                     )));
             },
             noItemsFoundIndicatorBuilder: (context) => const Center(

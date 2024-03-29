@@ -82,7 +82,8 @@ class MakePostState extends State<MakePost> {
           "dateTime": Timestamp.now(),
           'likedBy': [],
           'likesCount': 0,
-          'anoym': checkboxValue
+          'anoym': checkboxValue,
+          'commentsCount': 0,
         });
       } else if (images == null) {
         await reference.set({
@@ -94,7 +95,8 @@ class MakePostState extends State<MakePost> {
           "dateTime": Timestamp.now(),
           'likedBy': [],
           'likesCount': 0,
-          'anoym': checkboxValue
+          'anoym': checkboxValue,
+          'commentsCount': 0,
         });
       }
     } on FirebaseException catch (error) {

@@ -43,7 +43,8 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
       'postId': postId,
       'commentId': commentId,
       'likedBy': [],
-      'anoym': checkboxValue
+      'anoym': checkboxValue,
+      'replyCount': 0,
     });
   }
 
@@ -138,6 +139,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
                                 documentId: widget.post.documentId,
                                 currentUserId: widget.post.currentUserId,
                                 anoym: widget.post.anoym,
+                                commentCount: widget.post.commentsCount,
                               )
                             : FeedDetailPageBody(
                                 uid: widget.post.uid,
@@ -147,6 +149,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
                                 documentId: widget.post.documentId,
                                 currentUserId: widget.post.currentUserId,
                                 anoym: widget.post.anoym,
+                                commentCount: widget.post.commentsCount,
                               ),
                       ],
                     ),
@@ -199,6 +202,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
                                       postId: comment['postId'],
                                       commentId: comment['commentId'],
                                       anoym: comment['anoym'],
+                                      replyCount: comment['replyCount'],
                                     ),
                                     StreamBuilder<QuerySnapshot>(
                                       // 대댓글 목록을 가져오는 스트림
