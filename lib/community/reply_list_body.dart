@@ -137,7 +137,89 @@ class ReplyListState extends State<ReplyList> {
                                   locale: "en_short"),
                               style: GoogleFonts.mulish(
                                   fontSize: 12, color: Colors.grey),
-                            )
+                            ),
+                            const Spacer(),
+                            InkWell(
+                              highlightColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              onTap: widget.uid ==
+                                      FirebaseAuth.instance.currentUser!.uid
+                                  ? () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return SizedBox(
+                                              height: 150,
+                                              child: Center(
+                                                  child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: <Widget>[
+                                                    Align(
+                                                      alignment:
+                                                          Alignment.topRight,
+                                                      child: IconButton(
+                                                        icon: const Icon(
+                                                            Icons.close),
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      child: Column(
+                                                        children: [
+                                                          // ListTile(
+                                                          //   leading: const Icon(
+                                                          //       Icons.update),
+                                                          //   title: const Text(
+                                                          //       '수정'),
+                                                          //   onTap: () {
+                                                          //     // Navigator.of(
+                                                          //     //         context,
+                                                          //     //         rootNavigator:
+                                                          //     //             true)
+                                                          //     //     .push(MaterialPageRoute(
+                                                          //     //         builder:
+                                                          //     //             (context) =>
+                                                          //     //                 const UpdatePost()));
+                                                          //   },
+                                                          // ),
+                                                          ListTile(
+                                                            leading: const Icon(
+                                                                Icons.delete),
+                                                            title: const Text(
+                                                                '삭제'),
+                                                            onTap: () {
+                                                              deleteReply();
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ])));
+                                        },
+                                      );
+                                    }
+                                  : null,
+                              child: Padding(
+                                padding: EdgeInsets.zero,
+                                child: Icon(
+                                  Icons.more_horiz,
+                                  color: widget.uid ==
+                                          FirebaseAuth.instance.currentUser!.uid
+                                      ? Colors.black87
+                                      : Colors.grey[400],
+                                  size: 17,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                         Linkify(
@@ -223,5 +305,35 @@ class ReplyListState extends State<ReplyList> {
         }
       },
     );
+  }
+
+  Future<void> deleteReply() async {
+    var replyRef = FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(widget.postId)
+        .collection('comments')
+        .doc(widget.commentId)
+        .collection('Replies')
+        .doc(widget.replyId);
+
+    // 대댓글을 삭제합니다.
+    await replyRef.delete();
+
+    // 댓글 수를 감소시킵니다.
+    await FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(widget.postId)
+        .update({
+      'commentsCount': FieldValue.increment(-1),
+    });
+
+    await FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(widget.postId)
+        .collection('comments')
+        .doc(widget.commentId)
+        .update({
+      'replyCount': FieldValue.increment(-1),
+    });
   }
 }

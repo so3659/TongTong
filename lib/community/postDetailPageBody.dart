@@ -200,7 +200,7 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return SizedBox(
-                                              height: 200,
+                                              height: 150,
                                               child: Center(
                                                   child: Column(
                                                       mainAxisAlignment:
@@ -224,22 +224,22 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
                                                     Container(
                                                       child: Column(
                                                         children: [
-                                                          ListTile(
-                                                            leading: const Icon(
-                                                                Icons.update),
-                                                            title: const Text(
-                                                                '수정'),
-                                                            onTap: () {
-                                                              // Navigator.of(
-                                                              //         context,
-                                                              //         rootNavigator:
-                                                              //             true)
-                                                              //     .push(MaterialPageRoute(
-                                                              //         builder:
-                                                              //             (context) =>
-                                                              //                 const UpdatePost()));
-                                                            },
-                                                          ),
+                                                          // ListTile(
+                                                          //   leading: const Icon(
+                                                          //       Icons.update),
+                                                          //   title: const Text(
+                                                          //       '수정'),
+                                                          //   onTap: () {
+                                                          //     // Navigator.of(
+                                                          //     //         context,
+                                                          //     //         rootNavigator:
+                                                          //     //             true)
+                                                          //     //     .push(MaterialPageRoute(
+                                                          //     //         builder:
+                                                          //     //             (context) =>
+                                                          //     //                 const UpdatePost()));
+                                                          //   },
+                                                          // ),
                                                           ListTile(
                                                             leading: const Icon(
                                                                 Icons.delete),

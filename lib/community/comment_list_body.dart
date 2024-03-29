@@ -8,7 +8,6 @@ import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:tongtong/community/reply_list_body.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 final focusManagerProvider = ChangeNotifierProvider((ref) => FocusManager());
@@ -55,7 +54,8 @@ class CommentList extends ConsumerStatefulWidget {
       required this.postId,
       required this.commentId,
       required this.anoym,
-      required this.replyCount});
+      required this.replyCount,
+      required this.isDelete});
 
   final String uid;
   final String name;
@@ -65,6 +65,7 @@ class CommentList extends ConsumerStatefulWidget {
   final String commentId;
   final bool anoym;
   final int replyCount;
+  final bool isDelete;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => CommentListState();
@@ -168,7 +169,11 @@ class CommentListState extends ConsumerState<CommentList> {
                                 ? const AssetImage(
                                         'assets/images/tong_logo.png')
                                     as ImageProvider<Object>
-                                : CachedNetworkImageProvider(profileImage!),
+                                : widget.isDelete
+                                    ? const AssetImage(
+                                            'assets/images/tong_logo.png')
+                                        as ImageProvider<Object>
+                                    : CachedNetworkImageProvider(profileImage!),
                             radius: 20,
                           ),
                         ),
@@ -184,12 +189,19 @@ class CommentListState extends ConsumerState<CommentList> {
                                 child: Text(
                                   widget.anoym
                                       ? '익명'
-                                      : FirebaseAuth
-                                          .instance.currentUser!.displayName!,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(color: Colors.black87),
+                                      : widget.isDelete
+                                          ? '(삭제된 댓글)'
+                                          : FirebaseAuth.instance.currentUser!
+                                              .displayName!,
+                                  style: widget.isDelete
+                                      ? Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(color: Colors.grey)
+                                      : Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(color: Colors.black87),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
@@ -198,7 +210,90 @@ class CommentListState extends ConsumerState<CommentList> {
                                     locale: "en_short"),
                                 style: GoogleFonts.mulish(
                                     fontSize: 12, color: Colors.grey),
-                              )
+                              ),
+                              const Spacer(),
+                              InkWell(
+                                highlightColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                                onTap: widget.uid ==
+                                        FirebaseAuth.instance.currentUser!.uid
+                                    ? () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return SizedBox(
+                                                height: 150,
+                                                child: Center(
+                                                    child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: <Widget>[
+                                                      Align(
+                                                        alignment:
+                                                            Alignment.topRight,
+                                                        child: IconButton(
+                                                          icon: const Icon(
+                                                              Icons.close),
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        child: Column(
+                                                          children: [
+                                                            // ListTile(
+                                                            //   leading: const Icon(
+                                                            //       Icons.update),
+                                                            //   title: const Text(
+                                                            //       '수정'),
+                                                            //   onTap: () {
+                                                            //     // Navigator.of(
+                                                            //     //         context,
+                                                            //     //         rootNavigator:
+                                                            //     //             true)
+                                                            //     //     .push(MaterialPageRoute(
+                                                            //     //         builder:
+                                                            //     //             (context) =>
+                                                            //     //                 const UpdatePost()));
+                                                            //   },
+                                                            // ),
+                                                            ListTile(
+                                                              leading: const Icon(
+                                                                  Icons.delete),
+                                                              title: const Text(
+                                                                  '삭제'),
+                                                              onTap: () {
+                                                                deleteComment();
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ])));
+                                          },
+                                        );
+                                      }
+                                    : null,
+                                child: Padding(
+                                  padding: EdgeInsets.zero,
+                                  child: Icon(
+                                    Icons.more_horiz,
+                                    color: widget.uid ==
+                                            FirebaseAuth
+                                                .instance.currentUser!.uid
+                                        ? Colors.black87
+                                        : Colors.grey[400],
+                                    size: 17,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                           Linkify(
@@ -207,11 +302,17 @@ class CommentListState extends ConsumerState<CommentList> {
                                 throw Exception('Could not launch ${link.url}');
                               }
                             },
-                            text: widget.content,
-                            style: GoogleFonts.mulish(
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w300),
+                            text:
+                                widget.isDelete ? '삭제된 댓글입니다' : widget.content,
+                            style: widget.isDelete
+                                ? GoogleFonts.mulish(
+                                    color: Colors.grey,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700)
+                                : GoogleFonts.mulish(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w300),
                             linkStyle: GoogleFonts.mulish(
                               color: Colors.blue,
                               fontSize: 14,
@@ -316,5 +417,36 @@ class CommentListState extends ConsumerState<CommentList> {
         },
       ),
     ]);
+  }
+
+  Future<void> deleteComment() async {
+    var commentRef = FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(widget.postId)
+        .collection('comments')
+        .doc(widget.commentId);
+    var commentSnapshot = await commentRef.get();
+
+    if (commentSnapshot.exists) {
+      var repliesCount = commentSnapshot.data()?['replyCount'] ?? 0;
+
+      if (repliesCount > 0) {
+        // 대댓글이 있는 경우, 댓글의 내용과 유저 이름을 변경하고, 유저 프로필을 기본 이미지로 변경합니다.
+        await commentRef.update({
+          'isDeleted': true,
+        });
+      } else {
+        // 대댓글이 없는 경우, 댓글을 삭제합니다.
+        await commentRef.delete();
+      }
+
+      // 댓글 수를 감소시킵니다.
+      await FirebaseFirestore.instance
+          .collection('Posts')
+          .doc(widget.postId)
+          .update({
+        'commentsCount': FieldValue.increment(-1),
+      });
+    }
   }
 }

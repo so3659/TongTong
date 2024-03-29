@@ -47,6 +47,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
       'likedBy': [],
       'anoym': checkboxValue,
       'replyCount': 0,
+      'isDeleted': false
     });
     await postRef.update({
       'commentsCount': FieldValue.increment(1),
@@ -216,6 +217,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
                                       commentId: comment['commentId'],
                                       anoym: comment['anoym'],
                                       replyCount: comment['replyCount'],
+                                      isDelete: comment['isDeleted'],
                                     ),
                                     StreamBuilder<QuerySnapshot>(
                                       // 대댓글 목록을 가져오는 스트림
