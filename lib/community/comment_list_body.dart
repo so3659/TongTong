@@ -353,8 +353,10 @@ class CommentListState extends ConsumerState<CommentList> {
                                           padding: EdgeInsets.zero,
                                           constraints: const BoxConstraints(),
                                           onPressed: () {
-                                            handleLikeButtonPressed(
-                                                likedBy, isLiked);
+                                            widget.isDelete
+                                                ? null
+                                                : handleLikeButtonPressed(
+                                                    likedBy, isLiked);
                                           },
                                         ),
                                       ),
@@ -374,7 +376,9 @@ class CommentListState extends ConsumerState<CommentList> {
                                         top: 3, // 다음 아이콘의 시작점을 조정하세요
                                         child: IconButton(
                                           onPressed: () {
-                                            showReplyDialog();
+                                            widget.isDelete
+                                                ? null
+                                                : showReplyDialog();
                                           },
                                           icon: customIcon(
                                             context,
