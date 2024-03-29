@@ -23,11 +23,13 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
   final FocusNode _focusNode = FocusNode();
   String? _replyingToCommentId;
   bool checkboxValue = false;
+  final TextEditingController contents = TextEditingController();
 
   String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
       length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
   Future<void> addComment(String postId, String content) async {
+    if (contents.text.isEmpty) return;
     DocumentReference postRef =
         FirebaseFirestore.instance.collection('Posts').doc(postId);
 
@@ -46,10 +48,17 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
       'anoym': checkboxValue,
       'replyCount': 0,
     });
+    await postRef.update({
+      'commentsCount': FieldValue.increment(1),
+    });
   }
 
   Future<void> addReplyToComment(
       String postId, String commentId, String replyContent) async {
+    if (contents.text.isEmpty) return;
+    DocumentReference postRef = FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(widget.post.documentId);
     DocumentReference commentRef = FirebaseFirestore.instance
         .collection('Posts')
         .doc(widget.post.documentId) // 게시글 ID
@@ -72,7 +81,12 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
       'anoym': checkboxValue
     });
 
-    // UI 업데이트 등의 후속 처리
+    await postRef.update({
+      'commentsCount': FieldValue.increment(1),
+    });
+    await commentRef.update({
+      'replyCount': FieldValue.increment(1),
+    });
   }
 
   @override
@@ -81,7 +95,6 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
       final focusManager = ref.watch(focusManagerProvider);
       final currentReplyingCommentId = ref.watch(replyProvider);
 
-      final TextEditingController contents = TextEditingController();
       void startReplyingToComment(String commentId) {
         _replyingToCommentId = commentId; // 대댓글을 달 댓글의 ID를 저장
       }
@@ -139,7 +152,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
                                 documentId: widget.post.documentId,
                                 currentUserId: widget.post.currentUserId,
                                 anoym: widget.post.anoym,
-                                commentCount: widget.post.commentsCount,
+                                commentsCount: widget.post.commentsCount,
                               )
                             : FeedDetailPageBody(
                                 uid: widget.post.uid,
@@ -149,7 +162,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
                                 documentId: widget.post.documentId,
                                 currentUserId: widget.post.currentUserId,
                                 anoym: widget.post.anoym,
-                                commentCount: widget.post.commentsCount,
+                                commentsCount: widget.post.commentsCount,
                               ),
                       ],
                     ),

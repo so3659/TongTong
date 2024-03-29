@@ -24,7 +24,7 @@ class FeedDetailPageBody extends StatefulWidget {
     required this.documentId,
     required this.currentUserId,
     required this.anoym,
-    required this.commentCount,
+    required this.commentsCount,
   });
 
   final String uid;
@@ -35,7 +35,7 @@ class FeedDetailPageBody extends StatefulWidget {
   final String documentId;
   final String currentUserId;
   final bool anoym;
-  final int commentCount;
+  final int commentsCount;
 
   @override
   State<FeedDetailPageBody> createState() => _FeedDetailPageBodyState();
@@ -88,7 +88,7 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
           documentId: widget.documentId,
           currentUserId: widget.currentUserId,
           anoym: widget.anoym,
-          commentsCount: widget.commentCount);
+          commentsCount: widget.commentsCount);
     } else {
       post = FeedPost(
           uid: widget.uid,
@@ -98,7 +98,7 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
           documentId: widget.documentId,
           currentUserId: widget.currentUserId,
           anoym: widget.anoym,
-          commentsCount: widget.commentCount);
+          commentsCount: widget.commentsCount);
     }
   }
 
@@ -366,12 +366,12 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
                                         constraints: const BoxConstraints(),
                                       ),
                                     ),
-                                    const Positioned(
+                                    Positioned(
                                       left: 58, // 아이콘과 텍스트 간의 간격을 조정
                                       top: 15, // 아이콘과 텍스트의 세로 위치를 맞추기 위해 조정하세요
                                       child: Text(
-                                        '0',
-                                        style: TextStyle(
+                                        widget.commentsCount.toString(),
+                                        style: const TextStyle(
                                           color: Colors.grey,
                                           fontSize: 14,
                                         ),

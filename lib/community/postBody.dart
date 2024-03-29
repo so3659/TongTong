@@ -373,12 +373,12 @@ class FeedPageBodyState extends State<FeedPageBody> {
                                         constraints: const BoxConstraints(),
                                       ),
                                     ),
-                                    const Positioned(
+                                    Positioned(
                                       left: 58, // 아이콘과 텍스트 간의 간격을 조정
                                       top: 15, // 아이콘과 텍스트의 세로 위치를 맞추기 위해 조정하세요
                                       child: Text(
-                                        '0',
-                                        style: TextStyle(
+                                        widget.commentsCount.toString(),
+                                        style: const TextStyle(
                                           color: Colors.grey,
                                           fontSize: 14,
                                         ),
