@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  await user!.updateDisplayName(userNameController.text);
+                  updateDisplayName(userNameController.text);
                   Navigator.of(context).pop();
                 },
                 child: const Text('확인'),
@@ -54,6 +55,32 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           );
         });
+  }
+
+  Future<bool> isDisplayNameTaken(String displayName) async {
+    final query = await FirebaseFirestore.instance
+        .collection('users')
+        .where('username', isEqualTo: displayName)
+        .get();
+
+    return query.docs.isNotEmpty;
+  }
+
+  Future<void> updateDisplayName(String displayName) async {
+    if (user != null && await isDisplayNameTaken(displayName) == false) {
+      // displayName이 중복되지 않음
+      await user!.updateDisplayName(displayName);
+
+      // Firestore에 사용자 displayName 업데이트
+      FirebaseFirestore.instance.collection('users').doc(_uid).set({
+        'username': displayName,
+      }, SetOptions(merge: true));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('이미 존재하는 이름입니다'), //snack bar의 내용. icon, button같은것도 가능하다.
+        duration: Duration(seconds: 3), //올라와있는 시간
+      ));
+    }
   }
 
   Future? _updateProfileImageDialog() async {
