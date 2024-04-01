@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tongtong/community/postBody.dart';
+import 'package:algolia_helper_flutter/algolia_helper_flutter.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -13,13 +15,15 @@ class SearchPage extends StatefulWidget {
 class SearchPageState extends State<SearchPage> {
   final TextEditingController _textEditingController = TextEditingController();
   Future<QuerySnapshot>? futureSearchResults;
+  final searcher = HitsSearcher(
+    applicationID: 'GZ9N2RJ1BA',
+    apiKey: dotenv.get("PostAPI"),
+    indexName: 'TongTong',
+  );
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      showReplyDialog();
-    });
   }
 
   @override
@@ -94,14 +98,16 @@ class SearchPageState extends State<SearchPage> {
             border: InputBorder.none,
             hintStyle: TextStyle(color: Colors.black),
           ),
-          onSubmitted: controlSearching,
+          onChanged: searcher.query,
         ),
       ),
       body: _textEditingController.text.isEmpty
           ? Container()
-          : FutureBuilder(
-              future: futureSearchResults,
+          : StreamBuilder<SearchResponse>(
+              stream:
+                  searcher.responses, // 4. Listen and display search results!
               builder: (context, snapshot) {
+                print(snapshot);
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 }
@@ -112,11 +118,12 @@ class SearchPageState extends State<SearchPage> {
                   return const Text('해당 내용의 게시물이 없습니다');
                 }
 
-                var documents = snapshot.data!.docs;
+                final response = snapshot.data;
+                final hits = response?.hits.toList() ?? [];
                 return ListView.builder(
-                  itemCount: documents.length,
+                  itemCount: hits.length,
                   itemBuilder: (context, index) {
-                    var post = documents[index];
+                    var post = hits[index];
                     return (post['image'] != null
                         ? (FeedPageBody(
                             uid: post['uid'],
@@ -124,7 +131,7 @@ class SearchPageState extends State<SearchPage> {
                             content: post['contents'],
                             photoUrls: post['image'],
                             dateTime: post['dateTime'],
-                            documentId: post.id,
+                            documentId: post['documentId'],
                             currentUserId:
                                 FirebaseAuth.instance.currentUser!.uid,
                             anoym: post['anoym'],
@@ -135,7 +142,7 @@ class SearchPageState extends State<SearchPage> {
                             name: post['name'],
                             content: post['contents'],
                             dateTime: post['dateTime'],
-                            documentId: post.id,
+                            documentId: post['documentId'],
                             currentUserId:
                                 FirebaseAuth.instance.currentUser!.uid,
                             anoym: post['anoym'],

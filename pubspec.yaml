@@ -66,6 +66,8 @@ dependencies:
   flutter_linkify: ^6.0.0
   firebase_messaging: ^14.7.21
   syncfusion_flutter_datepicker: ^25.1.37
+  flutter_dotenv: ^5.1.0
+  algolia_helper_flutter: ^0.5.0
 
 dev_dependencies:
   flutter_test:
@@ -91,6 +93,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - .env
     - assets/images/tong_logo.png
     - assets/images/tong_top_logo.png
     - assets/images/insta.png
