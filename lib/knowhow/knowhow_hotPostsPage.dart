@@ -59,7 +59,7 @@ class HotKnowhowPageState extends ConsumerState<HotKnowhowPage> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
-          'HOT 노하우',
+          '최고의 노하우',
           style: Theme.of(context)
               .textTheme
               .bodyLarge!

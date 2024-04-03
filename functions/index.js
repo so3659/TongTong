@@ -127,6 +127,56 @@ const saveKnowhowDocumentInAlgolia = async (snapshot) => {
   }
 };
 
+const RepairindexName = "TongTong_Repair";
+const RepaircollectionIndex = algoliaClient.initIndex(RepairindexName);
+
+exports.RepaircollectionOnCreate = functions
+    .region("asia-northeast2")
+    .firestore.document("Repair/{repairId}")
+    .onCreate(async (snapshot, context) => {
+      await saveRepairDocumentInAlgolia(snapshot);
+    });
+
+const saveRepairDocumentInAlgolia = async (snapshot) => {
+  if (snapshot.exists) {
+    const data = snapshot.data();
+    console.log(snapshot.id);
+    if (data) {
+      const record = {
+        objectID: snapshot.id,
+        content: data["contents"],
+      };
+      RepaircollectionIndex.saveObject(record)
+          .catch((res) => console.log("Error with: ", res));
+    }
+  }
+};
+
+const LightningindexName = "TongTong_Lightning";
+const LightningcollectionIndex = algoliaClient.initIndex(LightningindexName);
+
+exports.LightningcollectionOnCreate = functions
+    .region("asia-northeast2")
+    .firestore.document("Lightning/{lightningId}")
+    .onCreate(async (snapshot, context) => {
+      await saveLightningDocumentInAlgolia(snapshot);
+    });
+
+const saveLightningDocumentInAlgolia = async (snapshot) => {
+  if (snapshot.exists) {
+    const data = snapshot.data();
+    console.log(snapshot.id);
+    if (data) {
+      const record = {
+        objectID: snapshot.id,
+        content: data["contents"],
+      };
+      LightningcollectionIndex.saveObject(record)
+          .catch((res) => console.log("Error with: ", res));
+    }
+  }
+};
+
 // define functions:ticcleOnUpdate
 // exports.ticcleOnUpdate = functions
 //     .region("asia-northeast2")
@@ -215,3 +265,34 @@ const deleteKnowhowDocumentInAlgolia = async (snapshot) => {
         .catch((res) => console.log("Error with: ", res));
   }
 };
+
+exports.RepairticcleOnDelete = functions
+    .region("asia-northeast2")
+    .firestore.document("Repair/{repairId}")
+    .onDelete(async (snapshot, context) => {
+      await deleteRepairDocumentInAlgolia(snapshot);
+    });
+
+const deleteRepairDocumentInAlgolia = async (snapshot) => {
+  if (snapshot.exists) {
+    const objectID = snapshot.id;
+    RepaircollectionIndex.deleteObject(objectID)
+        .catch((res) => console.log("Error with: ", res));
+  }
+};
+
+exports.LightningticcleOnDelete = functions
+    .region("asia-northeast2")
+    .firestore.document("Lightning/{lightningId}")
+    .onDelete(async (snapshot, context) => {
+      await deleteLightningDocumentInAlgolia(snapshot);
+    });
+
+const deleteLightningDocumentInAlgolia = async (snapshot) => {
+  if (snapshot.exists) {
+    const objectID = snapshot.id;
+    LightningcollectionIndex.deleteObject(objectID)
+        .catch((res) => console.log("Error with: ", res));
+  }
+};
+

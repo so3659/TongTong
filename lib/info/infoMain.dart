@@ -83,7 +83,9 @@ class InfoMainState extends State<InfoMain> {
                       child: FloatingActionButton(
                         heroTag: 'shop',
                         backgroundColor: Colors.white,
-                        onPressed: () {},
+                        onPressed: () {
+                          GoRouter.of(context).push('/repair');
+                        },
                         child: const Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
@@ -92,7 +94,7 @@ class InfoMainState extends State<InfoMain> {
                                 height: 80,
                                 width: 80,
                               ),
-                              Text('리페어 샵 추천')
+                              Text('기타 수리점 추천')
                             ]),
                       ),
                     ),
@@ -134,7 +136,9 @@ class InfoMainState extends State<InfoMain> {
                       child: FloatingActionButton(
                         heroTag: 'lightning',
                         backgroundColor: Colors.white,
-                        onPressed: () async {},
+                        onPressed: () {
+                          GoRouter.of(context).push('/lighting');
+                        },
                         child: const Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [

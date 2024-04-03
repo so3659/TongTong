@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:tongtong/practice_room/practice_hotPostsPage.dart';
-import 'package:tongtong/practice_room/practice_makePost.dart';
-import 'package:tongtong/practice_room/practice_postBody.dart';
-import 'package:tongtong/practice_room/practice_searchPage.dart';
+import 'package:tongtong/repair/repair_hotPostsPage.dart';
+import 'package:tongtong/repair/repair_makePost.dart';
+import 'package:tongtong/repair/repair_postBody.dart';
+import 'package:tongtong/repair/repair_searchPage.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
-class PracticePage extends StatefulWidget {
-  const PracticePage({super.key});
+class RepairPage extends StatefulWidget {
+  const RepairPage({super.key});
 
   @override
-  PracticeState createState() => PracticeState();
+  RepairState createState() => RepairState();
 }
 
-class PracticeState extends State<PracticePage> {
+class RepairState extends State<RepairPage> {
   final FirebaseFirestore fireStore = FirebaseFirestore.instance;
   final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
   static const _pageSize = 10;
@@ -36,7 +36,7 @@ class PracticeState extends State<PracticePage> {
   Future<void> _fetchPage(DocumentSnapshot? lastDocument) async {
     try {
       final query = fireStore
-          .collection("Practices")
+          .collection("Repair")
           .orderBy("dateTime", descending: true)
           .limit(_pageSize);
 
@@ -82,8 +82,8 @@ class PracticeState extends State<PracticePage> {
             backgroundColor: Colors.lightBlue[200],
             labelBackgroundColor: Colors.lightBlue[200],
             onTap: () {
-              Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                  builder: (context) => const MakePractice()));
+              Navigator.of(context, rootNavigator: true).push(
+                  MaterialPageRoute(builder: (context) => const MakeRepair()));
             }),
         SpeedDialChild(
           child: const Icon(
@@ -102,7 +102,7 @@ class PracticeState extends State<PracticePage> {
         ),
         SpeedDialChild(
             child: const Icon(Icons.local_fire_department, color: Colors.white),
-            label: "최고의 연습실",
+            label: "대박 수리점",
             labelStyle: const TextStyle(
                 fontWeight: FontWeight.w500,
                 color: Colors.white,
@@ -111,7 +111,7 @@ class PracticeState extends State<PracticePage> {
             labelBackgroundColor: Colors.lightBlue[200],
             onTap: () {
               Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                  builder: (context) => const HotPracticePage()));
+                  builder: (context) => const HotRepairPage()));
             }),
       ],
     );
@@ -123,7 +123,7 @@ class PracticeState extends State<PracticePage> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
-          '연습실 추천',
+          '수리점 추천',
           style: Theme.of(context)
               .textTheme
               .bodyLarge!
@@ -189,11 +189,11 @@ class PracticeState extends State<PracticePage> {
 
 Widget _floatingActionButton(BuildContext context) {
   return FloatingActionButton(
-    heroTag: 'MakePractice',
+    heroTag: 'MakeRepair',
     shape: const CircleBorder(),
     onPressed: () {
       Navigator.of(context, rootNavigator: true)
-          .push(MaterialPageRoute(builder: (context) => const MakePractice()));
+          .push(MaterialPageRoute(builder: (context) => const MakeRepair()));
     },
     child: customIcon(
       context,

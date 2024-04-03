@@ -3,17 +3,17 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:tongtong/practice_room/practice_postBody.dart';
+import 'package:tongtong/repair/repair_postBody.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class HotPracticePage extends ConsumerStatefulWidget {
-  const HotPracticePage({super.key});
+class HotRepairPage extends ConsumerStatefulWidget {
+  const HotRepairPage({super.key});
 
   @override
-  HotPracticePageState createState() => HotPracticePageState();
+  HotRepairPageState createState() => HotRepairPageState();
 }
 
-class HotPracticePageState extends ConsumerState<HotPracticePage> {
+class HotRepairPageState extends ConsumerState<HotRepairPage> {
   final FirebaseFirestore fireStore = FirebaseFirestore.instance;
   final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
   static const _pageSize = 10;
@@ -31,7 +31,7 @@ class HotPracticePageState extends ConsumerState<HotPracticePage> {
   Future<void> _fetchPage(DocumentSnapshot? lastDocument) async {
     try {
       final query = fireStore
-          .collection("Practices")
+          .collection("Repair")
           .where("likesCount", isGreaterThanOrEqualTo: 10)
           .limit(_pageSize);
 
@@ -59,7 +59,7 @@ class HotPracticePageState extends ConsumerState<HotPracticePage> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
-          '최고의 연습실',
+          '대박 수리점',
           style: Theme.of(context)
               .textTheme
               .bodyLarge!

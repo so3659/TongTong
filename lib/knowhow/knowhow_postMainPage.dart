@@ -102,7 +102,7 @@ class KnowhowState extends State<KnowhowPage> {
         ),
         SpeedDialChild(
             child: const Icon(Icons.local_fire_department, color: Colors.white),
-            label: "핫 연습실",
+            label: "최고의 노하우",
             labelStyle: const TextStyle(
                 fontWeight: FontWeight.w500,
                 color: Colors.white,

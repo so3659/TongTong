@@ -7,12 +7,16 @@ import 'package:go_router/go_router.dart';
 import 'package:tongtong/community/postMainPage.dart';
 import 'package:tongtong/knowhow/knowhow_postDetailPage.dart';
 import 'package:tongtong/knowhow/knowhow_postMainPage.dart';
+import 'package:tongtong/lightning/lightning_postDetailPage.dart';
+import 'package:tongtong/lightning/lightning_postMainPage.dart';
 import 'package:tongtong/mainpage/homepage.dart';
 import 'package:tongtong/mainpage/mainpage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:tongtong/community/postDetailPage.dart';
 import 'package:tongtong/practice_room/practice_postDetailPage.dart';
 import 'package:tongtong/practice_room/practice_postMainPage.dart';
+import 'package:tongtong/repair/repair_postDetailPage.dart';
+import 'package:tongtong/repair/repair_postMainPage.dart';
 import 'package:tongtong/restaurant/restaurant_postDetailPage.dart';
 import 'package:tongtong/restaurant/restaurant_postMainPage.dart';
 import 'firebase_options.dart';
@@ -68,6 +72,14 @@ final GoRouter _goroute = GoRouter(
       builder: (context, state) => const KnowhowPage(),
     ),
     GoRoute(
+      path: '/repair',
+      builder: (context, state) => const RepairPage(),
+    ),
+    GoRoute(
+      path: '/lighting',
+      builder: (context, state) => const LightningPage(),
+    ),
+    GoRoute(
       path: '/mainpage',
       builder: (context, state) => const Mainpage(),
     ),
@@ -121,6 +133,26 @@ final GoRouter _goroute = GoRouter(
         final post = state.extra as FeedPost;
         // 추출한 post 객체를 PostDetailPage 생성자에 전달합니다.
         return KnowhowDetailPage(post: post);
+      },
+    ),
+    GoRoute(
+      path: '/Repair_postDetailPage',
+      name: 'Repair_postDetailPage',
+      builder: (context, state) {
+        // extra에서 post 객체를 추출합니다.
+        final post = state.extra as FeedPost;
+        // 추출한 post 객체를 PostDetailPage 생성자에 전달합니다.
+        return RepairDetailPage(post: post);
+      },
+    ),
+    GoRoute(
+      path: '/Lightning_postDetailPage',
+      name: 'Lightning_postDetailPage',
+      builder: (context, state) {
+        // extra에서 post 객체를 추출합니다.
+        final post = state.extra as FeedPost;
+        // 추출한 post 객체를 PostDetailPage 생성자에 전달합니다.
+        return LightningDetailPage(post: post);
       },
     ),
   ],

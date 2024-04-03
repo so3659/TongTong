@@ -102,7 +102,7 @@ class RestaurantState extends State<RestaurantPage> {
         ),
         SpeedDialChild(
             child: const Icon(Icons.local_fire_department, color: Colors.white),
-            label: "핫 연습실",
+            label: "엄청 맛집",
             labelStyle: const TextStyle(
                 fontWeight: FontWeight.w500,
                 color: Colors.white,
