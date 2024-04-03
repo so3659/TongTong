@@ -44,7 +44,14 @@ const saveDocumentInAlgolia = async (snapshot) => {
     if (data) {
       const record = {
         objectID: snapshot.id,
+        // uid: data["uid"],
+        // name: data["name"],
         content: data["contents"],
+        // photoUrls: data["image"],
+        // dateTime: data["dateTime"],
+        // documentId: data["documnetId"],
+        // anoym: data["anoym"],
+        // commentsCount: data["commentsCount"],
       };
       collectionIndex.saveObject(record)
           .catch((res) => console.log("Error with: ", res));

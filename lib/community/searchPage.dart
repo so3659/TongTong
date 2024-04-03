@@ -4,6 +4,62 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tongtong/community/postBody.dart';
 import 'package:algolia_helper_flutter/algolia_helper_flutter.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+
+class Product {
+  final String objectID;
+  // final String uid;
+  // final String name;
+  // final String content;
+  // final List<dynamic>? photoUrls;
+  // final Timestamp dateTime;
+  // final String documentId;
+  // // final String currentUserId;
+  // final bool anoym;
+  // final int commentsCount;
+
+  Product(
+    this.objectID,
+    // this.uid,
+    // this.name,
+    // this.content,
+    // this.photoUrls,
+    // this.dateTime,
+    // this.documentId,
+    // // this.currentUserId,
+    // this.anoym,
+    // this.commentsCount,
+  );
+
+  static Product fromJson(Map<String, dynamic> json) {
+    return Product(
+      json['objectID'],
+      // json['uid'],
+      // json['name'],
+      // json['content'],
+      // json['photoUrls'],
+      // json['dateTime'],
+      // json['documentId'],
+      // json['anoym'],
+      // json['commentsCount']
+    );
+  }
+}
+
+class HitsPage {
+  const HitsPage(this.items, this.pageKey, this.nextPageKey);
+
+  final List<Product> items;
+  final int pageKey;
+  final int? nextPageKey;
+
+  factory HitsPage.fromResponse(SearchResponse response) {
+    final items = response.hits.map(Product.fromJson).toList();
+    final isLastPage = response.page >= response.nbPages;
+    final nextPageKey = isLastPage ? null : response.page + 1;
+    return HitsPage(items, response.page, nextPageKey);
+  }
+}
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -21,14 +77,40 @@ class SearchPageState extends State<SearchPage> {
     indexName: 'TongTong',
   );
 
+  final PagingController<int, Product> _pagingController =
+      PagingController(firstPageKey: 0);
+
+  Stream<HitsPage> get _searchPage =>
+      searcher.responses.map(HitsPage.fromResponse);
+
   @override
   void initState() {
     super.initState();
+    _textEditingController.addListener(
+      () => searcher.applyState(
+        (state) => state.copyWith(
+          query: _textEditingController.text,
+          page: 0,
+        ),
+      ),
+    );
+    _searchPage.listen((page) {
+      if (page.pageKey == 0) {
+        _pagingController.refresh();
+      }
+      _pagingController.appendPage(page.items, page.nextPageKey);
+    }).onError((error) => _pagingController.error = error);
+    _pagingController.addPageRequestListener(
+        (pageKey) => searcher.applyState((state) => state.copyWith(
+              page: pageKey,
+            )));
   }
 
   @override
   void dispose() {
     _textEditingController.dispose();
+    searcher.dispose();
+    _pagingController.dispose();
     super.dispose();
   }
 
@@ -92,94 +174,87 @@ class SearchPageState extends State<SearchPage> {
         title: TextField(
           autofocus: true,
           controller: _textEditingController,
-          // onChanged: (val) => searchTerm.state = val,
+
           style: const TextStyle(color: Colors.black, fontSize: 20),
           decoration: const InputDecoration(
             border: InputBorder.none,
-            hintStyle: TextStyle(color: Colors.black),
+            hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
+            hintText: '검색어를 입력해주세요',
+            // prefixIcon: Icon(Icons.search),
           ),
-          onChanged: searcher.query,
+          // onChanged: searcher.query,
         ),
       ),
-      body: _textEditingController.text.isEmpty
-          ? Container()
-          : StreamBuilder<SearchResponse>(
-              stream:
-                  searcher.responses, // 4. Listen and display search results!
-              builder: (context, snapshot) {
-                print(snapshot);
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                }
-                if (snapshot.error != null) {
-                  return const Text('An error occurred');
-                }
-                if (!snapshot.hasData) {
-                  return const Text('해당 내용의 게시물이 없습니다');
-                }
-
-                final response = snapshot.data;
-                final hits = response?.hits.toList() ?? [];
-                return ListView.builder(
-                  itemCount: hits.length,
-                  itemBuilder: (context, index) {
-                    var post = hits[index];
-                    return (post['image'] != null
-                        ? (FeedPageBody(
-                            uid: post['uid'],
-                            name: post['name'],
-                            content: post['contents'],
-                            photoUrls: post['image'],
-                            dateTime: post['dateTime'],
-                            documentId: post['documentId'],
-                            currentUserId:
-                                FirebaseAuth.instance.currentUser!.uid,
-                            anoym: post['anoym'],
-                            commentsCount: post['commentsCount'],
-                          ))
-                        : (FeedPageBody(
-                            uid: post['uid'],
-                            name: post['name'],
-                            content: post['contents'],
-                            dateTime: post['dateTime'],
-                            documentId: post['documentId'],
-                            currentUserId:
-                                FirebaseAuth.instance.currentUser!.uid,
-                            anoym: post['anoym'],
-                            commentsCount: post['commentsCount'],
-                          )));
-                  },
-                );
-              },
-            ),
+      body:
+          // _textEditingController.text.isEmpty
+          //     ? Container()
+          //     :
+          Column(
+        children: <Widget>[
+          Expanded(
+            child: _hits(context), // Expanded를 올바르게 사용
+          ),
+        ],
+      ),
     );
   }
-}
 
-class DisplaySearchResult extends StatelessWidget {
-  const DisplaySearchResult(
-      {super.key, this.artistName, this.artDes, this.genre});
-  final String? artDes;
-  final String? artistName;
-  final String? genre;
+  Widget _hits(BuildContext context) => PagedListView<int, Product>(
+      pagingController: _pagingController,
+      builderDelegate: PagedChildBuilderDelegate<Product>(
+        noItemsFoundIndicatorBuilder: (_) => const Center(
+          child: Text('해당 내용의 게시물이 없습니다'),
+        ),
+        itemBuilder: (_, item, __) {
+          return FutureBuilder(
+            future: FirebaseFirestore.instance
+                .collection('Posts')
+                .doc(item.objectID)
+                .get(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (snapshot.error != null) {
+                return const Center(
+                  child: Text('An error occurred'),
+                );
+              }
+              if (!snapshot.hasData) {
+                return const Center(
+                  child: Text('해당 내용의 게시물이 없습니다'),
+                );
+              }
+              Map<String, dynamic>? data = snapshot.data?.data();
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(children: <Widget>[
-      Text(
-        artDes ?? '',
-        style: const TextStyle(color: Colors.black),
-      ),
-      Text(
-        artistName ?? '',
-        style: const TextStyle(color: Colors.black),
-      ),
-      Text(
-        genre ?? '',
-        style: const TextStyle(color: Colors.black),
-      ),
-      const Divider(color: Colors.black),
-      const SizedBox(height: 20)
-    ]);
-  }
+              return _textEditingController.text.isEmpty
+                  ? Container()
+                  : (data != null && data['image'] != null)
+                      ? (FeedPageBody(
+                          uid: data['uid'],
+                          name: data['name'],
+                          content: data['contents'],
+                          photoUrls: data['image'],
+                          dateTime: data['dateTime'],
+                          documentId: data['documentId'],
+                          currentUserId: FirebaseAuth.instance.currentUser!.uid,
+                          anoym: data['anoym'],
+                          commentsCount: data['commentsCount'],
+                        ))
+                      : (FeedPageBody(
+                          uid: data!['uid'],
+                          name: data['name'],
+                          content: data['contents'],
+                          dateTime: data['dateTime'],
+                          documentId: data['documentId'],
+                          currentUserId: FirebaseAuth.instance.currentUser!.uid,
+                          anoym: data['anoym'],
+                          commentsCount: data['commentsCount'],
+                        ));
+            },
+          );
+        },
+      ));
 }

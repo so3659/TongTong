@@ -84,7 +84,7 @@ class MakePostState extends State<MakePost> {
           'likesCount': 0,
           'anoym': checkboxValue,
           'commentsCount': 0,
-          'documnetId': postKey,
+          'documentId': postKey,
         });
       } else if (images == null) {
         await reference.set({
@@ -98,7 +98,7 @@ class MakePostState extends State<MakePost> {
           'likesCount': 0,
           'anoym': checkboxValue,
           'commentsCount': 0,
-          'documnetId': postKey,
+          'documentId': postKey,
         });
       }
     } on FirebaseException catch (error) {

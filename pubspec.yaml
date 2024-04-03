@@ -67,7 +67,7 @@ dependencies:
   firebase_messaging: ^14.7.21
   syncfusion_flutter_datepicker: ^25.1.37
   flutter_dotenv: ^5.1.0
-  algolia_helper_flutter: ^0.5.0
+  algolia_helper_flutter: ^1.0.0-pre
 
 dev_dependencies:
   flutter_test:

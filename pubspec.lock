@@ -13,50 +13,50 @@ packages:
     dependency: transitive
     description:
       name: algolia_client_core
-      sha256: "89f4253c7d5836a34209d0a0bff6bd9197ea37df1f7b8ecbc114fb2a47594c25"
+      sha256: "4f4d1800844c70ac56c6a1a5596e14d21f0d5181b070c5a2df4f7a87b9462fb6"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "1.6.2"
   algolia_client_insights:
     dependency: transitive
     description:
       name: algolia_client_insights
-      sha256: "826d4edb87fb90f8af0b0ff77d33dd411bf6b0568a23dc7136ecb692abe313a9"
+      sha256: "69834e5813bde4bda749b7d50618387e2d043dda1d7f897825b3e46affcc685c"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "1.6.1"
   algolia_client_search:
     dependency: transitive
     description:
       name: algolia_client_search
-      sha256: c86b4c51ff551941d781a538837675b33f987cee76fb4061b837649370854e06
+      sha256: "1fdd414ad63aacee54bc0b25236f5fab0b2f0a18c1afbcd06d4818fcfaff60f8"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "1.6.1"
   algolia_helper_flutter:
     dependency: "direct main"
     description:
       name: algolia_helper_flutter
-      sha256: bca6815034e1ed7a722ce69ad1960a0a78121bfb59d5f15e29326fd82ef38208
+      sha256: ad38642bfaf72a0abcb3ea07fae712f3367707226c978bc2ba73e520c5f9e455
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.0"
+    version: "1.0.0-pre"
   algolia_insights:
     dependency: transitive
     description:
       name: algolia_insights
-      sha256: e8e82b437ef3d4c881e133d3148e8d5d32fd5158acaaccbabad8356995e70310
+      sha256: "9f5cc8d2a8dfa0b55806162a3bd22df241e840eb6583085128e96f603a07f3b3"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.2"
+    version: "1.0.0-pre"
   algoliasearch:
     dependency: transitive
     description:
       name: algoliasearch
-      sha256: a5f2cddb577806e23eaa08b4262d2db724e1d85d1fc3827fab80b9e00e1e457b
+      sha256: ea75b01434fda0efce6391a485be02c749d216191660c94ea8ed88ddf3583703
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "1.6.1"
   animate_do:
     dependency: "direct main"
     description:
