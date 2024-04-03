@@ -110,7 +110,9 @@ class InfoMainState extends State<InfoMain> {
                       child: FloatingActionButton(
                         heroTag: 'guitar',
                         backgroundColor: Colors.white,
-                        onPressed: () async {},
+                        onPressed: () {
+                          GoRouter.of(context).push('/knowhow');
+                        },
                         child: const Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [

@@ -5,6 +5,8 @@ import 'package:tongtong/calendar/makeAppointment.dart';
 import 'package:tongtong/community/makePost.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tongtong/community/postMainPage.dart';
+import 'package:tongtong/knowhow/knowhow_postDetailPage.dart';
+import 'package:tongtong/knowhow/knowhow_postMainPage.dart';
 import 'package:tongtong/mainpage/homepage.dart';
 import 'package:tongtong/mainpage/mainpage.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -62,6 +64,10 @@ final GoRouter _goroute = GoRouter(
       builder: (context, state) => const RestaurantPage(),
     ),
     GoRoute(
+      path: '/knowhow',
+      builder: (context, state) => const KnowhowPage(),
+    ),
+    GoRoute(
       path: '/mainpage',
       builder: (context, state) => const Mainpage(),
     ),
@@ -105,6 +111,16 @@ final GoRouter _goroute = GoRouter(
         final post = state.extra as FeedPost;
         // 추출한 post 객체를 PostDetailPage 생성자에 전달합니다.
         return RestaurantDetailPage(post: post);
+      },
+    ),
+    GoRoute(
+      path: '/Knowhow_postDetailPage',
+      name: 'Knowhow_postDetailPage',
+      builder: (context, state) {
+        // extra에서 post 객체를 추출합니다.
+        final post = state.extra as FeedPost;
+        // 추출한 post 객체를 PostDetailPage 생성자에 전달합니다.
+        return KnowhowDetailPage(post: post);
       },
     ),
   ],

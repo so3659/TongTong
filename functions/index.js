@@ -44,14 +44,7 @@ const saveDocumentInAlgolia = async (snapshot) => {
     if (data) {
       const record = {
         objectID: snapshot.id,
-        // uid: data["uid"],
-        // name: data["name"],
         content: data["contents"],
-        // photoUrls: data["image"],
-        // dateTime: data["dateTime"],
-        // documentId: data["documnetId"],
-        // anoym: data["anoym"],
-        // commentsCount: data["commentsCount"],
       };
       collectionIndex.saveObject(record)
           .catch((res) => console.log("Error with: ", res));
@@ -76,14 +69,7 @@ const savePracticeDocumentInAlgolia = async (snapshot) => {
     if (data) {
       const record = {
         objectID: snapshot.id,
-        // uid: data["uid"],
-        // name: data["name"],
         content: data["contents"],
-        // photoUrls: data["image"],
-        // dateTime: data["dateTime"],
-        // documentId: data["documnetId"],
-        // anoym: data["anoym"],
-        // commentsCount: data["commentsCount"],
       };
       PracticecollectionIndex.saveObject(record)
           .catch((res) => console.log("Error with: ", res));
@@ -108,16 +94,34 @@ const saveRestaurantDocumentInAlgolia = async (snapshot) => {
     if (data) {
       const record = {
         objectID: snapshot.id,
-        // uid: data["uid"],
-        // name: data["name"],
         content: data["contents"],
-        // photoUrls: data["image"],
-        // dateTime: data["dateTime"],
-        // documentId: data["documnetId"],
-        // anoym: data["anoym"],
-        // commentsCount: data["commentsCount"],
       };
       RestaurantcollectionIndex.saveObject(record)
+          .catch((res) => console.log("Error with: ", res));
+    }
+  }
+};
+
+const KnowhowindexName = "TongTong_Knowhow";
+const KnowhowcollectionIndex = algoliaClient.initIndex(KnowhowindexName);
+
+exports.KnowhowcollectionOnCreate = functions
+    .region("asia-northeast2")
+    .firestore.document("Knowhow/{knowhowId}")
+    .onCreate(async (snapshot, context) => {
+      await saveKnowhowDocumentInAlgolia(snapshot);
+    });
+
+const saveKnowhowDocumentInAlgolia = async (snapshot) => {
+  if (snapshot.exists) {
+    const data = snapshot.data();
+    console.log(snapshot.id);
+    if (data) {
+      const record = {
+        objectID: snapshot.id,
+        content: data["contents"],
+      };
+      KnowhowcollectionIndex.saveObject(record)
           .catch((res) => console.log("Error with: ", res));
     }
   }
@@ -197,4 +201,17 @@ const deleteRestaurantDocumentInAlgolia = async (snapshot) => {
   }
 };
 
+exports.KnowhowticcleOnDelete = functions
+    .region("asia-northeast2")
+    .firestore.document("Knowhow/{knowhowId}")
+    .onDelete(async (snapshot, context) => {
+      await deleteKnowhowDocumentInAlgolia(snapshot);
+    });
 
+const deleteKnowhowDocumentInAlgolia = async (snapshot) => {
+  if (snapshot.exists) {
+    const objectID = snapshot.id;
+    KnowhowcollectionIndex.deleteObject(objectID)
+        .catch((res) => console.log("Error with: ", res));
+  }
+};
