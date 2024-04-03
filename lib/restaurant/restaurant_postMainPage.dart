@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:tongtong/community/hotPostsPage.dart';
-import 'package:tongtong/community/makePost.dart';
-import 'package:tongtong/community/postBody.dart';
-import 'package:tongtong/community/searchPage.dart';
+import 'package:tongtong/restaurant/restaurant_hotPostsPage.dart';
+import 'package:tongtong/restaurant/restaurant_makePost.dart';
+import 'package:tongtong/restaurant/restaurant_postBody.dart';
+import 'package:tongtong/restaurant/restaurant_searchPage.dart';
 import 'package:tongtong/theme/theme.dart';
 import 'package:tongtong/widgets/customWidgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
-class PostPage extends StatefulWidget {
-  const PostPage({super.key});
+class RestaurantPage extends StatefulWidget {
+  const RestaurantPage({super.key});
 
   @override
-  PostState createState() => PostState();
+  RestaurantState createState() => RestaurantState();
 }
 
-class PostState extends State<PostPage> {
+class RestaurantState extends State<RestaurantPage> {
   final FirebaseFirestore fireStore = FirebaseFirestore.instance;
   final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
   static const _pageSize = 10;
@@ -36,7 +36,7 @@ class PostState extends State<PostPage> {
   Future<void> _fetchPage(DocumentSnapshot? lastDocument) async {
     try {
       final query = fireStore
-          .collection("Posts")
+          .collection("Restaurants")
           .orderBy("dateTime", descending: true)
           .limit(_pageSize);
 
@@ -82,8 +82,8 @@ class PostState extends State<PostPage> {
             backgroundColor: Colors.lightBlue[200],
             labelBackgroundColor: Colors.lightBlue[200],
             onTap: () {
-              Navigator.of(context, rootNavigator: true).push(
-                  MaterialPageRoute(builder: (context) => const MakePost()));
+              Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+                  builder: (context) => const MakeRestaurant()));
             }),
         SpeedDialChild(
           child: const Icon(
@@ -102,7 +102,7 @@ class PostState extends State<PostPage> {
         ),
         SpeedDialChild(
             child: const Icon(Icons.local_fire_department, color: Colors.white),
-            label: "핫게",
+            label: "핫 연습실",
             labelStyle: const TextStyle(
                 fontWeight: FontWeight.w500,
                 color: Colors.white,
@@ -110,8 +110,8 @@ class PostState extends State<PostPage> {
             backgroundColor: Colors.lightBlue[200],
             labelBackgroundColor: Colors.lightBlue[200],
             onTap: () {
-              Navigator.of(context, rootNavigator: true).push(
-                  MaterialPageRoute(builder: (context) => const HotPostPage()));
+              Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+                  builder: (context) => const HotRestaurantPage()));
             }),
       ],
     );
@@ -123,7 +123,7 @@ class PostState extends State<PostPage> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
-          '자유게시판',
+          '맛집 추천',
           style: Theme.of(context)
               .textTheme
               .bodyLarge!
@@ -189,11 +189,11 @@ class PostState extends State<PostPage> {
 
 Widget _floatingActionButton(BuildContext context) {
   return FloatingActionButton(
-    heroTag: 'MakePost',
+    heroTag: 'MakeRestaurant',
     shape: const CircleBorder(),
     onPressed: () {
-      Navigator.of(context, rootNavigator: true)
-          .push(MaterialPageRoute(builder: (context) => const MakePost()));
+      Navigator.of(context, rootNavigator: true).push(
+          MaterialPageRoute(builder: (context) => const MakeRestaurant()));
     },
     child: customIcon(
       context,

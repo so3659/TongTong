@@ -9,6 +9,10 @@ import 'package:tongtong/mainpage/homepage.dart';
 import 'package:tongtong/mainpage/mainpage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:tongtong/community/postDetailPage.dart';
+import 'package:tongtong/practice_room/practice_postDetailPage.dart';
+import 'package:tongtong/practice_room/practice_postMainPage.dart';
+import 'package:tongtong/restaurant/restaurant_postDetailPage.dart';
+import 'package:tongtong/restaurant/restaurant_postMainPage.dart';
 import 'firebase_options.dart';
 import 'package:tongtong/parameter/postParameter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,7 +51,15 @@ final GoRouter _goroute = GoRouter(
     ),
     GoRoute(
       path: '/memo',
-      builder: (context, state) => const MyMemoPage(),
+      builder: (context, state) => const PostPage(),
+    ),
+    GoRoute(
+      path: '/practice_room',
+      builder: (context, state) => const PracticePage(),
+    ),
+    GoRoute(
+      path: '/restaurant',
+      builder: (context, state) => const RestaurantPage(),
     ),
     GoRoute(
       path: '/mainpage',
@@ -73,6 +85,26 @@ final GoRouter _goroute = GoRouter(
         final post = state.extra as FeedPost;
         // 추출한 post 객체를 PostDetailPage 생성자에 전달합니다.
         return PostDetailPage(post: post);
+      },
+    ),
+    GoRoute(
+      path: '/Practice_postDetailPage',
+      name: 'Practice_postDetailPage',
+      builder: (context, state) {
+        // extra에서 post 객체를 추출합니다.
+        final post = state.extra as FeedPost;
+        // 추출한 post 객체를 PostDetailPage 생성자에 전달합니다.
+        return PracticeDetailPage(post: post);
+      },
+    ),
+    GoRoute(
+      path: '/Restaurant_postDetailPage',
+      name: 'Restaurant_postDetailPage',
+      builder: (context, state) {
+        // extra에서 post 객체를 추출합니다.
+        final post = state.extra as FeedPost;
+        // 추출한 post 객체를 PostDetailPage 생성자에 전달합니다.
+        return RestaurantDetailPage(post: post);
       },
     ),
   ],

@@ -30,7 +30,7 @@ const indexName = "TongTong";
 const collectionIndex = algoliaClient.initIndex(indexName);
 
 // define functions:collectionOnCreate
-exports.collectionOnCreate = functions
+exports.PostcollectionOnCreate = functions
     .region("asia-northeast2")
     .firestore.document("Posts/{postsId}")
     .onCreate(async (snapshot, context) => {
@@ -59,36 +59,100 @@ const saveDocumentInAlgolia = async (snapshot) => {
   }
 };
 
-// define functions:ticcleOnUpdate
-exports.ticcleOnUpdate = functions
+const PracticeindexName = "TongTong_Practice";
+const PracticecollectionIndex = algoliaClient.initIndex(PracticeindexName);
+
+exports.PracticecollectionOnCreate = functions
     .region("asia-northeast2")
-    .firestore.document("Posts/{postsId}")
-    .onUpdate(async (change, context) => {
-      await updateDocumentInAlgolia(context.params.postsId, change);
+    .firestore.document("Practices/{practicesId}")
+    .onCreate(async (snapshot, context) => {
+      await savePracticeDocumentInAlgolia(snapshot);
     });
 
-
-const updateDocumentInAlgolia = async (objectID, change) => {
-  const before = change.before.data();
-  const after = change.after.data();
-  if (before && after) {
-    const record = {objectID: objectID};
-    let flag = false;
-    if (before.content != after.content) {
-      record.content = after.content;
-      flag = true;
-    }
-
-    if (flag) {
-      // update
-      collectionIndex.partialUpdateObject(record)
+const savePracticeDocumentInAlgolia = async (snapshot) => {
+  if (snapshot.exists) {
+    const data = snapshot.data();
+    console.log(snapshot.id);
+    if (data) {
+      const record = {
+        objectID: snapshot.id,
+        // uid: data["uid"],
+        // name: data["name"],
+        content: data["contents"],
+        // photoUrls: data["image"],
+        // dateTime: data["dateTime"],
+        // documentId: data["documnetId"],
+        // anoym: data["anoym"],
+        // commentsCount: data["commentsCount"],
+      };
+      PracticecollectionIndex.saveObject(record)
           .catch((res) => console.log("Error with: ", res));
     }
   }
 };
 
+const RestaurantindexName = "TongTong_Restaurant";
+const RestaurantcollectionIndex = algoliaClient.initIndex(RestaurantindexName);
+
+exports.RestaurantcollectionOnCreate = functions
+    .region("asia-northeast2")
+    .firestore.document("Restaurants/{restaurantsId}")
+    .onCreate(async (snapshot, context) => {
+      await saveRestaurantDocumentInAlgolia(snapshot);
+    });
+
+const saveRestaurantDocumentInAlgolia = async (snapshot) => {
+  if (snapshot.exists) {
+    const data = snapshot.data();
+    console.log(snapshot.id);
+    if (data) {
+      const record = {
+        objectID: snapshot.id,
+        // uid: data["uid"],
+        // name: data["name"],
+        content: data["contents"],
+        // photoUrls: data["image"],
+        // dateTime: data["dateTime"],
+        // documentId: data["documnetId"],
+        // anoym: data["anoym"],
+        // commentsCount: data["commentsCount"],
+      };
+      RestaurantcollectionIndex.saveObject(record)
+          .catch((res) => console.log("Error with: ", res));
+    }
+  }
+};
+
+// define functions:ticcleOnUpdate
+// exports.ticcleOnUpdate = functions
+//     .region("asia-northeast2")
+//     .firestore.document("Posts/{postsId}")
+//     .onUpdate(async (change, context) => {
+//       await updateDocumentInAlgolia(context.params.postsId, change);
+//     });
+
+
+// const updateDocumentInAlgolia = async (objectID, change) => {
+//   const before = change.before.data();
+//   const after = change.after.data();
+//   if (before && after) {
+//     const record = {objectID: objectID};
+//     let flag = false;
+//     if (before.content != after.content) {
+//       record.content = after.content;
+//       flag = true;
+//     }
+
+//     if (flag) {
+//       // update
+//       collectionIndex.partialUpdateObject(record)
+//           .catch((res) => console.log("Error with: ", res));
+//     }
+//   }
+// };
+
 // define functions:ticcleOnDelete
-exports.ticcleOnDelete = functions
+exports.PostticcleOnDelete = functions
     .region("asia-northeast2")
     .firestore.document("Posts/{postsId}")
     .onDelete(async (snapshot, context) => {
@@ -102,3 +166,35 @@ const deleteDocumentInAlgolia = async (snapshot) => {
         .catch((res) => console.log("Error with: ", res));
   }
 };
+
+exports.PracticeticcleOnDelete = functions
+    .region("asia-northeast2")
+    .firestore.document("Practices/{practicesId}")
+    .onDelete(async (snapshot, context) => {
+      await deletePracticeDocumentInAlgolia(snapshot);
+    });
+
+const deletePracticeDocumentInAlgolia = async (snapshot) => {
+  if (snapshot.exists) {
+    const objectID = snapshot.id;
+    PracticecollectionIndex.deleteObject(objectID)
+        .catch((res) => console.log("Error with: ", res));
+  }
+};
+
+exports.RestaurantticcleOnDelete = functions
+    .region("asia-northeast2")
+    .firestore.document("Restaurants/{restaurantsId}")
+    .onDelete(async (snapshot, context) => {
+      await deleteRestaurantDocumentInAlgolia(snapshot);
+    });
+
+const deleteRestaurantDocumentInAlgolia = async (snapshot) => {
+  if (snapshot.exists) {
+    const objectID = snapshot.id;
+    RestaurantcollectionIndex.deleteObject(objectID)
+        .catch((res) => console.log("Error with: ", res));
+  }
+};
+
+

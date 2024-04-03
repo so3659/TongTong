@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tongtong/restaurant/restaurant_postMainPage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class InfoMain extends StatefulWidget {
@@ -56,7 +59,9 @@ class InfoMainState extends State<InfoMain> {
                         child: FloatingActionButton(
                           heroTag: 'restaurant',
                           backgroundColor: Colors.white,
-                          onPressed: () async {},
+                          onPressed: () {
+                            GoRouter.of(context).push('/restaurant');
+                          },
                           child: const Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -66,7 +71,7 @@ class InfoMainState extends State<InfoMain> {
                                   height: 100,
                                   width: 100,
                                 ),
-                                Text('맛집추천')
+                                Text('맛집 추천')
                               ]),
                         ),
                       )),
