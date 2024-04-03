@@ -15,6 +15,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:tongtong/community/postDetailPage.dart';
 import 'package:tongtong/practice_room/practice_postDetailPage.dart';
 import 'package:tongtong/practice_room/practice_postMainPage.dart';
+import 'package:tongtong/profile/myComments.dart';
+import 'package:tongtong/profile/myPosts.dart';
 import 'package:tongtong/repair/repair_postDetailPage.dart';
 import 'package:tongtong/repair/repair_postMainPage.dart';
 import 'package:tongtong/restaurant/restaurant_postDetailPage.dart';
@@ -94,6 +96,14 @@ final GoRouter _goroute = GoRouter(
     GoRoute(
       path: '/makeAppointment',
       builder: (context, state) => const MakeAppointment(),
+    ),
+    GoRoute(
+      path: '/myPosts',
+      builder: (context, state) => const MyPosts(),
+    ),
+    GoRoute(
+      path: '/myComments',
+      builder: (context, state) => const MyComments(),
     ),
     GoRoute(
       path: '/postDetailPage',

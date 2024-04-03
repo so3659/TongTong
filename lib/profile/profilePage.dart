@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -188,11 +189,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
 
                 const SizedBox(height: 15), // 상하 여백
-                _buildRoundedButton('내가 쓴 글'),
-                _buildRoundedButton('댓글 단 글'),
+                _buildMyPostsButton('내가 쓴 글'),
+                _buildMyCommentsButton('댓글 단 글'),
                 _builduserNameButton('닉네임 변경'),
                 _builduserProfileImageButton('프로필 사진 변경'),
-                _buildRoundedButton('앱 설정'),
+                // _buildRoundedButton('앱 설정'),
               ],
             ),
           ),
@@ -259,7 +260,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildRoundedButton(String title) {
+  Widget _buildMyPostsButton(String title) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -270,7 +271,9 @@ class _ProfilePageState extends State<ProfilePage> {
             shape: const StadiumBorder(), // 버튼의 모서리를 둥글게
             side: BorderSide(width: 2, color: Colors.lightBlue[200]!), // 테두리 색상
           ),
-          onPressed: () {},
+          onPressed: () {
+            GoRouter.of(context).push('/myPosts');
+          },
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 15.0), // 버튼 내부 상하 패딩
             child: Text(
@@ -285,4 +288,60 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
+  Widget _buildMyCommentsButton(String title) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(horizontal: 50), // 좌우 여백
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            shape: const StadiumBorder(), // 버튼의 모서리를 둥글게
+            side: BorderSide(width: 2, color: Colors.lightBlue[200]!), // 테두리 색상
+          ),
+          onPressed: () {
+            GoRouter.of(context).push('/myComments');
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 15.0), // 버튼 내부 상하 패딩
+            child: Text(
+              title,
+              style: const TextStyle(
+                color: Colors.black, // 텍스트 색상
+                fontSize: 16, // 텍스트 크기
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Widget _buildRoundedButton(String title) {
+  //   return Padding(
+  //     padding: const EdgeInsets.all(8.0),
+  //     child: Container(
+  //       width: double.infinity,
+  //       margin: const EdgeInsets.symmetric(horizontal: 50), // 좌우 여백
+  //       child: OutlinedButton(
+  //         style: OutlinedButton.styleFrom(
+  //           shape: const StadiumBorder(), // 버튼의 모서리를 둥글게
+  //           side: BorderSide(width: 2, color: Colors.lightBlue[200]!), // 테두리 색상
+  //         ),
+  //         onPressed: () {},
+  //         child: Padding(
+  //           padding: const EdgeInsets.symmetric(vertical: 15.0), // 버튼 내부 상하 패딩
+  //           child: Text(
+  //             title,
+  //             style: const TextStyle(
+  //               color: Colors.black, // 텍스트 색상
+  //               fontSize: 16, // 텍스트 크기
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }
