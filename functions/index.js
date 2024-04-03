@@ -31,7 +31,7 @@ const collectionIndex = algoliaClient.initIndex(indexName);
 
 // define functions:collectionOnCreate
 exports.PostcollectionOnCreate = functions
-    .region("asia-northeast2")
+    .region("asia-northeast3")
     .firestore.document("Posts/{postsId}")
     .onCreate(async (snapshot, context) => {
       await saveDocumentInAlgolia(snapshot);
@@ -56,7 +56,7 @@ const PracticeindexName = "TongTong_Practice";
 const PracticecollectionIndex = algoliaClient.initIndex(PracticeindexName);
 
 exports.PracticecollectionOnCreate = functions
-    .region("asia-northeast2")
+    .region("asia-northeast3")
     .firestore.document("Practices/{practicesId}")
     .onCreate(async (snapshot, context) => {
       await savePracticeDocumentInAlgolia(snapshot);
@@ -81,7 +81,7 @@ const RestaurantindexName = "TongTong_Restaurant";
 const RestaurantcollectionIndex = algoliaClient.initIndex(RestaurantindexName);
 
 exports.RestaurantcollectionOnCreate = functions
-    .region("asia-northeast2")
+    .region("asia-northeast3")
     .firestore.document("Restaurants/{restaurantsId}")
     .onCreate(async (snapshot, context) => {
       await saveRestaurantDocumentInAlgolia(snapshot);
@@ -106,7 +106,7 @@ const KnowhowindexName = "TongTong_Knowhow";
 const KnowhowcollectionIndex = algoliaClient.initIndex(KnowhowindexName);
 
 exports.KnowhowcollectionOnCreate = functions
-    .region("asia-northeast2")
+    .region("asia-northeast3")
     .firestore.document("Knowhow/{knowhowId}")
     .onCreate(async (snapshot, context) => {
       await saveKnowhowDocumentInAlgolia(snapshot);
@@ -131,7 +131,7 @@ const RepairindexName = "TongTong_Repair";
 const RepaircollectionIndex = algoliaClient.initIndex(RepairindexName);
 
 exports.RepaircollectionOnCreate = functions
-    .region("asia-northeast2")
+    .region("asia-northeast3")
     .firestore.document("Repair/{repairId}")
     .onCreate(async (snapshot, context) => {
       await saveRepairDocumentInAlgolia(snapshot);
@@ -156,7 +156,7 @@ const LightningindexName = "TongTong_Lightning";
 const LightningcollectionIndex = algoliaClient.initIndex(LightningindexName);
 
 exports.LightningcollectionOnCreate = functions
-    .region("asia-northeast2")
+    .region("asia-northeast3")
     .firestore.document("Lightning/{lightningId}")
     .onCreate(async (snapshot, context) => {
       await saveLightningDocumentInAlgolia(snapshot);
@@ -207,7 +207,7 @@ const saveLightningDocumentInAlgolia = async (snapshot) => {
 
 // define functions:ticcleOnDelete
 exports.PostticcleOnDelete = functions
-    .region("asia-northeast2")
+    .region("asia-northeast3")
     .firestore.document("Posts/{postsId}")
     .onDelete(async (snapshot, context) => {
       await deleteDocumentInAlgolia(snapshot);
@@ -222,7 +222,7 @@ const deleteDocumentInAlgolia = async (snapshot) => {
 };
 
 exports.PracticeticcleOnDelete = functions
-    .region("asia-northeast2")
+    .region("asia-northeast3")
     .firestore.document("Practices/{practicesId}")
     .onDelete(async (snapshot, context) => {
       await deletePracticeDocumentInAlgolia(snapshot);
@@ -237,7 +237,7 @@ const deletePracticeDocumentInAlgolia = async (snapshot) => {
 };
 
 exports.RestaurantticcleOnDelete = functions
-    .region("asia-northeast2")
+    .region("asia-northeast3")
     .firestore.document("Restaurants/{restaurantsId}")
     .onDelete(async (snapshot, context) => {
       await deleteRestaurantDocumentInAlgolia(snapshot);
@@ -252,7 +252,7 @@ const deleteRestaurantDocumentInAlgolia = async (snapshot) => {
 };
 
 exports.KnowhowticcleOnDelete = functions
-    .region("asia-northeast2")
+    .region("asia-northeast3")
     .firestore.document("Knowhow/{knowhowId}")
     .onDelete(async (snapshot, context) => {
       await deleteKnowhowDocumentInAlgolia(snapshot);
@@ -267,7 +267,7 @@ const deleteKnowhowDocumentInAlgolia = async (snapshot) => {
 };
 
 exports.RepairticcleOnDelete = functions
-    .region("asia-northeast2")
+    .region("asia-northeast3")
     .firestore.document("Repair/{repairId}")
     .onDelete(async (snapshot, context) => {
       await deleteRepairDocumentInAlgolia(snapshot);
@@ -282,7 +282,7 @@ const deleteRepairDocumentInAlgolia = async (snapshot) => {
 };
 
 exports.LightningticcleOnDelete = functions
-    .region("asia-northeast2")
+    .region("asia-northeast3")
     .firestore.document("Lightning/{lightningId}")
     .onDelete(async (snapshot, context) => {
       await deleteLightningDocumentInAlgolia(snapshot);
