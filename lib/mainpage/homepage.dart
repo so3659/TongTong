@@ -51,6 +51,7 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text('통통')),
@@ -61,12 +62,12 @@ class HomePageState extends State<HomePage> {
       drawer: Drawer(
         child: Column(
           children: [
-            const SizedBox(
-              height: 200,
+            SizedBox(
+              height: screenSize.height * 0.3,
             ),
             Container(
-                width: 200,
-                height: 200,
+                width: screenSize.height * 0.3,
+                height: screenSize.height * 0.3,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('assets/images/tong_logo.png'),
@@ -74,8 +75,8 @@ class HomePageState extends State<HomePage> {
                   ),
                 )),
             Container(
-                width: 200,
-                height: 100,
+                width: screenSize.height * 0.3,
+                height: screenSize.height * 0.1,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('assets/images/tong_logo_name.png'),
