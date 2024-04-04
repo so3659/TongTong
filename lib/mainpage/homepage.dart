@@ -208,7 +208,7 @@ class HomePageState extends State<HomePage> {
                         ),
                         onPressed: () {
                           signOut();
-                          GoRouter.of(context).go('/sponsor');
+                          GoRouter.of(context).push('/sponsor');
                         },
                       ),
                       TextButton(

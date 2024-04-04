@@ -70,7 +70,7 @@ class _InquiryState extends State<Inquiry> {
                   fontWeight: FontWeight.bold,
                   color: Colors.blueAccent[700]),
               linkStyle: TextStyle(
-                  fontSize: 14,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   decoration: TextDecoration.underline,
                   color: Colors.blueAccent[700]),
