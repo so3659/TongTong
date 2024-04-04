@@ -10,11 +10,12 @@ class GoogleLogin extends StatelessWidget {
   const GoogleLogin({super.key});
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       body: ListView(
         children: [
-          _buildTitle(),
+          _buildTitle(screenSize),
           const BuildLogin(),
         ],
       ),
@@ -22,7 +23,7 @@ class GoogleLogin extends StatelessWidget {
   }
 }
 
-Widget _buildTitle() {
+Widget _buildTitle(screenSize) {
   return Container(
     padding: const EdgeInsets.all(8),
     alignment: Alignment.center,
@@ -33,12 +34,15 @@ Widget _buildTitle() {
     child: FadeInUp(
         duration: const Duration(milliseconds: 1800),
         child: Container(
-          margin: const EdgeInsets.fromLTRB(0, 100, 0, 50),
+          margin: EdgeInsets.only(
+            top: screenSize.height * 0.15, // 상단 여백
+            bottom: screenSize.height * 0.15, // 하단 여백
+          ),
           child: Column(
             children: [
               Container(
-                  width: 200,
-                  height: 200,
+                  width: screenSize.width * 0.5, // 이미지 너비
+                  height: screenSize.height * 0.3, // 이미지 높이
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/images/tong_logo.png'),
@@ -46,8 +50,8 @@ Widget _buildTitle() {
                     ),
                   )),
               Container(
-                  width: 350,
-                  height: 150,
+                  width: screenSize.width * 0.7, // 로고 텍스트 너비
+                  height: screenSize.height * 0.1, // 로고 텍스트 높이
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/images/tong_logo_name.png'),
@@ -115,15 +119,19 @@ class BuildLoginState extends State<BuildLogin> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         FadeInUp(
           duration: const Duration(milliseconds: 1800),
           child: Container(
-            margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            padding: const EdgeInsets.all(20),
-            width: 450,
+            margin: EdgeInsets.symmetric(
+              vertical: screenSize.height * 0.02, // 위아래 여백
+              horizontal: screenSize.width * 0.05, // 좌우 여백
+            ),
+            padding: EdgeInsets.all(screenSize.width * 0.05), // 패딩
+            width: screenSize.height * 0.6,
             child: SignInButton(
               Buttons.google,
               text: "Sign in with Google",

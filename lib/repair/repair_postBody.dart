@@ -14,8 +14,8 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:tongtong/parameter/postParameter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class FeedPageBody extends StatefulWidget {
-  const FeedPageBody({
+class RepairFeedPageBody extends StatefulWidget {
+  const RepairFeedPageBody({
     super.key,
     required this.uid,
     required this.name,
@@ -26,6 +26,7 @@ class FeedPageBody extends StatefulWidget {
     required this.currentUserId,
     required this.anoym,
     required this.commentsCount,
+    this.avatarUrl,
   });
 
   final String uid;
@@ -37,15 +38,16 @@ class FeedPageBody extends StatefulWidget {
   final String currentUserId;
   final bool anoym;
   final int commentsCount;
+  final String? avatarUrl;
 
   @override
-  FeedPageBodyState createState() => FeedPageBodyState();
+  RepairFeedPageBodyState createState() => RepairFeedPageBodyState();
 }
 
-class FeedPageBodyState extends State<FeedPageBody> {
+class RepairFeedPageBodyState extends State<RepairFeedPageBody> {
   int currentPage = 0;
   late FeedPost post;
-  String? profileImage = FirebaseAuth.instance.currentUser!.photoURL;
+
   User? user;
 
   @override
@@ -91,7 +93,8 @@ class FeedPageBodyState extends State<FeedPageBody> {
           documentId: widget.documentId,
           currentUserId: widget.currentUserId,
           anoym: widget.anoym,
-          commentsCount: widget.commentsCount);
+          commentsCount: widget.commentsCount,
+          avatarUrl: widget.avatarUrl);
     } else {
       post = FeedPost(
           uid: widget.uid,
@@ -101,7 +104,8 @@ class FeedPageBodyState extends State<FeedPageBody> {
           documentId: widget.documentId,
           currentUserId: widget.currentUserId,
           anoym: widget.anoym,
-          commentsCount: widget.commentsCount);
+          commentsCount: widget.commentsCount,
+          avatarUrl: widget.avatarUrl);
     }
   }
 
@@ -164,7 +168,12 @@ class FeedPageBodyState extends State<FeedPageBody> {
                           backgroundImage: widget.anoym
                               ? const AssetImage('assets/images/tong_logo.png')
                                   as ImageProvider<Object>
-                              : CachedNetworkImageProvider(profileImage!),
+                              : widget.avatarUrl == null
+                                  ? const AssetImage(
+                                          'assets/images/tong_logo.png')
+                                      as ImageProvider<Object>
+                                  : CachedNetworkImageProvider(
+                                      widget.avatarUrl!),
                           radius: 35,
                         ),
                       ),
@@ -178,7 +187,7 @@ class FeedPageBodyState extends State<FeedPageBody> {
                             Container(
                               margin: const EdgeInsets.only(right: 5),
                               child: Text(
-                                widget.anoym ? '익명' : user!.displayName!,
+                                widget.anoym ? '익명' : widget.name,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!

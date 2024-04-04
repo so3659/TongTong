@@ -10,6 +10,7 @@ class FeedPost {
   final String currentUserId;
   final bool anoym;
   final int commentsCount;
+  final String? avatarUrl;
 
   FeedPost({
     required this.uid,
@@ -21,5 +22,6 @@ class FeedPost {
     required this.currentUserId,
     required this.anoym,
     required this.commentsCount,
+    this.avatarUrl,
   });
 }

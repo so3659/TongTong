@@ -21,14 +21,16 @@ class InfoMainState extends State<InfoMain> {
     //             ColorScheme.fromSeed(seedColor: (Colors.lightBlue[200])!)),
     //     debugShowCheckedModeBanner: false,
     //     home:
+    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
-        body: SizedBox.expand(
-            child: Column(
+        body: Center(
+            child: SizedBox.expand(
+                child: Column(
       children: [
         Container(
-          margin: const EdgeInsets.fromLTRB(10, 20, 10, 0),
-          height: 30,
-          width: 370,
+          margin: EdgeInsets.fromLTRB(10, screenSize.height * 0.02, 10, 0),
+          height: screenSize.height * 0.04, // 전체 화면 높이의 4%를 높이로 설정
+          width: screenSize.width * 0.9, // 전체 화면 너비의 90%를 너비로 설정
           decoration: BoxDecoration(
             color: Colors.grey[350],
             borderRadius: BorderRadius.circular(38.5),
@@ -52,10 +54,12 @@ class InfoMainState extends State<InfoMain> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
-                      margin: const EdgeInsets.fromLTRB(10, 40, 10, 20),
+                      margin: EdgeInsets.fromLTRB(
+                          10, screenSize.height * 0.05, 10, 20),
                       child: SizedBox(
-                        height: 170,
-                        width: 170,
+                        height:
+                            screenSize.height * 0.25, // 전체 화면 높이의 25%를 높이로 설정
+                        width: screenSize.width * 0.4, // 전체 화면 너비의 40%를 너비로 설정
                         child: FloatingActionButton(
                           heroTag: 'restaurant',
                           backgroundColor: Colors.white,
@@ -76,10 +80,11 @@ class InfoMainState extends State<InfoMain> {
                         ),
                       )),
                   Container(
-                    margin: const EdgeInsets.fromLTRB(10, 40, 10, 20),
+                    margin: EdgeInsets.fromLTRB(
+                        10, screenSize.height * 0.05, 10, 20),
                     child: SizedBox(
-                      height: 170,
-                      width: 170,
+                      height: screenSize.height * 0.25, // 전체 화면 높이의 25%를 높이로 설정
+                      width: screenSize.width * 0.4, // 전체 화면 너비의 40%를 너비로 설정
                       child: FloatingActionButton(
                         heroTag: 'shop',
                         backgroundColor: Colors.white,
@@ -105,10 +110,11 @@ class InfoMainState extends State<InfoMain> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
-                    margin: const EdgeInsets.fromLTRB(10, 40, 10, 20),
+                    margin: EdgeInsets.fromLTRB(
+                        10, screenSize.height * 0.05, 10, 20),
                     child: SizedBox(
-                      height: 170,
-                      width: 170,
+                      height: screenSize.height * 0.25, // 전체 화면 높이의 25%를 높이로 설정
+                      width: screenSize.width * 0.4, // 전체 화면 너비의 40%를 너비로 설정
                       child: FloatingActionButton(
                         heroTag: 'guitar',
                         backgroundColor: Colors.white,
@@ -129,10 +135,11 @@ class InfoMainState extends State<InfoMain> {
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.fromLTRB(10, 40, 10, 20),
+                    margin: EdgeInsets.fromLTRB(
+                        10, screenSize.height * 0.05, 10, 20),
                     child: SizedBox(
-                      height: 170,
-                      width: 170,
+                      height: screenSize.height * 0.25, // 전체 화면 높이의 25%를 높이로 설정
+                      width: screenSize.width * 0.4, // 전체 화면 너비의 40%를 너비로 설정
                       child: FloatingActionButton(
                         heroTag: 'lightning',
                         backgroundColor: Colors.white,
@@ -159,6 +166,6 @@ class InfoMainState extends State<InfoMain> {
           ],
         )
       ],
-    )));
+    ))));
   }
 }

@@ -57,7 +57,8 @@ class CommentList extends ConsumerStatefulWidget {
       required this.commentId,
       required this.anoym,
       required this.replyCount,
-      required this.isDelete});
+      required this.isDelete,
+      this.avatarUrl});
 
   final String uid;
   final String name;
@@ -68,13 +69,13 @@ class CommentList extends ConsumerStatefulWidget {
   final bool anoym;
   final int replyCount;
   final bool isDelete;
+  final String? avatarUrl;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => CommentListState();
 }
 
 class CommentListState extends ConsumerState<CommentList> {
-  String? profileImage = FirebaseAuth.instance.currentUser!.photoURL;
   @override
   void initState() {
     super.initState();
@@ -177,7 +178,12 @@ class CommentListState extends ConsumerState<CommentList> {
                                     ? const AssetImage(
                                             'assets/images/tong_logo.png')
                                         as ImageProvider<Object>
-                                    : CachedNetworkImageProvider(profileImage!),
+                                    : widget.avatarUrl == null
+                                        ? const AssetImage(
+                                                'assets/images/tong_logo.png')
+                                            as ImageProvider<Object>
+                                        : CachedNetworkImageProvider(
+                                            widget.avatarUrl!),
                             radius: 20,
                           ),
                         ),
@@ -195,8 +201,7 @@ class CommentListState extends ConsumerState<CommentList> {
                                       ? '익명'
                                       : widget.isDelete
                                           ? '(삭제된 댓글)'
-                                          : FirebaseAuth.instance.currentUser!
-                                              .displayName!,
+                                          : widget.name,
                                   style: widget.isDelete
                                       ? Theme.of(context)
                                           .textTheme

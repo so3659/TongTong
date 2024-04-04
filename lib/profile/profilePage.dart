@@ -120,6 +120,10 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> setDefaultProfileImage() async {
     await user!.updatePhotoURL(
         "https://firebasestorage.googleapis.com/v0/b/tongtong-5936b.appspot.com/o/defaultProfileImage%2Ftong_logo.png?alt=media&token=b17f8452-66e6-43f4-8439-3c414b8691c6");
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('변경이 완료되었습니다.'), //snack bar의 내용. icon, button같은것도 가능하다.
+      duration: Duration(seconds: 3), //올라와있는 시간
+    ));
     Navigator.of(context, rootNavigator: true).pop();
   }
 
@@ -140,6 +144,13 @@ class _ProfilePageState extends State<ProfilePage> {
         final String urlString =
             await FirebaseStorage.instance.ref(imageRef).getDownloadURL();
         await user?.updatePhotoURL(urlString);
+        FirebaseFirestore.instance.collection('users').doc(_uid).set({
+          'avatarUrl': urlString,
+        }, SetOptions(merge: true));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('변경이 완료되었습니다.'), //snack bar의 내용. icon, button같은것도 가능하다.
+          duration: Duration(seconds: 3), //올라와있는 시간
+        ));
 
         Navigator.of(context, rootNavigator: true).pop();
       }

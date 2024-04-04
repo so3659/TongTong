@@ -50,9 +50,11 @@ class CalendarState extends State<Calendar> {
         ];
       }
     }
-    setState(() {
-      _fetchedEvents = events; // Update the state variable
-    });
+    if (mounted) {
+      setState(() {
+        _fetchedEvents = events;
+      });
+    }
   }
 
   @override

@@ -55,6 +55,33 @@ class MakeKnowhowState extends State<MakeKnowhow> {
     return uploadedImages;
   }
 
+  Future<String?> fetchAvatarUrl(String uid) async {
+    // 문서 참조를 얻습니다.
+    DocumentReference<Map<String, dynamic>> userDocRef =
+        FirebaseFirestore.instance.collection('users').doc(uid);
+
+    try {
+      // 문서의 스냅샷을 가져옵니다.
+      DocumentSnapshot<Map<String, dynamic>> docSnapshot =
+          await userDocRef.get();
+
+      // 문서가 존재하는지 확인합니다.
+      if (docSnapshot.exists) {
+        // 문서 데이터를 얻습니다.
+        Map<String, dynamic>? data = docSnapshot.data();
+
+        // 'avatarUrl' 필드가 존재하는지 확인하고, 존재한다면 그 값을 반환합니다.
+        return data?['avatarUrl'];
+      } else {
+        // 문서가 존재하지 않는 경우 null을 반환합니다.
+        return null;
+      }
+    } catch (e) {
+      // 오류가 발생한 경우, null을 반환합니다.
+      return null;
+    }
+  }
+
   Future<void> _toFirestore(List<Map<String, String>>? images, String postKey,
       String contents) async {
     try {
@@ -72,6 +99,8 @@ class MakeKnowhowState extends State<MakeKnowhow> {
           .map((url) => url!) // null 체크 후, String?에서 String으로 변환
           .toList();
 
+      String? avatarUrl = await fetchAvatarUrl(_uid);
+
       if (images != null) {
         await reference.set({
           "uid": _uid,
@@ -85,6 +114,7 @@ class MakeKnowhowState extends State<MakeKnowhow> {
           'anoym': checkboxValue,
           'commentsCount': 0,
           'documentId': postKey,
+          'avatarUrl': avatarUrl,
         });
       } else if (images == null) {
         await reference.set({
@@ -99,6 +129,7 @@ class MakeKnowhowState extends State<MakeKnowhow> {
           'anoym': checkboxValue,
           'commentsCount': 0,
           'documentId': postKey,
+          'avatarUrl': avatarUrl,
         });
       }
     } on FirebaseException catch (error) {

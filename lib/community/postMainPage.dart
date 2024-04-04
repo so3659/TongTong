@@ -148,27 +148,52 @@ class PostState extends State<PostPage> {
           builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot>(
             itemBuilder: (context, item, index) {
               return (item['image'] != null
-                  ? (FeedPageBody(
-                      uid: item['uid'],
-                      name: item['name'],
-                      content: item['contents'],
-                      photoUrls: item['image'],
-                      dateTime: item['dateTime'],
-                      documentId: item.id,
-                      currentUserId: currentUserId,
-                      anoym: item['anoym'],
-                      commentsCount: item['commentsCount'],
-                    ))
-                  : (FeedPageBody(
-                      uid: item['uid'],
-                      name: item['name'],
-                      content: item['contents'],
-                      dateTime: item['dateTime'],
-                      documentId: item.id,
-                      currentUserId: currentUserId,
-                      anoym: item['anoym'],
-                      commentsCount: item['commentsCount'],
-                    )));
+                  ? item['avatarUrl'] == null
+                      ? (FeedPageBody(
+                          uid: item['uid'],
+                          name: item['name'],
+                          content: item['contents'],
+                          photoUrls: item['image'],
+                          dateTime: item['dateTime'],
+                          documentId: item.id,
+                          currentUserId: currentUserId,
+                          anoym: item['anoym'],
+                          commentsCount: item['commentsCount'],
+                        ))
+                      : (FeedPageBody(
+                          uid: item['uid'],
+                          name: item['name'],
+                          content: item['contents'],
+                          photoUrls: item['image'],
+                          dateTime: item['dateTime'],
+                          documentId: item.id,
+                          currentUserId: currentUserId,
+                          anoym: item['anoym'],
+                          commentsCount: item['commentsCount'],
+                          avatarUrl: item['avatarUrl'],
+                        ))
+                  : item['avatarUrl'] == null
+                      ? (FeedPageBody(
+                          uid: item['uid'],
+                          name: item['name'],
+                          content: item['contents'],
+                          dateTime: item['dateTime'],
+                          documentId: item.id,
+                          currentUserId: currentUserId,
+                          anoym: item['anoym'],
+                          commentsCount: item['commentsCount'],
+                        ))
+                      : (FeedPageBody(
+                          uid: item['uid'],
+                          name: item['name'],
+                          content: item['contents'],
+                          dateTime: item['dateTime'],
+                          documentId: item.id,
+                          currentUserId: currentUserId,
+                          anoym: item['anoym'],
+                          commentsCount: item['commentsCount'],
+                          avatarUrl: item['avatarUrl'],
+                        )));
             },
             noItemsFoundIndicatorBuilder: (context) => const Center(
               child: Text("표시할 게시물이 없어요", style: TextStyle(fontSize: 20)),

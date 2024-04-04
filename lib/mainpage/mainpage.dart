@@ -12,9 +12,11 @@ class Mainpage extends StatefulWidget {
 class MainpageState extends State<Mainpage> {
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
-        body: SizedBox.expand(
-            child: Column(
+        body: Center(
+            child: SizedBox.expand(
+                child: Column(
       children: [
         SizedBox(
           child: Image.asset('assets/images/tong_top_logo.png'),
@@ -27,10 +29,11 @@ class MainpageState extends State<Mainpage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
-                    padding: const EdgeInsets.fromLTRB(10, 40, 10, 20),
+                    margin: EdgeInsets.fromLTRB(
+                        10, screenSize.height * 0.05, 10, 20),
                     child: SizedBox(
-                      height: 170,
-                      width: 170,
+                      height: screenSize.height * 0.25, // 전체 화면 높이의 25%를 높이로 설정
+                      width: screenSize.width * 0.4, // 전체 화면 너비의 40%를 너비로 설정
                       child: FloatingActionButton(
                         heroTag: 'insta',
                         backgroundColor: Colors.white,
@@ -56,10 +59,11 @@ class MainpageState extends State<Mainpage> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
+                    margin: EdgeInsets.fromLTRB(
+                        10, screenSize.height * 0.05, 10, 20),
                     child: SizedBox(
-                      height: 170,
-                      width: 170,
+                      height: screenSize.height * 0.25, // 전체 화면 높이의 25%를 높이로 설정
+                      width: screenSize.width * 0.4, // 전체 화면 너비의 40%를 너비로 설정
                       child: FloatingActionButton(
                         heroTag: 'booking',
                         backgroundColor: Colors.white,
@@ -85,10 +89,11 @@ class MainpageState extends State<Mainpage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
-                    padding: const EdgeInsets.fromLTRB(10, 40, 10, 20),
+                    margin: EdgeInsets.fromLTRB(
+                        10, screenSize.height * 0.05, 10, 20),
                     child: SizedBox(
-                      height: 170,
-                      width: 170,
+                      height: screenSize.height * 0.25, // 전체 화면 높이의 25%를 높이로 설정
+                      width: screenSize.width * 0.4, // 전체 화면 너비의 40%를 너비로 설정
                       child: FloatingActionButton(
                         heroTag: 'community',
                         backgroundColor: Colors.white,
@@ -110,10 +115,11 @@ class MainpageState extends State<Mainpage> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
+                    margin: EdgeInsets.fromLTRB(
+                        10, screenSize.height * 0.05, 10, 20),
                     child: SizedBox(
-                      height: 170,
-                      width: 170,
+                      height: screenSize.height * 0.25, // 전체 화면 높이의 25%를 높이로 설정
+                      width: screenSize.width * 0.4, // 전체 화면 너비의 40%를 너비로 설정
                       child: FloatingActionButton(
                         heroTag: 'navercafe',
                         backgroundColor: Colors.white,
@@ -145,6 +151,6 @@ class MainpageState extends State<Mainpage> {
           ],
         )
       ],
-    )));
+    ))));
   }
 }

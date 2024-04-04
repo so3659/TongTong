@@ -36,6 +36,9 @@ class RestaurantDetailPageState extends ConsumerState<RestaurantDetailPage> {
     CollectionReference commentsRef = postRef.collection('comments');
     String commentId = getRandomString(16);
 
+    String? avatarUrl =
+        await fetchAvatarUrl(FirebaseAuth.instance.currentUser!.uid);
+
     await commentsRef.doc(commentId).set({
       "uid": FirebaseAuth.instance.currentUser!.uid,
       "name":
@@ -47,7 +50,8 @@ class RestaurantDetailPageState extends ConsumerState<RestaurantDetailPage> {
       'likedBy': [],
       'anoym': checkboxValue,
       'replyCount': 0,
-      'isDeleted': false
+      'isDeleted': false,
+      'avatarUrl': avatarUrl,
     });
     await postRef.update({
       'commentsCount': FieldValue.increment(1),
@@ -68,6 +72,9 @@ class RestaurantDetailPageState extends ConsumerState<RestaurantDetailPage> {
 
     String replyId = getRandomString(16); // Unique ID
 
+    String? avatarUrl =
+        await fetchAvatarUrl(FirebaseAuth.instance.currentUser!.uid);
+
     // 대댓글 추가 로직
     await commentRef.collection('Replies').doc(replyId).set({
       "uid": FirebaseAuth.instance.currentUser!.uid,
@@ -79,7 +86,8 @@ class RestaurantDetailPageState extends ConsumerState<RestaurantDetailPage> {
       'commentId': commentId,
       'replyId': replyId,
       'likedBy': [],
-      'anoym': checkboxValue
+      'anoym': checkboxValue,
+      'avatarUrl': avatarUrl,
     });
 
     await postRef.update({
@@ -88,6 +96,33 @@ class RestaurantDetailPageState extends ConsumerState<RestaurantDetailPage> {
     await commentRef.update({
       'replyCount': FieldValue.increment(1),
     });
+  }
+
+  Future<String?> fetchAvatarUrl(String uid) async {
+    // 문서 참조를 얻습니다.
+    DocumentReference<Map<String, dynamic>> userDocRef =
+        FirebaseFirestore.instance.collection('users').doc(uid);
+
+    try {
+      // 문서의 스냅샷을 가져옵니다.
+      DocumentSnapshot<Map<String, dynamic>> docSnapshot =
+          await userDocRef.get();
+
+      // 문서가 존재하는지 확인합니다.
+      if (docSnapshot.exists) {
+        // 문서 데이터를 얻습니다.
+        Map<String, dynamic>? data = docSnapshot.data();
+
+        // 'avatarUrl' 필드가 존재하는지 확인하고, 존재한다면 그 값을 반환합니다.
+        return data?['avatarUrl'];
+      } else {
+        // 문서가 존재하지 않는 경우 null을 반환합니다.
+        return null;
+      }
+    } catch (e) {
+      // 오류가 발생한 경우, null을 반환합니다.
+      return null;
+    }
   }
 
   @override
@@ -144,27 +179,52 @@ class RestaurantDetailPageState extends ConsumerState<RestaurantDetailPage> {
                           width: double.infinity,
                         ),
                         widget.post.photoUrls != null
-                            ? FeedDetailPageBody(
-                                uid: widget.post.uid,
-                                name: widget.post.name,
-                                content: widget.post.content,
-                                photoUrls: widget.post.photoUrls,
-                                dateTime: widget.post.dateTime,
-                                documentId: widget.post.documentId,
-                                currentUserId: widget.post.currentUserId,
-                                anoym: widget.post.anoym,
-                                commentsCount: widget.post.commentsCount,
-                              )
-                            : FeedDetailPageBody(
-                                uid: widget.post.uid,
-                                name: widget.post.name,
-                                content: widget.post.content,
-                                dateTime: widget.post.dateTime,
-                                documentId: widget.post.documentId,
-                                currentUserId: widget.post.currentUserId,
-                                anoym: widget.post.anoym,
-                                commentsCount: widget.post.commentsCount,
-                              ),
+                            ? widget.post.avatarUrl == null
+                                ? FeedDetailPageBody(
+                                    uid: widget.post.uid,
+                                    name: widget.post.name,
+                                    content: widget.post.content,
+                                    photoUrls: widget.post.photoUrls,
+                                    dateTime: widget.post.dateTime,
+                                    documentId: widget.post.documentId,
+                                    currentUserId: widget.post.currentUserId,
+                                    anoym: widget.post.anoym,
+                                    commentsCount: widget.post.commentsCount,
+                                  )
+                                : FeedDetailPageBody(
+                                    uid: widget.post.uid,
+                                    name: widget.post.name,
+                                    content: widget.post.content,
+                                    photoUrls: widget.post.photoUrls,
+                                    dateTime: widget.post.dateTime,
+                                    documentId: widget.post.documentId,
+                                    currentUserId: widget.post.currentUserId,
+                                    anoym: widget.post.anoym,
+                                    commentsCount: widget.post.commentsCount,
+                                    avatarUrl: widget.post.avatarUrl,
+                                  )
+                            : widget.post.avatarUrl == null
+                                ? FeedDetailPageBody(
+                                    uid: widget.post.uid,
+                                    name: widget.post.name,
+                                    content: widget.post.content,
+                                    dateTime: widget.post.dateTime,
+                                    documentId: widget.post.documentId,
+                                    currentUserId: widget.post.currentUserId,
+                                    anoym: widget.post.anoym,
+                                    commentsCount: widget.post.commentsCount,
+                                  )
+                                : FeedDetailPageBody(
+                                    uid: widget.post.uid,
+                                    name: widget.post.name,
+                                    content: widget.post.content,
+                                    dateTime: widget.post.dateTime,
+                                    documentId: widget.post.documentId,
+                                    currentUserId: widget.post.currentUserId,
+                                    anoym: widget.post.anoym,
+                                    commentsCount: widget.post.commentsCount,
+                                    avatarUrl: widget.post.avatarUrl,
+                                  ),
                       ],
                     ),
                   ),
@@ -207,18 +267,32 @@ class RestaurantDetailPageState extends ConsumerState<RestaurantDetailPage> {
 
                                 return Column(
                                   children: [
-                                    CommentList(
-                                      // 댓글 정보를 사용하여 CommentList 위젯 생성
-                                      uid: comment['uid'],
-                                      name: comment['name'],
-                                      content: comment['content'],
-                                      dateTime: comment['dateTime'],
-                                      postId: comment['postId'],
-                                      commentId: comment['commentId'],
-                                      anoym: comment['anoym'],
-                                      replyCount: comment['replyCount'],
-                                      isDelete: comment['isDeleted'],
-                                    ),
+                                    comment['avatarUrl'] == null
+                                        ? CommentList(
+                                            // 댓글 정보를 사용하여 CommentList 위젯 생성
+                                            uid: comment['uid'],
+                                            name: comment['name'],
+                                            content: comment['content'],
+                                            dateTime: comment['dateTime'],
+                                            postId: comment['postId'],
+                                            commentId: comment['commentId'],
+                                            anoym: comment['anoym'],
+                                            replyCount: comment['replyCount'],
+                                            isDelete: comment['isDeleted'],
+                                          )
+                                        : CommentList(
+                                            // 댓글 정보를 사용하여 CommentList 위젯 생성
+                                            uid: comment['uid'],
+                                            name: comment['name'],
+                                            content: comment['content'],
+                                            dateTime: comment['dateTime'],
+                                            postId: comment['postId'],
+                                            commentId: comment['commentId'],
+                                            anoym: comment['anoym'],
+                                            replyCount: comment['replyCount'],
+                                            isDelete: comment['isDeleted'],
+                                            avatarUrl: comment['avatarUrl'],
+                                          ),
                                     StreamBuilder<QuerySnapshot>(
                                       // 대댓글 목록을 가져오는 스트림
                                       stream: document.reference
@@ -258,16 +332,31 @@ class RestaurantDetailPageState extends ConsumerState<RestaurantDetailPage> {
                                             Map<String, dynamic> reply =
                                                 replyDoc.data()
                                                     as Map<String, dynamic>;
-                                            return ReplyList(
-                                              uid: reply['uid'],
-                                              name: reply['name'],
-                                              content: reply['content'],
-                                              dateTime: reply['dateTime'],
-                                              postId: reply['postId'],
-                                              commentId: reply['commentId'],
-                                              replyId: reply['replyId'],
-                                              anoym: reply['anoym'],
-                                            );
+                                            return reply['avatarUrl'] == null
+                                                ? ReplyList(
+                                                    uid: reply['uid'],
+                                                    name: reply['name'],
+                                                    content: reply['content'],
+                                                    dateTime: reply['dateTime'],
+                                                    postId: reply['postId'],
+                                                    commentId:
+                                                        reply['commentId'],
+                                                    replyId: reply['replyId'],
+                                                    anoym: reply['anoym'],
+                                                  )
+                                                : ReplyList(
+                                                    uid: reply['uid'],
+                                                    name: reply['name'],
+                                                    content: reply['content'],
+                                                    dateTime: reply['dateTime'],
+                                                    postId: reply['postId'],
+                                                    commentId:
+                                                        reply['commentId'],
+                                                    replyId: reply['replyId'],
+                                                    anoym: reply['anoym'],
+                                                    avatarUrl:
+                                                        reply['avatarUrl'],
+                                                  );
                                           },
                                         );
                                       },

@@ -232,27 +232,56 @@ class SearchPageState extends State<SearchPage> {
               return _textEditingController.text.isEmpty
                   ? Container()
                   : (data != null && data['image'] != null)
-                      ? (FeedPageBody(
-                          uid: data['uid'],
-                          name: data['name'],
-                          content: data['contents'],
-                          photoUrls: data['image'],
-                          dateTime: data['dateTime'],
-                          documentId: data['documentId'],
-                          currentUserId: FirebaseAuth.instance.currentUser!.uid,
-                          anoym: data['anoym'],
-                          commentsCount: data['commentsCount'],
-                        ))
-                      : (FeedPageBody(
-                          uid: data!['uid'],
-                          name: data['name'],
-                          content: data['contents'],
-                          dateTime: data['dateTime'],
-                          documentId: data['documentId'],
-                          currentUserId: FirebaseAuth.instance.currentUser!.uid,
-                          anoym: data['anoym'],
-                          commentsCount: data['commentsCount'],
-                        ));
+                      ? data['avatarUrl'] == null
+                          ? (RestaurantFeedPageBody(
+                              uid: data['uid'],
+                              name: data['name'],
+                              content: data['contents'],
+                              photoUrls: data['image'],
+                              dateTime: data['dateTime'],
+                              documentId: data['documentId'],
+                              currentUserId:
+                                  FirebaseAuth.instance.currentUser!.uid,
+                              anoym: data['anoym'],
+                              commentsCount: data['commentsCount'],
+                            ))
+                          : (RestaurantFeedPageBody(
+                              uid: data['uid'],
+                              name: data['name'],
+                              content: data['contents'],
+                              photoUrls: data['image'],
+                              dateTime: data['dateTime'],
+                              documentId: data['documentId'],
+                              currentUserId:
+                                  FirebaseAuth.instance.currentUser!.uid,
+                              anoym: data['anoym'],
+                              commentsCount: data['commentsCount'],
+                              avatarUrl: data['avatarUrl'],
+                            ))
+                      : data?['avatarUrl'] == null
+                          ? (RestaurantFeedPageBody(
+                              uid: data!['uid'],
+                              name: data['name'],
+                              content: data['contents'],
+                              dateTime: data['dateTime'],
+                              documentId: data['documentId'],
+                              currentUserId:
+                                  FirebaseAuth.instance.currentUser!.uid,
+                              anoym: data['anoym'],
+                              commentsCount: data['commentsCount'],
+                            ))
+                          : (RestaurantFeedPageBody(
+                              uid: data!['uid'],
+                              name: data['name'],
+                              content: data['contents'],
+                              dateTime: data['dateTime'],
+                              documentId: data['documentId'],
+                              currentUserId:
+                                  FirebaseAuth.instance.currentUser!.uid,
+                              anoym: data['anoym'],
+                              commentsCount: data['commentsCount'],
+                              avatarUrl: data['avatarUrl'],
+                            ));
             },
           );
         },

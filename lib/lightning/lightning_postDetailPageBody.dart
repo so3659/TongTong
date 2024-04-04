@@ -25,6 +25,7 @@ class FeedDetailPageBody extends StatefulWidget {
     required this.currentUserId,
     required this.anoym,
     required this.commentsCount,
+    this.avatarUrl,
   });
 
   final String uid;
@@ -36,6 +37,7 @@ class FeedDetailPageBody extends StatefulWidget {
   final String currentUserId;
   final bool anoym;
   final int commentsCount;
+  final String? avatarUrl;
 
   @override
   State<FeedDetailPageBody> createState() => _FeedDetailPageBodyState();
@@ -44,7 +46,6 @@ class FeedDetailPageBody extends StatefulWidget {
 class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
   int currentPage = 0;
   late FeedPost post;
-  String? profileImage = FirebaseAuth.instance.currentUser!.photoURL;
 
   @override
   void initState() {
@@ -88,7 +89,8 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
           documentId: widget.documentId,
           currentUserId: widget.currentUserId,
           anoym: widget.anoym,
-          commentsCount: widget.commentsCount);
+          commentsCount: widget.commentsCount,
+          avatarUrl: widget.avatarUrl);
     } else {
       post = FeedPost(
           uid: widget.uid,
@@ -98,7 +100,8 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
           documentId: widget.documentId,
           currentUserId: widget.currentUserId,
           anoym: widget.anoym,
-          commentsCount: widget.commentsCount);
+          commentsCount: widget.commentsCount,
+          avatarUrl: widget.avatarUrl);
     }
   }
 
@@ -159,7 +162,12 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
                           backgroundImage: widget.anoym
                               ? const AssetImage('assets/images/tong_logo.png')
                                   as ImageProvider<Object>
-                              : CachedNetworkImageProvider(profileImage!),
+                              : widget.avatarUrl == null
+                                  ? const AssetImage(
+                                          'assets/images/tong_logo.png')
+                                      as ImageProvider<Object>
+                                  : CachedNetworkImageProvider(
+                                      widget.avatarUrl!),
                           radius: 35,
                         ),
                       ),
@@ -173,10 +181,7 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
                             Container(
                               margin: const EdgeInsets.only(right: 5),
                               child: Text(
-                                widget.anoym
-                                    ? '익명'
-                                    : FirebaseAuth
-                                        .instance.currentUser!.displayName!,
+                                widget.anoym ? '익명' : widget.name,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!

@@ -94,6 +94,11 @@ class _MakeAppointmentState extends State<MakeAppointment> {
                       'uid': FirebaseAuth.instance.currentUser!.uid,
                       'documentId': postKey,
                     });
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text(
+                          '일정이 추가되었습니다.'), //snack bar의 내용. icon, button같은것도 가능하다.
+                      duration: Duration(seconds: 3), //올라와있는 시간
+                    ));
                     Navigator.pop(context);
                     eventController.clear();
                     setState(() {});

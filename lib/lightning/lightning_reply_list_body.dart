@@ -10,17 +10,17 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
 
 class ReplyList extends StatefulWidget {
-  const ReplyList({
-    super.key,
-    required this.uid,
-    required this.name,
-    required this.content,
-    required this.dateTime,
-    required this.postId,
-    required this.commentId,
-    required this.replyId,
-    required this.anoym,
-  });
+  const ReplyList(
+      {super.key,
+      required this.uid,
+      required this.name,
+      required this.content,
+      required this.dateTime,
+      required this.postId,
+      required this.commentId,
+      required this.replyId,
+      required this.anoym,
+      this.avatarUrl});
 
   final String uid;
   final String name;
@@ -30,13 +30,13 @@ class ReplyList extends StatefulWidget {
   final String commentId;
   final String replyId;
   final bool anoym;
+  final String? avatarUrl;
 
   @override
   State<ReplyList> createState() => ReplyListState();
 }
 
 class ReplyListState extends State<ReplyList> {
-  String? profileImage = FirebaseAuth.instance.currentUser!.photoURL;
   @override
   void initState() {
     super.initState();
@@ -107,7 +107,12 @@ class ReplyListState extends State<ReplyList> {
                           backgroundImage: widget.anoym
                               ? const AssetImage('assets/images/tong_logo.png')
                                   as ImageProvider<Object>
-                              : CachedNetworkImageProvider(profileImage!),
+                              : widget.avatarUrl == null
+                                  ? const AssetImage(
+                                          'assets/images/tong_logo.png')
+                                      as ImageProvider<Object>
+                                  : CachedNetworkImageProvider(
+                                      widget.avatarUrl!),
                           radius: 20,
                         ),
                       ),
@@ -121,10 +126,7 @@ class ReplyListState extends State<ReplyList> {
                             Container(
                               margin: const EdgeInsets.only(right: 5),
                               child: Text(
-                                widget.anoym
-                                    ? '익명'
-                                    : FirebaseAuth
-                                        .instance.currentUser!.displayName!,
+                                widget.anoym ? '익명' : widget.name,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
