@@ -144,7 +144,7 @@ class HomePageState extends State<HomePage> {
                   ),
                 ),
                 SizedBox(
-                  width: screenSize.width * 0.28,
+                  width: screenSize.width * 0.25,
                 ),
                 IconButton(
                   icon: Icon(_play ? Icons.pause : Icons.play_arrow),

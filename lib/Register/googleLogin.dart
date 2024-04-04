@@ -33,7 +33,7 @@ Widget _buildTitle(screenSize) {
       color: Colors.white,
     ),
     child: FadeInUp(
-        duration: const Duration(milliseconds: 1800),
+        duration: const Duration(milliseconds: 3800),
         child: Container(
           margin: EdgeInsets.only(
             top: screenSize.height * 0.15, // 상단 여백
@@ -125,7 +125,7 @@ class BuildLoginState extends State<BuildLogin> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         FadeInUp(
-          duration: const Duration(milliseconds: 1800),
+          duration: const Duration(milliseconds: 3800),
           child: Container(
             margin: EdgeInsets.symmetric(
               vertical: screenSize.height * 0.02, // 위아래 여백
