@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+
 import 'package:tongtong/Inquiry/inquiry.dart';
 import 'package:tongtong/Register/googleLogin.dart';
 import 'package:tongtong/Register/register.dart';
@@ -32,6 +34,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // 스플래시 스크린을 초기화하고 유지합니다.
+  FlutterNativeSplash.preserve(
+      widgetsBinding: WidgetsFlutterBinding.ensureInitialized());
+
   await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -189,6 +195,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initialization(context);
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -197,5 +204,11 @@ class MyApp extends StatelessWidget {
               ColorScheme.fromSeed(seedColor: (Colors.lightBlue[200])!)),
       routerConfig: _goroute,
     );
+  }
+
+  void initialization(BuildContext context) async {
+    // 3초 후에 스플래시 스크린을 숨기는 비동기 작업
+    await Future.delayed(const Duration(seconds: 2));
+    FlutterNativeSplash.remove();
   }
 }

@@ -64,7 +64,7 @@ class _HelpPeopleState extends State<HelpPeople> {
                 textAlign: TextAlign.center),
             const Text('Idea by',
                 style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
-            Text('10기 권종우, 12.5기 신유진\n',
+            Text('10기 권종우 (12기 회장), 12.5기 신유진\n',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -72,6 +72,18 @@ class _HelpPeopleState extends State<HelpPeople> {
                 textAlign: TextAlign.center),
             const Text('Sponsored by',
                 style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
+            Text('11기 양경은 (12기 부회장)\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
+            Text('한무당\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center)
           ],
         ))));
   }

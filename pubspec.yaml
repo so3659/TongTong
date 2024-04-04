@@ -68,6 +68,7 @@ dependencies:
   syncfusion_flutter_datepicker: ^25.1.37
   flutter_dotenv: ^5.1.0
   algolia_helper_flutter: ^1.0.0-pre
+  flutter_native_splash: ^2.4.0
 
 dev_dependencies:
   flutter_test:

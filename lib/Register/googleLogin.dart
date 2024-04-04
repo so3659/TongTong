@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -46,7 +47,7 @@ Widget _buildTitle(screenSize) {
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/images/tong_logo.png'),
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                     ),
                   )),
               Container(
