@@ -10,6 +10,7 @@ class HelpPeople extends StatefulWidget {
 class _HelpPeopleState extends State<HelpPeople> {
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     // Scaffold를 사용하여 화면의 구조를 정의
     return Scaffold(
         appBar: AppBar(
@@ -30,6 +31,48 @@ class _HelpPeopleState extends State<HelpPeople> {
             ),
           ), // 상단 앱 바에 표시될 타이틀 설정
         ),
-        body: Container());
+        body: SingleChildScrollView(
+            child: Center(
+                child: Column(
+          children: [
+            SizedBox(
+              height: screenSize.height * 0.05,
+            ),
+            const Text('Made by',
+                style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
+            Text('11기 김성욱\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
+            const Text('Illustrated by',
+                style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
+            Text('11기 장윤정\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
+            const Text('Music by',
+                style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
+            Text('12.5기 김태리\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
+            const Text('Idea by',
+                style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
+            Text('10기 권종우, 12.5기 신유진\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
+            const Text('Sponsor by',
+                style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
+          ],
+        ))));
   }
 }
