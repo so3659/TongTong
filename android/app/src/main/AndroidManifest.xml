@@ -7,7 +7,7 @@
         </intent>
     </queries>
     <application
-        android:label="tongtong"
+        android:label="통통"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

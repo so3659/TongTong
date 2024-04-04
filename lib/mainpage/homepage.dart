@@ -8,6 +8,8 @@ import 'package:tongtong/info/infoMain.dart';
 import 'package:tongtong/mainpage/mainpage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tongtong/profile/profilePage.dart';
+import 'package:tongtong/theme/theme.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -70,7 +72,30 @@ class HomePageState extends State<HomePage> {
         child: Column(
           children: [
             SizedBox(
-              height: screenSize.height * 0.3,
+              height: screenSize.height * 0.05,
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  width: screenSize.width * 0.05,
+                ),
+                InkWell(
+                  onTap: () async {
+                    final url = Uri.parse(
+                        'https://github.com/so3659/Social-App-For-Club');
+                    if (await canLaunchUrl(url)) {
+                      launchUrl(url, mode: LaunchMode.externalApplication);
+                    }
+                  },
+                  child: const ImageIcon(
+                    AssetImage("assets/images/github_logo_name.png"),
+                    size: 40,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: screenSize.height * 0.2,
             ),
             Container(
                 width: screenSize.height * 0.3,
@@ -90,17 +115,33 @@ class HomePageState extends State<HomePage> {
                     fit: BoxFit.cover,
                   ),
                 )),
+            SizedBox(
+              height: screenSize.height * 0.15,
+            ),
             Expanded(
                 child: Align(
               alignment: Alignment.bottomCenter,
-              child: TextButton(
-                child: const Text(
-                  '로그아웃',
-                ),
-                onPressed: () {
-                  signOut();
-                  GoRouter.of(context).go('/login');
-                },
+              child: Column(
+                children: [
+                  TextButton(
+                    child: const Text(
+                      '후원하기',
+                    ),
+                    onPressed: () {
+                      signOut();
+                      GoRouter.of(context).go('/sponsor');
+                    },
+                  ),
+                  TextButton(
+                    child: const Text(
+                      '로그아웃',
+                    ),
+                    onPressed: () {
+                      signOut();
+                      GoRouter.of(context).go('/login');
+                    },
+                  ),
+                ],
               ),
             ))
           ],

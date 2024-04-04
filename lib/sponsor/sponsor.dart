@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class HelpPeople extends StatefulWidget {
-  const HelpPeople({super.key});
+class Sponsor extends StatefulWidget {
+  const Sponsor({super.key});
 
   @override
-  State<HelpPeople> createState() => _HelpPeopleState();
+  State<Sponsor> createState() => _SponsorState();
 }
 
-class _HelpPeopleState extends State<HelpPeople> {
+class _SponsorState extends State<Sponsor> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -15,7 +17,7 @@ class _HelpPeopleState extends State<HelpPeople> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            '도움 주신 분들',
+            '후원하기',
             style: Theme.of(context)
                 .textTheme
                 .bodyLarge!
@@ -38,40 +40,33 @@ class _HelpPeopleState extends State<HelpPeople> {
             SizedBox(
               height: screenSize.height * 0.05,
             ),
-            const Text('Made by',
+            const Text('계좌번호',
                 style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
-            Text('11기 김성욱\n',
+            Text('카카오뱅크\n3333-05-7607820\n',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.blueAccent[700]),
                 textAlign: TextAlign.center),
-            const Text('Illustrated by',
+            const Text('익명 후원\n',
                 style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
-            Text('11기 장윤정\n',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent[700]),
-                textAlign: TextAlign.center),
-            const Text('Music by',
-                style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
-            Text('12.5기 김태리\n',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent[700]),
-                textAlign: TextAlign.center),
-            const Text('Idea by',
-                style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
-            Text('10기 권종우, 12.5기 신유진\n',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent[700]),
-                textAlign: TextAlign.center),
-            const Text('Sponsored by',
-                style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
+            Linkify(
+              onOpen: (link) async {
+                if (!await launchUrl(Uri.parse(link.url))) {
+                  throw Exception('Could not launch ${link.url}');
+                }
+              },
+              text: 'https://toss.me/so3659',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueAccent[700]),
+              linkStyle: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline,
+                  color: Colors.blueAccent[700]),
+            ),
           ],
         ))));
   }

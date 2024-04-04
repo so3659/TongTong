@@ -204,7 +204,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 _buildMyCommentsButton('댓글 단 글'),
                 _builduserNameButton('닉네임 변경'),
                 _builduserProfileImageButton('프로필 사진 변경'),
-                // _buildRoundedButton('앱 설정'),
+                _buildInquiryButton('문의하기'),
+                _buildSponsorButton('후원하기'),
               ],
             ),
           ),
@@ -329,30 +330,61 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  // Widget _buildRoundedButton(String title) {
-  //   return Padding(
-  //     padding: const EdgeInsets.all(8.0),
-  //     child: Container(
-  //       width: double.infinity,
-  //       margin: const EdgeInsets.symmetric(horizontal: 50), // 좌우 여백
-  //       child: OutlinedButton(
-  //         style: OutlinedButton.styleFrom(
-  //           shape: const StadiumBorder(), // 버튼의 모서리를 둥글게
-  //           side: BorderSide(width: 2, color: Colors.lightBlue[200]!), // 테두리 색상
-  //         ),
-  //         onPressed: () {},
-  //         child: Padding(
-  //           padding: const EdgeInsets.symmetric(vertical: 15.0), // 버튼 내부 상하 패딩
-  //           child: Text(
-  //             title,
-  //             style: const TextStyle(
-  //               color: Colors.black, // 텍스트 색상
-  //               fontSize: 16, // 텍스트 크기
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
+  Widget _buildInquiryButton(String title) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(horizontal: 50), // 좌우 여백
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            shape: const StadiumBorder(), // 버튼의 모서리를 둥글게
+            side: BorderSide(width: 2, color: Colors.lightBlue[200]!), // 테두리 색상
+          ),
+          onPressed: () {
+            GoRouter.of(context).push('/inquiry');
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 15.0), // 버튼 내부 상하 패딩
+            child: Text(
+              title,
+              style: const TextStyle(
+                color: Colors.black, // 텍스트 색상
+                fontSize: 16, // 텍스트 크기
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSponsorButton(String title) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(horizontal: 50), // 좌우 여백
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            shape: const StadiumBorder(), // 버튼의 모서리를 둥글게
+            side: BorderSide(width: 2, color: Colors.lightBlue[200]!), // 테두리 색상
+          ),
+          onPressed: () {
+            GoRouter.of(context).push('/sponsor');
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 15.0), // 버튼 내부 상하 패딩
+            child: Text(
+              title,
+              style: const TextStyle(
+                color: Colors.black, // 텍스트 색상
+                fontSize: 16, // 텍스트 크기
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

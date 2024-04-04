@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tongtong/Inquiry/inquiry.dart';
 import 'package:tongtong/Register/googleLogin.dart';
 import 'package:tongtong/Register/register.dart';
 import 'package:tongtong/calendar/makeAppointment.dart';
@@ -22,6 +23,7 @@ import 'package:tongtong/repair/repair_postDetailPage.dart';
 import 'package:tongtong/repair/repair_postMainPage.dart';
 import 'package:tongtong/restaurant/restaurant_postDetailPage.dart';
 import 'package:tongtong/restaurant/restaurant_postMainPage.dart';
+import 'package:tongtong/sponsor/sponsor.dart';
 import 'firebase_options.dart';
 import 'package:tongtong/parameter/postParameter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -73,6 +75,14 @@ final GoRouter _goroute = GoRouter(
     GoRoute(
       path: '/helppeople',
       builder: (context, state) => const HelpPeople(),
+    ),
+    GoRoute(
+      path: '/inquiry',
+      builder: (context, state) => const Inquiry(),
+    ),
+    GoRoute(
+      path: '/sponsor',
+      builder: (context, state) => const Sponsor(),
     ),
     GoRoute(
       path: '/knowhow',
