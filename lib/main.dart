@@ -208,7 +208,7 @@ class MyApp extends StatelessWidget {
 
   void initialization(BuildContext context) async {
     // 3초 후에 스플래시 스크린을 숨기는 비동기 작업
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
     FlutterNativeSplash.remove();
   }
 }

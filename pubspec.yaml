@@ -69,6 +69,8 @@ dependencies:
   flutter_dotenv: ^5.1.0
   algolia_helper_flutter: ^1.0.0-pre
   flutter_native_splash: ^2.4.0
+  audioplayers: ^6.0.0
+  assets_audio_player: ^3.1.1
 
 dev_dependencies:
   flutter_test:
@@ -110,6 +112,7 @@ flutter:
     - assets/images/tong_logo_name.png
     - assets/images/github_logo.png
     - assets/images/github_logo_name.png
+    - assets/audio/tong_music.mp3
     
 
 

@@ -1,3 +1,4 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,6 +22,37 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   static const storage = FlutterSecureStorage();
   final PageController _pageController = PageController();
+  final AssetsAudioPlayer _assetsAudioPlayer = AssetsAudioPlayer.newPlayer();
+  bool _play = true;
+
+  @override
+  void initState() {
+    super.initState();
+    setupPlaylist();
+  }
+
+  void setupPlaylist() async {
+    _assetsAudioPlayer.open(
+      Audio(
+        "assets/audio/tong_music.mp3",
+        metas: Metas(
+          title: "낭만이라는 우리",
+          artist: "김태리",
+          album: "통통 1집",
+          image: const MetasImage.asset("assets/images/tong_logo.png"),
+        ),
+      ),
+      showNotification: true,
+      autoStart: true,
+      loopMode: LoopMode.single,
+    );
+
+    _assetsAudioPlayer.isPlaying.listen((event) {
+      setState(() {
+        _play = event;
+      });
+    });
+  }
 
   int _selectedIndex = 0;
 
@@ -36,6 +68,7 @@ class HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
+    _assetsAudioPlayer.dispose();
     _pageController.dispose();
     super.dispose();
   }
@@ -49,6 +82,13 @@ class HomePageState extends State<HomePage> {
   void signOut() async {
     storage.delete(key: "login");
     await GoogleSignIn().signOut();
+  }
+
+  void _playPause() {
+    _assetsAudioPlayer.playOrPause();
+    setState(() {
+      _play = !_play;
+    });
   }
 
   @override
@@ -69,6 +109,7 @@ class HomePageState extends State<HomePage> {
         ],
       ),
       drawer: Drawer(
+        backgroundColor: Colors.white,
         child: Column(
           children: [
             SizedBox(
@@ -76,21 +117,39 @@ class HomePageState extends State<HomePage> {
             ),
             Row(
               children: [
+                // Padding(
+                //     padding: EdgeInsets.fromLTRB(
+                //         screenSize.width * 0.03, 0, screenSize.width * 0.03, 0),
+                //     child: const CircleAvatar(
+                //         backgroundColor: Colors.white,
+                //         backgroundImage:
+                //             AssetImage('assets/images/tong_logo.png'),
+                //         radius: 30)),
                 SizedBox(
-                  width: screenSize.width * 0.05,
+                  width: screenSize.width * 0.07,
                 ),
-                InkWell(
-                  onTap: () async {
-                    final url = Uri.parse(
-                        'https://github.com/so3659/Social-App-For-Club');
-                    if (await canLaunchUrl(url)) {
-                      launchUrl(url, mode: LaunchMode.externalApplication);
-                    }
-                  },
-                  child: const ImageIcon(
-                    AssetImage("assets/images/github_logo_name.png"),
-                    size: 40,
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Column(
+                    children: [
+                      const Text(
+                        '낭만이라는 우리',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                      Text(
+                        '김태리 - 통통 1집',
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      ),
+                    ],
                   ),
+                ),
+                SizedBox(
+                  width: screenSize.width * 0.28,
+                ),
+                IconButton(
+                  icon: Icon(_play ? Icons.pause : Icons.play_arrow),
+                  iconSize: 28,
+                  onPressed: () => _assetsAudioPlayer.playOrPause(),
                 ),
               ],
             ),
@@ -116,30 +175,52 @@ class HomePageState extends State<HomePage> {
                   ),
                 )),
             SizedBox(
-              height: screenSize.height * 0.15,
+              height: screenSize.height * 0.1,
             ),
             Expanded(
                 child: Align(
               alignment: Alignment.bottomCenter,
-              child: Column(
+              child: Row(
                 children: [
-                  TextButton(
-                    child: const Text(
-                      '후원하기',
-                    ),
-                    onPressed: () {
-                      signOut();
-                      GoRouter.of(context).go('/sponsor');
-                    },
+                  SizedBox(
+                    width: screenSize.width * 0.05,
                   ),
-                  TextButton(
-                    child: const Text(
-                      '로그아웃',
-                    ),
-                    onPressed: () {
-                      signOut();
-                      GoRouter.of(context).go('/login');
+                  InkWell(
+                    onTap: () async {
+                      final url = Uri.parse(
+                          'https://github.com/so3659/Social-App-For-Club');
+                      if (await canLaunchUrl(url)) {
+                        launchUrl(url, mode: LaunchMode.externalApplication);
+                      }
                     },
+                    child: const ImageIcon(
+                      AssetImage("assets/images/github_logo_name.png"),
+                      size: 40,
+                    ),
+                  ),
+                  const Spacer(),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextButton(
+                        child: const Text(
+                          '후원하기',
+                        ),
+                        onPressed: () {
+                          signOut();
+                          GoRouter.of(context).go('/sponsor');
+                        },
+                      ),
+                      TextButton(
+                        child: const Text(
+                          '로그아웃',
+                        ),
+                        onPressed: () {
+                          signOut();
+                          GoRouter.of(context).go('/login');
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
