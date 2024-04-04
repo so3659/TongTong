@@ -5,6 +5,7 @@ import 'package:tongtong/calendar/makeAppointment.dart';
 import 'package:tongtong/community/makePost.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tongtong/community/postMainPage.dart';
+import 'package:tongtong/help/helpPeople.dart';
 import 'package:tongtong/knowhow/knowhow_postDetailPage.dart';
 import 'package:tongtong/knowhow/knowhow_postMainPage.dart';
 import 'package:tongtong/lightning/lightning_postDetailPage.dart';
@@ -68,6 +69,10 @@ final GoRouter _goroute = GoRouter(
     GoRoute(
       path: '/restaurant',
       builder: (context, state) => const RestaurantPage(),
+    ),
+    GoRoute(
+      path: '/helppeople',
+      builder: (context, state) => const HelpPeople(),
     ),
     GoRoute(
       path: '/knowhow',

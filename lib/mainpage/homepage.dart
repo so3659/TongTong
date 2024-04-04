@@ -56,7 +56,14 @@ class HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Center(child: Text('통통')),
         actions: <Widget>[
-          IconButton(onPressed: () {}, icon: const Icon(Icons.settings))
+          IconButton(
+              onPressed: () {
+                GoRouter.of(context).push('/helppeople');
+              },
+              icon: const Icon(
+                Icons.favorite,
+                color: Colors.pink,
+              ))
         ],
       ),
       drawer: Drawer(

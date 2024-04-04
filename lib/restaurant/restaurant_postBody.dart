@@ -153,253 +153,262 @@ class RestaurantFeedPageBodyState extends State<RestaurantFeedPageBody> {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                margin: const EdgeInsets.only(right: 20),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 55,
-                      height: 55,
-                      margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: CircleAvatar(
-                          backgroundColor: Theme.of(context).cardColor,
-                          backgroundImage: widget.anoym
-                              ? const AssetImage('assets/images/tong_logo.png')
-                                  as ImageProvider<Object>
-                              : widget.avatarUrl == null
-                                  ? const AssetImage(
-                                          'assets/images/tong_logo.png')
-                                      as ImageProvider<Object>
-                                  : CachedNetworkImageProvider(
-                                      widget.avatarUrl!),
-                          radius: 35,
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(right: 5),
-                              child: Text(
-                                widget.anoym ? '익명' : widget.name,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.black87),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            Text(
-                              timeago.format(widget.dateTime.toDate(),
-                                  locale: "en_short"),
-                              style: GoogleFonts.mulish(
-                                  fontSize: 12, color: Colors.grey),
-                            ),
-                            const Spacer(),
-                            InkWell(
-                              highlightColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              onTap: widget.uid ==
-                                      FirebaseAuth.instance.currentUser!.uid
-                                  ? () {
-                                      showModalBottomSheet(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return SizedBox(
-                                              height: 150,
-                                              child: Center(
-                                                  child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: <Widget>[
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.topRight,
-                                                      child: IconButton(
-                                                        icon: const Icon(
-                                                            Icons.close),
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      child: Column(
-                                                        children: [
-                                                          // ListTile(
-                                                          //   leading: const Icon(
-                                                          //       Icons.update),
-                                                          //   title: const Text(
-                                                          //       '수정'),
-                                                          //   onTap: () {
-                                                          //     // Navigator.of(
-                                                          //     //         context,
-                                                          //     //         rootNavigator:
-                                                          //     //             true)
-                                                          //     //     .push(MaterialPageRoute(
-                                                          //     //         builder:
-                                                          //     //             (context) =>
-                                                          //     //                 const UpdateRestaurant()));
-                                                          //   },
-                                                          // ),
-                                                          ListTile(
-                                                            leading: const Icon(
-                                                                Icons.delete),
-                                                            title: const Text(
-                                                                '삭제'),
-                                                            onTap: () {
-                                                              deleteRestaurant(
-                                                                  widget
-                                                                      .documentId);
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ])));
-                                        },
-                                      );
-                                    }
-                                  : null,
-                              child: Padding(
-                                padding: EdgeInsets.zero,
-                                child: Icon(
-                                  Icons.more_horiz,
-                                  color: widget.uid ==
-                                          FirebaseAuth.instance.currentUser!.uid
-                                      ? Colors.black87
-                                      : Colors.grey[400],
-                                  size: 17,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Linkify(
-                          onOpen: (link) async {
-                            if (!await launchUrl(Uri.parse(link.url))) {
-                              throw Exception('Could not launch ${link.url}');
-                            }
-                          },
-                          text: widget.content,
-                          style: GoogleFonts.mulish(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w300),
-                          linkStyle: GoogleFonts.mulish(
-                            color: Colors.blue,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w300,
-                            decoration: TextDecoration.underline,
+              InkWell(
+                onTap: () {
+                  GoRouter.of(context).push('/postDetailPage', extra: post);
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(right: 20),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 55,
+                        height: 55,
+                        margin: const EdgeInsets.fromLTRB(10, 0, 15, 0),
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: CircleAvatar(
+                            backgroundColor: Theme.of(context).cardColor,
+                            backgroundImage: widget.anoym
+                                ? const AssetImage(
+                                        'assets/images/tong_logo.png')
+                                    as ImageProvider<Object>
+                                : widget.avatarUrl == null
+                                    ? const AssetImage(
+                                            'assets/images/tong_logo.png')
+                                        as ImageProvider<Object>
+                                    : CachedNetworkImageProvider(
+                                        widget.avatarUrl!),
+                            radius: 35,
                           ),
                         ),
-                        if (hasImages)
-                          Column(children: [
-                            const SizedBox(
-                              height: 20,
+                      ),
+                      Flexible(
+                          child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(right: 5),
+                                child: Text(
+                                  widget.anoym ? '익명' : widget.name,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(color: Colors.black87),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              Text(
+                                timeago.format(widget.dateTime.toDate(),
+                                    locale: "en_short"),
+                                style: GoogleFonts.mulish(
+                                    fontSize: 12, color: Colors.grey),
+                              ),
+                              const Spacer(),
+                              InkWell(
+                                highlightColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                                onTap: widget.uid ==
+                                        FirebaseAuth.instance.currentUser!.uid
+                                    ? () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return SizedBox(
+                                                height: 150,
+                                                child: Center(
+                                                    child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: <Widget>[
+                                                      Align(
+                                                        alignment:
+                                                            Alignment.topRight,
+                                                        child: IconButton(
+                                                          icon: const Icon(
+                                                              Icons.close),
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        child: Column(
+                                                          children: [
+                                                            // ListTile(
+                                                            //   leading: const Icon(
+                                                            //       Icons.update),
+                                                            //   title: const Text(
+                                                            //       '수정'),
+                                                            //   onTap: () {
+                                                            //     // Navigator.of(
+                                                            //     //         context,
+                                                            //     //         rootNavigator:
+                                                            //     //             true)
+                                                            //     //     .push(MaterialPageRoute(
+                                                            //     //         builder:
+                                                            //     //             (context) =>
+                                                            //     //                 const UpdateRestaurant()));
+                                                            //   },
+                                                            // ),
+                                                            ListTile(
+                                                              leading: const Icon(
+                                                                  Icons.delete),
+                                                              title: const Text(
+                                                                  '삭제'),
+                                                              onTap: () {
+                                                                deleteRestaurant(
+                                                                    widget
+                                                                        .documentId);
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ])));
+                                          },
+                                        );
+                                      }
+                                    : null,
+                                child: Padding(
+                                  padding: EdgeInsets.zero,
+                                  child: Icon(
+                                    Icons.more_horiz,
+                                    color: widget.uid ==
+                                            FirebaseAuth
+                                                .instance.currentUser!.uid
+                                        ? Colors.black87
+                                        : Colors.grey[400],
+                                    size: 17,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Linkify(
+                            onOpen: (link) async {
+                              if (!await launchUrl(Uri.parse(link.url))) {
+                                throw Exception('Could not launch ${link.url}');
+                              }
+                            },
+                            text: widget.content,
+                            style: GoogleFonts.mulish(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w300),
+                            linkStyle: GoogleFonts.mulish(
+                              color: Colors.blue,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w300,
+                              decoration: TextDecoration.underline,
                             ),
-                            CustomPageView(photoUrls: widget.photoUrls!),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                          ]),
-                        Container(
-                            color: Colors.transparent,
-                            // Stack의 크기를 제한하는 Container
-                            height: 33, // 적절한 높이 값 설정
-                            width: double.infinity, // 너비를 화면 너비와 동일하게 설정
-                            child: Align(
-                                alignment: Alignment.centerLeft, // Row를 오른쪽에 정렬
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                      left: -15, // 아이콘과 텍스트 간의 간격을 조정
-                                      top: 3, // 아이콘의 상단 위치 조정
-                                      child: IconButton(
-                                        icon: isLiked
-                                            ? customIcon(
-                                                context,
-                                                icon: AppIcon.heartFill,
-                                                isTwitterIcon: true,
-                                                size: 15,
-                                                iconColor:
-                                                    TwitterColor.ceriseRed,
-                                              )
-                                            : customIcon(
-                                                context,
-                                                icon: AppIcon.heartEmpty,
-                                                isTwitterIcon: true,
-                                                size: 15,
-                                                iconColor: Colors.grey,
-                                              ),
-                                        padding: EdgeInsets.zero,
-                                        constraints: const BoxConstraints(),
-                                        onPressed: () {
-                                          handleLikeButtonPressed(
-                                              likedBy, isLiked);
-                                        },
-                                      ),
-                                    ),
-                                    Positioned(
-                                      left: 18, // 아이콘 오른쪽에 텍스트를 위치시키기 위해 조정
-                                      top: 15, // 아이콘과 텍스트의 세로 위치를 맞추기 위해 조정
-                                      child: Text(
-                                        likesCount.toString(),
-                                        style: const TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 14,
+                          ),
+                          if (hasImages)
+                            Column(children: [
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              CustomPageView(photoUrls: widget.photoUrls!),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                            ]),
+                          Container(
+                              color: Colors.transparent,
+                              // Stack의 크기를 제한하는 Container
+                              height: 33, // 적절한 높이 값 설정
+                              width: double.infinity, // 너비를 화면 너비와 동일하게 설정
+                              child: Align(
+                                  alignment:
+                                      Alignment.centerLeft, // Row를 오른쪽에 정렬
+                                  child: Stack(
+                                    children: [
+                                      Positioned(
+                                        left: -15, // 아이콘과 텍스트 간의 간격을 조정
+                                        top: 3, // 아이콘의 상단 위치 조정
+                                        child: IconButton(
+                                          icon: isLiked
+                                              ? customIcon(
+                                                  context,
+                                                  icon: AppIcon.heartFill,
+                                                  isTwitterIcon: true,
+                                                  size: 15,
+                                                  iconColor:
+                                                      TwitterColor.ceriseRed,
+                                                )
+                                              : customIcon(
+                                                  context,
+                                                  icon: AppIcon.heartEmpty,
+                                                  isTwitterIcon: true,
+                                                  size: 15,
+                                                  iconColor: Colors.grey,
+                                                ),
+                                          padding: EdgeInsets.zero,
+                                          constraints: const BoxConstraints(),
+                                          onPressed: () {
+                                            handleLikeButtonPressed(
+                                                likedBy, isLiked);
+                                          },
                                         ),
                                       ),
-                                    ),
-                                    Positioned(
-                                      left: 25, // 아이콘과 텍스트 간의 간격을 조정
-                                      top: 3, // 다음 아이콘의 시작점을 조정하세요
-                                      child: IconButton(
-                                        onPressed: () {
-                                          GoRouter.of(context).push(
-                                              '/Restaurant_postDetailPage',
-                                              extra: post);
-                                        },
-                                        icon: customIcon(
-                                          context,
-                                          icon: AppIcon.reply,
-                                          isTwitterIcon: true,
-                                          size: 15,
-                                          iconColor: Colors.grey,
-                                        ),
-                                        padding: EdgeInsets.zero,
-                                        constraints: const BoxConstraints(),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      left: 58, // 아이콘과 텍스트 간의 간격을 조정
-                                      top: 15, // 아이콘과 텍스트의 세로 위치를 맞추기 위해 조정하세요
-                                      child: Text(
-                                        widget.commentsCount.toString(),
-                                        style: const TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 14,
+                                      Positioned(
+                                        left: 18, // 아이콘 오른쪽에 텍스트를 위치시키기 위해 조정
+                                        top: 15, // 아이콘과 텍스트의 세로 위치를 맞추기 위해 조정
+                                        child: Text(
+                                          likesCount.toString(),
+                                          style: const TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 14,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                )))
-                      ],
-                    ))
-                  ],
+                                      Positioned(
+                                        left: 25, // 아이콘과 텍스트 간의 간격을 조정
+                                        top: 3, // 다음 아이콘의 시작점을 조정하세요
+                                        child: IconButton(
+                                          onPressed: () {
+                                            GoRouter.of(context).push(
+                                                '/Restaurant_postDetailPage',
+                                                extra: post);
+                                          },
+                                          icon: customIcon(
+                                            context,
+                                            icon: AppIcon.reply,
+                                            isTwitterIcon: true,
+                                            size: 15,
+                                            iconColor: Colors.grey,
+                                          ),
+                                          padding: EdgeInsets.zero,
+                                          constraints: const BoxConstraints(),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        left: 58, // 아이콘과 텍스트 간의 간격을 조정
+                                        top:
+                                            15, // 아이콘과 텍스트의 세로 위치를 맞추기 위해 조정하세요
+                                        child: Text(
+                                          widget.commentsCount.toString(),
+                                          style: const TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )))
+                        ],
+                      ))
+                    ],
+                  ),
                 ),
               ),
               Divider(
