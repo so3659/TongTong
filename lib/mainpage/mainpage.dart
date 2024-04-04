@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -10,6 +13,62 @@ class Mainpage extends StatefulWidget {
 }
 
 class MainpageState extends State<Mainpage> {
+  final PageController _pageController = PageController(initialPage: 0);
+  int _currentPage = 0;
+  Timer? _timer;
+  final List<String> _imageUrls = []; // 여기에 Firebase 이미지 URL을 추가합니다.
+
+  @override
+  void initState() {
+    super.initState();
+    // 이미지 URL을 Firebase에서 불러와서 _imageUrls에 할당하는 함수를 실행합니다.
+    fetchImagesFromFirebase();
+    startAutoSlide();
+  }
+
+  void startAutoSlide() {
+    _timer = Timer.periodic(const Duration(seconds: 4), (Timer timer) {
+      if (_currentPage < _imageUrls.length - 1) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+
+      if (_pageController.hasClients) {
+        _pageController.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+        );
+      }
+    });
+  }
+
+  Future<void> fetchImagesFromFirebase() async {
+    // Firestore에서 Banners 컬렉션의 첫 번째 문서를 가져옵니다.
+    DocumentSnapshot bannerDoc = await FirebaseFirestore.instance
+        .collection('Banners')
+        .limit(1)
+        .get()
+        .then((snapshot) => snapshot.docs.first);
+
+    // images 필드가 있는지 확인하고, 있다면 _imageUrls에 추가합니다.
+    if (bannerDoc.exists && bannerDoc.data() is Map) {
+      final data = bannerDoc.data() as Map<String, dynamic>;
+      final imagesList = data['images'] as List<dynamic>;
+      setState(() {
+        _imageUrls.addAll(imagesList.cast<String>());
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -18,8 +77,41 @@ class MainpageState extends State<Mainpage> {
             child: SizedBox.expand(
                 child: Column(
       children: [
-        SizedBox(
-          child: Image.asset('assets/images/tong_top_logo.png'),
+        Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            SizedBox(
+              height: screenSize.height * 0.11, // 배너 높이 설정
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: _imageUrls.length,
+                itemBuilder: (context, index) {
+                  return Image.network(
+                    _imageUrls[index],
+                    fit: BoxFit.cover,
+                  );
+                },
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentPage = index;
+                  });
+                },
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(
+                  vertical: screenSize.height * 0.005,
+                  horizontal: screenSize.width * 0.005),
+              margin: EdgeInsets.all(screenSize.height * 0.005),
+              decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(500)),
+              child: Text(
+                '${_currentPage + 1} / ${_imageUrls.length}', // 현재 페이지 / 전체 페이지
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
