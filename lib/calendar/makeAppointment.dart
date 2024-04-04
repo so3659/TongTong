@@ -53,7 +53,7 @@ class _MakeAppointmentState extends State<MakeAppointment> {
                 context: context,
                 initialDate: date,
                 firstDate: DateTime(2000),
-                lastDate: DateTime.now(),
+                lastDate: DateTime(2100),
                 initialEntryMode: DatePickerEntryMode.calendarOnly,
               );
               if (selectedDate != null) {
