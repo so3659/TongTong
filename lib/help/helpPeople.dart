@@ -83,7 +83,49 @@ class _HelpPeopleState extends State<HelpPeople> {
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.blueAccent[700]),
-                textAlign: TextAlign.center)
+                textAlign: TextAlign.center),
+            Text('최유빈\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
+            Text('익명의 염소\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
+            Text('의룡인\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
+            Text('전역하고싶은유승빈\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
+            Text('김태리\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
+            Text('허지원\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
+            Text('마당발블림빙\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
           ],
         ))));
   }
