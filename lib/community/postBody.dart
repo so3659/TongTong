@@ -84,28 +84,51 @@ class FeedPageBodyState extends State<FeedPageBody> {
 
   void postParameter() {
     if (widget.photoUrls != null) {
-      post = FeedPost(
-          uid: widget.uid,
-          name: widget.name,
-          content: widget.content,
-          photoUrls: widget.photoUrls,
-          dateTime: widget.dateTime,
-          documentId: widget.documentId,
-          currentUserId: widget.currentUserId,
-          anoym: widget.anoym,
-          commentsCount: widget.commentsCount,
-          avatarUrl: widget.avatarUrl);
+      widget.avatarUrl == null
+          ? post = FeedPost(
+              uid: widget.uid,
+              name: widget.name,
+              content: widget.content,
+              photoUrls: widget.photoUrls,
+              dateTime: widget.dateTime,
+              documentId: widget.documentId,
+              currentUserId: widget.currentUserId,
+              anoym: widget.anoym,
+              commentsCount: widget.commentsCount,
+            )
+          : post = FeedPost(
+              uid: widget.uid,
+              name: widget.name,
+              content: widget.content,
+              photoUrls: widget.photoUrls,
+              dateTime: widget.dateTime,
+              documentId: widget.documentId,
+              currentUserId: widget.currentUserId,
+              anoym: widget.anoym,
+              commentsCount: widget.commentsCount,
+              avatarUrl: widget.avatarUrl);
     } else {
-      post = FeedPost(
-          uid: widget.uid,
-          name: widget.name,
-          content: widget.content,
-          dateTime: widget.dateTime,
-          documentId: widget.documentId,
-          currentUserId: widget.currentUserId,
-          anoym: widget.anoym,
-          commentsCount: widget.commentsCount,
-          avatarUrl: widget.avatarUrl);
+      widget.avatarUrl == null
+          ? post = FeedPost(
+              uid: widget.uid,
+              name: widget.name,
+              content: widget.content,
+              dateTime: widget.dateTime,
+              documentId: widget.documentId,
+              currentUserId: widget.currentUserId,
+              anoym: widget.anoym,
+              commentsCount: widget.commentsCount,
+            )
+          : post = FeedPost(
+              uid: widget.uid,
+              name: widget.name,
+              content: widget.content,
+              dateTime: widget.dateTime,
+              documentId: widget.documentId,
+              currentUserId: widget.currentUserId,
+              anoym: widget.anoym,
+              commentsCount: widget.commentsCount,
+              avatarUrl: widget.avatarUrl);
     }
   }
 

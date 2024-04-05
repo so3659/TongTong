@@ -84,28 +84,51 @@ class LightningFeedPageBodyState extends State<LightningFeedPageBody> {
 
   void postParameter() {
     if (widget.photoUrls != null) {
-      post = FeedPost(
-          uid: widget.uid,
-          name: widget.name,
-          content: widget.content,
-          photoUrls: widget.photoUrls,
-          dateTime: widget.dateTime,
-          documentId: widget.documentId,
-          currentUserId: widget.currentUserId,
-          anoym: widget.anoym,
-          commentsCount: widget.commentsCount,
-          avatarUrl: widget.avatarUrl);
+      widget.avatarUrl == null
+          ? post = FeedPost(
+              uid: widget.uid,
+              name: widget.name,
+              content: widget.content,
+              photoUrls: widget.photoUrls,
+              dateTime: widget.dateTime,
+              documentId: widget.documentId,
+              currentUserId: widget.currentUserId,
+              anoym: widget.anoym,
+              commentsCount: widget.commentsCount,
+            )
+          : post = FeedPost(
+              uid: widget.uid,
+              name: widget.name,
+              content: widget.content,
+              photoUrls: widget.photoUrls,
+              dateTime: widget.dateTime,
+              documentId: widget.documentId,
+              currentUserId: widget.currentUserId,
+              anoym: widget.anoym,
+              commentsCount: widget.commentsCount,
+              avatarUrl: widget.avatarUrl);
     } else {
-      post = FeedPost(
-          uid: widget.uid,
-          name: widget.name,
-          content: widget.content,
-          dateTime: widget.dateTime,
-          documentId: widget.documentId,
-          currentUserId: widget.currentUserId,
-          anoym: widget.anoym,
-          commentsCount: widget.commentsCount,
-          avatarUrl: widget.avatarUrl);
+      widget.avatarUrl == null
+          ? post = FeedPost(
+              uid: widget.uid,
+              name: widget.name,
+              content: widget.content,
+              dateTime: widget.dateTime,
+              documentId: widget.documentId,
+              currentUserId: widget.currentUserId,
+              anoym: widget.anoym,
+              commentsCount: widget.commentsCount,
+            )
+          : post = FeedPost(
+              uid: widget.uid,
+              name: widget.name,
+              content: widget.content,
+              dateTime: widget.dateTime,
+              documentId: widget.documentId,
+              currentUserId: widget.currentUserId,
+              anoym: widget.anoym,
+              commentsCount: widget.commentsCount,
+              avatarUrl: widget.avatarUrl);
     }
   }
 
@@ -155,7 +178,8 @@ class LightningFeedPageBodyState extends State<LightningFeedPageBody> {
             children: [
               InkWell(
                 onTap: () {
-                  GoRouter.of(context).push('/postDetailPage', extra: post);
+                  GoRouter.of(context)
+                      .push('/Lightning_postDetailPage', extra: post);
                 },
                 child: Container(
                   margin: const EdgeInsets.only(right: 20),

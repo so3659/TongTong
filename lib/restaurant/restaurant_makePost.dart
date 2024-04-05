@@ -72,6 +72,8 @@ class MakeRestaurantState extends State<MakeRestaurant> {
           .map((url) => url!) // null 체크 후, String?에서 String으로 변환
           .toList();
 
+      String? avatarUrl = await fetchAvatarUrl(_uid);
+
       if (images != null) {
         await reference.set({
           "uid": _uid,
@@ -85,6 +87,7 @@ class MakeRestaurantState extends State<MakeRestaurant> {
           'anoym': checkboxValue,
           'commentsCount': 0,
           'documentId': postKey,
+          'avatarUrl': avatarUrl,
         });
       } else if (images == null) {
         await reference.set({
@@ -99,6 +102,7 @@ class MakeRestaurantState extends State<MakeRestaurant> {
           'anoym': checkboxValue,
           'commentsCount': 0,
           'documentId': postKey,
+          'avatarUrl': avatarUrl,
         });
       }
     } on FirebaseException catch (error) {
