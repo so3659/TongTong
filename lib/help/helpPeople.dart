@@ -1,5 +1,41 @@
 import 'package:flutter/material.dart';
-import 'dart:ui' as ui;
+import 'package:flutter_gradient_animation_text/flutter_gradient_animation_text.dart';
+
+class ImageDialog_HYO extends StatelessWidget {
+  const ImageDialog_HYO({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Container(
+        width: 200,
+        height: 200,
+        decoration: const BoxDecoration(
+            image: DecorationImage(
+                image: ExactAssetImage('assets/images/hyo.jpg'),
+                fit: BoxFit.contain)),
+      ),
+    );
+  }
+}
+
+class ImageDialog_Yubin extends StatelessWidget {
+  const ImageDialog_Yubin({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Container(
+        width: 200,
+        height: 200,
+        decoration: const BoxDecoration(
+            image: DecorationImage(
+                image: ExactAssetImage('assets/images/yubin.jpg'),
+                fit: BoxFit.contain)),
+      ),
+    );
+  }
+}
 
 class HelpPeople extends StatefulWidget {
   const HelpPeople({super.key});
@@ -41,18 +77,24 @@ class _HelpPeopleState extends State<HelpPeople> {
             ),
             const Text('Made by',
                 style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
-            Text('11기 김성욱\n',
-                style: TextStyle(
-                  foreground: Paint()
-                    ..shader = ui.Gradient.linear(
-                      const Offset(0, 150),
-                      const Offset(50, 20),
-                      <Color>[Colors.red, Colors.yellow],
-                    ),
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center),
+            const GradientAnimationText(
+              text: Text('11기 김성욱\n',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center),
+              colors: [
+                Color(0xff8f00ff), // violet
+                Colors.indigo,
+                Colors.blue,
+                Colors.green,
+                Colors.yellow,
+                Colors.orange,
+                Colors.red,
+              ],
+              duration: Duration(seconds: 5),
+            ),
             const Text('Illustrated by',
                 style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
             Text('11기 장윤정\n',
@@ -79,54 +121,111 @@ class _HelpPeopleState extends State<HelpPeople> {
                 textAlign: TextAlign.center),
             const Text('Sponsored by',
                 style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
-            Text('유탄발사기\n',
-                style: TextStyle(
-                  foreground: Paint()
-                    ..shader = ui.Gradient.linear(
-                      const Offset(0, 70),
-                      const Offset(130, 20),
-                      <Color>[Colors.red, Colors.yellow],
+            InkWell(
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const ImageDialog_HYO();
+                    });
+              },
+              child: const GradientAnimationText(
+                text: Text('유탄발사기\n',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center),
-            Text('공군851일병임두빈\n',
-                style: TextStyle(
-                  foreground: Paint()
-                    ..shader = ui.Gradient.linear(
-                      const Offset(0, 70),
-                      const Offset(130, 20),
-                      <Color>[Colors.red, Colors.yellow],
+                    textAlign: TextAlign.center),
+                colors: [
+                  Color(0xff8f00ff), // violet
+                  Colors.indigo,
+                  Colors.blue,
+                  Colors.green,
+                  Colors.yellow,
+                  Colors.orange,
+                  Colors.red,
+                ],
+                duration: Duration(seconds: 5),
+              ),
+            ),
+            const GradientAnimationText(
+              text: Text('공군851일병임두빈\n',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center),
+              colors: [
+                Color(0xff8f00ff), // violet
+                Colors.indigo,
+                Colors.blue,
+                Colors.green,
+                Colors.yellow,
+                Colors.orange,
+                Colors.red,
+              ],
+              duration: Duration(seconds: 5),
+            ),
+            InkWell(
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const ImageDialog_Yubin();
+                    });
+              },
+              child: const GradientAnimationText(
+                text: Text('최유빈\n',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center),
-            Text('최유빈\n',
-                style: TextStyle(
-                  foreground: Paint()
-                    ..shader = ui.Gradient.linear(
-                      const Offset(0, 70),
-                      const Offset(130, 20),
-                      <Color>[Colors.red, Colors.yellow],
+                    textAlign: TextAlign.center),
+                colors: [
+                  Color(0xff8f00ff), // violet
+                  Colors.indigo,
+                  Colors.blue,
+                  Colors.green,
+                  Colors.yellow,
+                  Colors.orange,
+                  Colors.red,
+                ],
+                duration: Duration(seconds: 5),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const AlertDialog(
+                          content: Text(
+                        'Atlas',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ));
+                    });
+              },
+              child: const GradientAnimationText(
+                text: Text('김태리\n',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center),
-            Text('김태리\n',
-                style: TextStyle(
-                  foreground: Paint()
-                    ..shader = ui.Gradient.linear(
-                      const Offset(0, 70),
-                      const Offset(130, 20),
-                      <Color>[Colors.red, Colors.yellow],
-                    ),
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center),
+                    textAlign: TextAlign.center),
+                colors: [
+                  Color(0xff8f00ff), // violet
+                  Colors.indigo,
+                  Colors.blue,
+                  Colors.green,
+                  Colors.yellow,
+                  Colors.orange,
+                  Colors.red,
+                ],
+                duration: Duration(seconds: 5),
+              ),
+            ),
             Text('11기 양경은 (12기 부회장)\n',
                 style: TextStyle(
                     fontSize: 18,
@@ -145,7 +244,7 @@ class _HelpPeopleState extends State<HelpPeople> {
                     fontWeight: FontWeight.bold,
                     color: Colors.blueAccent[700]),
                 textAlign: TextAlign.center),
-            Text('의룡인\n',
+            Text('안소연\n',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -181,7 +280,7 @@ class _HelpPeopleState extends State<HelpPeople> {
                     fontWeight: FontWeight.bold,
                     color: Colors.blueAccent[700]),
                 textAlign: TextAlign.center),
-            Text('안소연\n',
+            Text('의룡인\n',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

@@ -71,6 +71,7 @@ dependencies:
   flutter_native_splash: ^2.4.0
   audioplayers: ^6.0.0
   assets_audio_player: ^3.1.1
+  flutter_gradient_animation_text: ^1.0.2
 
 dev_dependencies:
   flutter_test:
@@ -112,6 +113,8 @@ flutter:
     - assets/images/tong_logo_name.png
     - assets/images/github_logo.png
     - assets/images/github_logo_name.png
+    - assets/images/hyo.jpg
+    - assets/images/yubin.jpg
     - assets/audio/tong_music.mp3
     
 
