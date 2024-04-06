@@ -27,6 +27,7 @@ class MakeRestaurantState extends State<MakeRestaurant> {
   List<XFile?>? multiImage = [];
   List<XFile?>? images = [];
   final picker = ImagePicker();
+  bool _loading = false;
 
   final String _chars =
       'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
@@ -57,6 +58,10 @@ class MakeRestaurantState extends State<MakeRestaurant> {
 
   Future<void> _toFirestore(List<Map<String, String>>? images, String postKey,
       String contents) async {
+    if (!mounted) return; // 추가: 함수 시작 시 위젯이 마운트되어 있는지 확인
+    setState(() {
+      _loading = true; // Firestore에 문서를 보내는 작업이 시작됨
+    });
     try {
       DocumentReference<Map<String, dynamic>> reference =
           FirebaseFirestore.instance.collection("Restaurants").doc(postKey);
@@ -108,6 +113,13 @@ class MakeRestaurantState extends State<MakeRestaurant> {
     } on FirebaseException catch (error) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(error.message ?? "")));
+    } finally {
+      if (mounted) {
+        // 변경: 작업 완료 후 위젯이 마운트되어 있는지 확인
+        setState(() {
+          _loading = false; // 작업이 완료됨
+        });
+      }
     }
   }
 
@@ -362,7 +374,14 @@ class MakeRestaurantState extends State<MakeRestaurant> {
                     )
                   ],
                 ),
-              ))
+              )),
+          if (_loading)
+            const Positioned.fill(
+              child: Align(
+                alignment: Alignment.center,
+                child: CircularProgressIndicator(),
+              ),
+            ),
         ],
       ),
     );

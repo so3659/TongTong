@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui' as ui;
 
 class HelpPeople extends StatefulWidget {
   const HelpPeople({super.key});
@@ -42,9 +43,15 @@ class _HelpPeopleState extends State<HelpPeople> {
                 style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
             Text('11기 김성욱\n',
                 style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent[700]),
+                  foreground: Paint()
+                    ..shader = ui.Gradient.linear(
+                      const Offset(0, 150),
+                      const Offset(50, 20),
+                      <Color>[Colors.red, Colors.yellow],
+                    ),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
                 textAlign: TextAlign.center),
             const Text('Illustrated by',
                 style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
@@ -72,6 +79,54 @@ class _HelpPeopleState extends State<HelpPeople> {
                 textAlign: TextAlign.center),
             const Text('Sponsored by',
                 style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
+            Text('유탄발사기\n',
+                style: TextStyle(
+                  foreground: Paint()
+                    ..shader = ui.Gradient.linear(
+                      const Offset(0, 70),
+                      const Offset(130, 20),
+                      <Color>[Colors.red, Colors.yellow],
+                    ),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center),
+            Text('공군851일병임두빈\n',
+                style: TextStyle(
+                  foreground: Paint()
+                    ..shader = ui.Gradient.linear(
+                      const Offset(0, 70),
+                      const Offset(130, 20),
+                      <Color>[Colors.red, Colors.yellow],
+                    ),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center),
+            Text('최유빈\n',
+                style: TextStyle(
+                  foreground: Paint()
+                    ..shader = ui.Gradient.linear(
+                      const Offset(0, 70),
+                      const Offset(130, 20),
+                      <Color>[Colors.red, Colors.yellow],
+                    ),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center),
+            Text('김태리\n',
+                style: TextStyle(
+                  foreground: Paint()
+                    ..shader = ui.Gradient.linear(
+                      const Offset(0, 70),
+                      const Offset(130, 20),
+                      <Color>[Colors.red, Colors.yellow],
+                    ),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center),
             Text('11기 양경은 (12기 부회장)\n',
                 style: TextStyle(
                     fontSize: 18,
@@ -79,12 +134,6 @@ class _HelpPeopleState extends State<HelpPeople> {
                     color: Colors.blueAccent[700]),
                 textAlign: TextAlign.center),
             Text('한무당\n',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent[700]),
-                textAlign: TextAlign.center),
-            Text('최유빈\n',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -108,12 +157,6 @@ class _HelpPeopleState extends State<HelpPeople> {
                     fontWeight: FontWeight.bold,
                     color: Colors.blueAccent[700]),
                 textAlign: TextAlign.center),
-            Text('김태리\n',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent[700]),
-                textAlign: TextAlign.center),
             Text('허지원\n',
                 style: TextStyle(
                     fontSize: 18,
@@ -121,6 +164,24 @@ class _HelpPeopleState extends State<HelpPeople> {
                     color: Colors.blueAccent[700]),
                 textAlign: TextAlign.center),
             Text('마당발블림빙\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
+            Text('이민주\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
+            Text('윤석열\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
+            Text('안소연\n',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
