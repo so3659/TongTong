@@ -77,24 +77,12 @@ class _HelpPeopleState extends State<HelpPeople> {
             ),
             const Text('Made by',
                 style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
-            const GradientAnimationText(
-              text: Text('11기 김성욱\n',
-                  style: TextStyle(
+            Text('11기 김성욱\n',
+                style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center),
-              colors: [
-                Color(0xff8f00ff), // violet
-                Colors.indigo,
-                Colors.blue,
-                Colors.green,
-                Colors.yellow,
-                Colors.orange,
-                Colors.red,
-              ],
-              duration: Duration(seconds: 5),
-            ),
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
             const Text('Illustrated by',
                 style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
             Text('11기 장윤정\n',
@@ -275,6 +263,18 @@ class _HelpPeopleState extends State<HelpPeople> {
                     color: Colors.blueAccent[700]),
                 textAlign: TextAlign.center),
             Text('윤석열\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
+            Text('황재근패션연구소\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
+            Text('통통파이팅\n',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
