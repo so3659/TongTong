@@ -37,6 +37,24 @@ class ImageDialog_Yubin extends StatelessWidget {
   }
 }
 
+class ImageDialog_Dubin extends StatelessWidget {
+  const ImageDialog_Dubin({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Container(
+        width: 200,
+        height: 200,
+        decoration: const BoxDecoration(
+            image: DecorationImage(
+                image: ExactAssetImage('assets/images/dubin.png'),
+                fit: BoxFit.contain)),
+      ),
+    );
+  }
+}
+
 class HelpPeople extends StatefulWidget {
   const HelpPeople({super.key});
 
@@ -136,23 +154,32 @@ class _HelpPeopleState extends State<HelpPeople> {
                 duration: Duration(seconds: 5),
               ),
             ),
-            const GradientAnimationText(
-              text: Text('공군851일병임두빈\n',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center),
-              colors: [
-                Color(0xff8f00ff), // violet
-                Colors.indigo,
-                Colors.blue,
-                Colors.green,
-                Colors.yellow,
-                Colors.orange,
-                Colors.red,
-              ],
-              duration: Duration(seconds: 5),
+            InkWell(
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const ImageDialog_Dubin();
+                    });
+              },
+              child: const GradientAnimationText(
+                text: Text('공군851일병임두빈\n',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center),
+                colors: [
+                  Color(0xff8f00ff), // violet
+                  Colors.indigo,
+                  Colors.blue,
+                  Colors.green,
+                  Colors.yellow,
+                  Colors.orange,
+                  Colors.red,
+                ],
+                duration: Duration(seconds: 5),
+              ),
             ),
             InkWell(
               onTap: () {
@@ -275,6 +302,12 @@ class _HelpPeopleState extends State<HelpPeople> {
                     color: Colors.blueAccent[700]),
                 textAlign: TextAlign.center),
             Text('통통파이팅\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
+            Text('이준팔\n',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
