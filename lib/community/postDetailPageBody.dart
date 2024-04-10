@@ -420,7 +420,7 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
             ],
           );
         } else {
-          return Container();
+          return const SizedBox.shrink();
         }
       },
     );
