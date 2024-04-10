@@ -9,7 +9,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 class Product {
   final String objectID;
   // final String uid;
-  // final String name;
+  // final String? name;
   // final String content;
   // final List<dynamic>? photoUrls;
   // final Timestamp dateTime;

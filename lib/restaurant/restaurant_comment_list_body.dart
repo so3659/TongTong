@@ -61,7 +61,7 @@ class CommentList extends ConsumerStatefulWidget {
       this.avatarUrl});
 
   final String uid;
-  final String name;
+  final String? name;
   final String content;
   final Timestamp dateTime;
   final String postId;
@@ -201,7 +201,7 @@ class CommentListState extends ConsumerState<CommentList> {
                                       ? '익명'
                                       : widget.isDelete
                                           ? '(삭제된 댓글)'
-                                          : widget.name,
+                                          : (widget.name ?? '(이름을 설정해주세요)'),
                                   style: widget.isDelete
                                       ? Theme.of(context)
                                           .textTheme
