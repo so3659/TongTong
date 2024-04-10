@@ -74,6 +74,7 @@ dependencies:
   flutter_gradient_animation_text: ^1.0.2
   the_apple_sign_in: ^1.1.1
   sign_in_with_apple: ^6.1.0
+  flutter_local_notifications: ^17.0.0
 
 dev_dependencies:
   flutter_test:
@@ -126,14 +127,15 @@ flutter:
     - family: TwitterIcon
       fonts:
         - asset: assets/fonts/icons.ttf
-    - family: NanumGothic
+    - family: NanumGothicBold
       fonts:
         - asset: assets/fonts/NanumGothic-Bold.ttf
-          weight: 200
+    - family: NanumGothicExtraBold
+      fonts:
         - asset: assets/fonts/NanumGothic-ExtraBold.ttf
-          weight: 300
+    - family: NanumGothicRegular
+      fonts:
         - asset: assets/fonts/NanumGothic-Regular.ttf
-          weight: 400
     - family: Gugi
       fonts:
         - asset: assets/fonts/Gugi-Regular.ttf
@@ -146,6 +148,33 @@ flutter:
     - family: SunflowerLight
       fonts:
         - asset: assets/fonts/Sunflower-Light.ttf
+    - family: NotoSansKRBlack
+      fonts:
+        - asset: assets/fonts/NotoSansKR-Black.ttf
+    - family: NotoSansKRBold
+      fonts:
+        - asset: assets/fonts/NotoSansKR-Bold.ttf
+    - family: NotoSansKRExtraBold
+      fonts:
+        - asset: assets/fonts/NotoSansKR-ExtraBold.ttf
+    - family: NotoSansKRLight
+      fonts:
+        - asset: assets/fonts/NotoSansKR-Light.ttf
+    - family: NotoSansKRMedium
+      fonts:
+        - asset: assets/fonts/NotoSansKR-Medium.ttf
+    - family: NotoSansKRRegular
+      fonts:
+        - asset: assets/fonts/NotoSansKR-Regular.ttf
+    - family: NotoSansKRSemiBold
+      fonts:
+        - asset: assets/fonts/NotoSansKR-SemiBold.ttf
+    - family: NotoSansKRExtraLight
+      fonts:
+        - asset: assets/fonts/NotoSansKR-ExtraLight.ttf
+    - family: NotoSansKRThin
+      fonts:
+        - asset: assets/fonts/NotoSansKR-Thin.ttf
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

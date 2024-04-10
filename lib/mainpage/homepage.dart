@@ -9,7 +9,7 @@ import 'package:tongtong/info/infoMain.dart';
 import 'package:tongtong/mainpage/mainpage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tongtong/profile/profilePage.dart';
-import 'package:tongtong/theme/theme.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,11 +24,45 @@ class HomePageState extends State<HomePage> {
   final PageController _pageController = PageController();
   final AssetsAudioPlayer _assetsAudioPlayer = AssetsAudioPlayer.newPlayer();
   bool _play = true;
+  var messageString = "";
+
+  void getMyDeviceToken() async {
+    final token = await FirebaseMessaging.instance.getToken();
+
+    print("내 디바이스 토큰: $token");
+  }
 
   @override
   void initState() {
-    super.initState();
     // setupPlaylist();
+    getMyDeviceToken();
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      RemoteNotification? notification = message.notification;
+
+      if (notification != null) {
+        FlutterLocalNotificationsPlugin().show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'high_importance_channel',
+              'high_importance_notification',
+              importance: Importance.max,
+            ),
+          ),
+        );
+
+        setState(() {
+          messageString = message.notification!.body!;
+
+          print("Foreground 메시지 수신: $messageString");
+        });
+      }
+    });
+
+    super.initState();
   }
 
   void setupPlaylist() async {

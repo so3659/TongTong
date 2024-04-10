@@ -42,7 +42,7 @@ class InfoMainState extends State<InfoMain> {
               style: TextStyle(
                   color: Colors.black,
                   fontSize: 15,
-                  fontFamily: 'SunflowerMedium'),
+                  fontFamily: 'NanumGothicBold'),
             ),
           ),
         ),
