@@ -1,11 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
-
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class GoogleLogin extends StatelessWidget {
   const GoogleLogin({super.key});
@@ -118,6 +120,23 @@ class BuildLoginState extends State<BuildLogin> {
     }
   }
 
+  Future<void> appleLogin() async {
+    final AuthorizationCredentialAppleID appleCredential =
+        await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+    );
+
+    final OAuthCredential credential = OAuthProvider('apple.com').credential(
+      idToken: appleCredential.identityToken,
+      accessToken: appleCredential.authorizationCode,
+    );
+
+    await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -126,19 +145,50 @@ class BuildLoginState extends State<BuildLogin> {
       children: [
         FadeInUp(
           duration: const Duration(milliseconds: 3800),
-          child: Container(
-            margin: EdgeInsets.symmetric(
-              vertical: screenSize.height * 0.02, // 위아래 여백
-              horizontal: screenSize.width * 0.05, // 좌우 여백
-            ),
-            padding: EdgeInsets.all(screenSize.width * 0.05), // 패딩
-            width: screenSize.height * 0.6,
-            child: SignInButton(
-              Buttons.google,
-              text: "Sign in with Google",
-              onPressed: _signInWithGoogle,
-            ),
-          ),
+          child: Platform.isIOS
+              ? Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                        vertical: screenSize.height * 0.0005, // 위아래 여백
+                        horizontal: screenSize.width * 0.05, // 좌우 여백
+                      ),
+                      padding: EdgeInsets.all(screenSize.width * 0.005), // 패딩
+                      width: screenSize.height * 0.6,
+                      child: SignInButton(
+                        Buttons.google,
+                        text: "Sign in with Google",
+                        onPressed: _signInWithGoogle,
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                        vertical: screenSize.height * 0.0005, // 위아래 여백
+                        horizontal: screenSize.width * 0.05, // 좌우 여백
+                      ),
+                      padding: EdgeInsets.all(screenSize.width * 0.005), // 패딩
+                      width: screenSize.height * 0.6,
+                      child: SignInButton(
+                        Buttons.apple,
+                        text: "Sign in with Apple",
+                        onPressed: appleLogin,
+                      ),
+                    ),
+                  ],
+                )
+              : Container(
+                  margin: EdgeInsets.symmetric(
+                    vertical: screenSize.height * 0.02, // 위아래 여백
+                    horizontal: screenSize.width * 0.05, // 좌우 여백
+                  ),
+                  padding: EdgeInsets.all(screenSize.width * 0.05), // 패딩
+                  width: screenSize.height * 0.6,
+                  child: SignInButton(
+                    Buttons.google,
+                    text: "Sign in with Google",
+                    onPressed: _signInWithGoogle,
+                  ),
+                ),
         ),
       ],
     );

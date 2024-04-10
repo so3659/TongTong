@@ -28,7 +28,7 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    setupPlaylist();
+    // setupPlaylist();
   }
 
   void setupPlaylist() async {
@@ -128,21 +128,21 @@ class HomePageState extends State<HomePage> {
                 SizedBox(
                   width: screenSize.width * 0.07,
                 ),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Column(
-                    children: [
-                      const Text(
-                        '낭만이라는 우리',
-                        style: TextStyle(fontSize: 15),
-                      ),
-                      Text(
-                        '김태리 - 통통 1집',
-                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                      ),
-                    ],
-                  ),
-                ),
+                // Align(
+                //   alignment: Alignment.topLeft,
+                //   child: Column(
+                //     children: [
+                //       const Text(
+                //         '낭만이라는 우리',
+                //         style: TextStyle(fontSize: 15),
+                //       ),
+                //       Text(
+                //         '김태리 - 통통 1집',
+                //         style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 SizedBox(
                   width: screenSize.width * 0.25,
                 ),
