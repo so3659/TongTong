@@ -30,7 +30,7 @@ class FeedPageBody extends StatefulWidget {
   });
 
   final String uid;
-  final String name;
+  final String? name;
   final String content;
   final List<dynamic>? photoUrls;
   final Timestamp dateTime;
@@ -215,7 +215,9 @@ class FeedPageBodyState extends State<FeedPageBody> {
                               Container(
                                 margin: const EdgeInsets.only(right: 5),
                                 child: Text(
-                                  widget.anoym ? '익명' : widget.name,
+                                  widget.anoym
+                                      ? '익명'
+                                      : (widget.name ?? '(이름을 설정해주세요)'),
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium!
