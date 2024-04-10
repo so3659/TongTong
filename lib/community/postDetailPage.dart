@@ -130,6 +130,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
     return Consumer(builder: (context, ref, child) {
       final focusManager = ref.watch(focusManagerProvider);
       final currentReplyingCommentId = ref.watch(replyProvider);
+      final screenSize = MediaQuery.of(context).size;
 
       void startReplyingToComment(String commentId) {
         _replyingToCommentId = commentId; // 대댓글을 달 댓글의 ID를 저장
@@ -174,8 +175,8 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
                   SliverList(
                     delegate: SliverChildListDelegate(
                       [
-                        const SizedBox(
-                          height: 6,
+                        SizedBox(
+                          height: screenSize.height * 0.02,
                           width: double.infinity,
                         ),
                         widget.post.photoUrls != null
@@ -253,6 +254,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
                               return Container();
                             }
                             return ListView.builder(
+                              padding: EdgeInsets.zero,
                               shrinkWrap: true,
                               physics:
                                   const NeverScrollableScrollPhysics(), // 스크롤 중첩 문제 방지
@@ -320,6 +322,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
 
                                         // 대댓글 목록을 나타내는 위젯을 빌드합니다.
                                         return ListView.builder(
+                                          padding: EdgeInsets.zero,
                                           physics:
                                               const NeverScrollableScrollPhysics(), // 중첩 스크롤 방지
                                           shrinkWrap: true, // 내부 컨텐츠에 맞춰 크기 조절
