@@ -72,6 +72,8 @@ dependencies:
   audioplayers: ^6.0.0
   assets_audio_player: ^3.1.1
   flutter_gradient_animation_text: ^1.0.2
+  the_apple_sign_in: ^1.1.1
+  sign_in_with_apple: ^6.1.0
 
 dev_dependencies:
   flutter_test:
