@@ -1,10 +1,8 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-
 import 'package:tongtong/Inquiry/inquiry.dart';
 import 'package:tongtong/Register/googleLogin.dart';
-import 'package:tongtong/Register/register.dart';
 import 'package:tongtong/calendar/makeAppointment.dart';
 import 'package:tongtong/community/makePost.dart';
 import 'package:go_router/go_router.dart';
@@ -72,11 +70,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   initializeNotification();
-  FirebaseMessaging.instance.requestPermission(
-    badge: true,
-    alert: true,
-    sound: true,
-  );
   initializeDateFormatting().then((_) => runApp(
         const ProviderScope(
           child: MyApp(),
@@ -90,11 +83,6 @@ final GoRouter _goroute = GoRouter(
       path: '/',
       pageBuilder: (context, state) =>
           const MaterialPage<void>(child: GoogleLogin()),
-    ),
-    GoRoute(
-      path: '/register',
-      pageBuilder: (context, state) =>
-          const MaterialPage<void>(child: Register()),
     ),
     GoRoute(
       path: '/homepage',
