@@ -1,13 +1,17 @@
+import 'dart:convert';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:tongtong/calendar/calendarMain.dart';
+import 'package:tongtong/community/postDetailPage.dart';
 import 'package:tongtong/info/infoMain.dart';
 import 'package:tongtong/mainpage/mainpage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:tongtong/parameter/postParameter.dart';
 import 'package:tongtong/profile/profilePage.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -24,23 +28,79 @@ class HomePageState extends State<HomePage> {
   final PageController _pageController = PageController();
   final AssetsAudioPlayer _assetsAudioPlayer = AssetsAudioPlayer.newPlayer();
   bool _play = true;
-  var messageString = "";
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
-  void getMyDeviceToken() async {
-    final token = await FirebaseMessaging.instance.getToken();
+  Future<void> getToken() async {
+    // ios
+    String? token;
+    if (defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.macOS) {
+      token = await FirebaseMessaging.instance.getAPNSToken();
+    }
+    // aos
+    else {
+      token = await FirebaseMessaging.instance.getToken();
+    }
+    print("fcmToken : $token");
+  }
 
-    print("내 디바이스 토큰: $token");
+  Future<void> onSelectNotification(NotificationResponse details) async {
+    try {
+      if (details.payload != null) {
+        Map<String, dynamic> outerData =
+            json.decode(details.payload ?? "") as Map<String, dynamic>;
+        Map<String, dynamic> data =
+            json.decode(outerData['postId']) as Map<String, dynamic>;
+        FeedPost post = FeedPost.fromMap(data);
+        await Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PostDetailPage(post: post)));
+      }
+    } catch (e) {
+      print("Error navigating: $e");
+    }
   }
 
   @override
   void initState() {
     // setupPlaylist();
-    getMyDeviceToken();
+    getToken();
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      if (message.data.containsKey('postId')) {
+        final dynamic postJson = json.decode(message.data['postId']);
+        if (postJson is Map<String, dynamic>) {
+          FeedPost post = FeedPost.fromMap(postJson);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PostDetailPage(post: post)));
+        }
+      }
+    });
+
+    FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((RemoteMessage? message) {
+      if (message?.data != null) {
+        final dynamic postJson = json.decode(message?.data['postId']);
+        if (postJson is Map<String, dynamic>) {
+          FeedPost post = FeedPost.fromMap(postJson);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PostDetailPage(post: post)));
+        }
+      }
+    });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
 
-      if (notification != null) {
+      if (notification != null && android != null) {
         FlutterLocalNotificationsPlugin().show(
           notification.hashCode,
           notification.title,
@@ -52,41 +112,52 @@ class HomePageState extends State<HomePage> {
               importance: Importance.max,
             ),
           ),
+          payload: json.encode(message.data), // `payload`를 json 문자열로 설정
         );
-
-        setState(() {
-          messageString = message.notification!.body!;
-
-          print("Foreground 메시지 수신: $messageString");
-        });
       }
     });
+
+    var initializationSettingsAndroid =
+        const AndroidInitializationSettings('mipmap/ic_launcher');
+
+    var initialzationSettingsIOS = const DarwinInitializationSettings(
+      requestSoundPermission: true,
+      requestBadgePermission: true,
+      requestAlertPermission: true,
+    );
+
+    var initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid, iOS: initialzationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: onSelectNotification,
+    );
 
     super.initState();
   }
 
-  void setupPlaylist() async {
-    _assetsAudioPlayer.open(
-      Audio(
-        "assets/audio/tong_music.mp3",
-        metas: Metas(
-          title: "낭만이라는 우리",
-          artist: "김태리",
-          album: "통통 1집",
-          image: const MetasImage.asset("assets/images/tong_logo.png"),
-        ),
-      ),
-      showNotification: true,
-      autoStart: true,
-      loopMode: LoopMode.single,
-    );
+  // void setupPlaylist() async {
+  //   _assetsAudioPlayer.open(
+  //     Audio(
+  //       "assets/audio/tong_music.mp3",
+  //       metas: Metas(
+  //         title: "낭만이라는 우리",
+  //         artist: "김태리",
+  //         album: "통통 1집",
+  //         image: const MetasImage.asset("assets/images/tong_logo.png"),
+  //       ),
+  //     ),
+  //     showNotification: true,
+  //     autoStart: false,
+  //     loopMode: LoopMode.single,
+  //   );
 
-    _assetsAudioPlayer.isPlaying.listen((event) {
-      setState(() {
-        _play = event;
-      });
-    });
-  }
+  //   _assetsAudioPlayer.isPlaying.listen((event) {
+  //     setState(() {
+  //       _play = event;
+  //     });
+  //   });
+  // }
 
   int _selectedIndex = 0;
 

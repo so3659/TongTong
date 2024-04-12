@@ -75,6 +75,7 @@ dependencies:
   the_apple_sign_in: ^1.1.1
   sign_in_with_apple: ^6.1.0
   flutter_local_notifications: ^17.0.0
+  googleapis_auth: ^1.6.0
 
 dev_dependencies:
   flutter_test:
@@ -120,6 +121,7 @@ flutter:
     - assets/images/yubin.jpg
     - assets/images/dubin.png
     - assets/audio/tong_music.mp3
+    - assets/json/tongtong-5936b-240e3823c729.json
     
 
 
@@ -136,45 +138,6 @@ flutter:
     - family: NanumGothicRegular
       fonts:
         - asset: assets/fonts/NanumGothic-Regular.ttf
-    - family: Gugi
-      fonts:
-        - asset: assets/fonts/Gugi-Regular.ttf
-    - family: SunflowerBold
-      fonts:
-        - asset: assets/fonts/Sunflower-Bold.ttf
-    - family: SunflowerMedium
-      fonts:
-        - asset: assets/fonts/Sunflower-Medium.ttf
-    - family: SunflowerLight
-      fonts:
-        - asset: assets/fonts/Sunflower-Light.ttf
-    - family: NotoSansKRBlack
-      fonts:
-        - asset: assets/fonts/NotoSansKR-Black.ttf
-    - family: NotoSansKRBold
-      fonts:
-        - asset: assets/fonts/NotoSansKR-Bold.ttf
-    - family: NotoSansKRExtraBold
-      fonts:
-        - asset: assets/fonts/NotoSansKR-ExtraBold.ttf
-    - family: NotoSansKRLight
-      fonts:
-        - asset: assets/fonts/NotoSansKR-Light.ttf
-    - family: NotoSansKRMedium
-      fonts:
-        - asset: assets/fonts/NotoSansKR-Medium.ttf
-    - family: NotoSansKRRegular
-      fonts:
-        - asset: assets/fonts/NotoSansKR-Regular.ttf
-    - family: NotoSansKRSemiBold
-      fonts:
-        - asset: assets/fonts/NotoSansKR-SemiBold.ttf
-    - family: NotoSansKRExtraLight
-      fonts:
-        - asset: assets/fonts/NotoSansKR-ExtraLight.ttf
-    - family: NotoSansKRThin
-      fonts:
-        - asset: assets/fonts/NotoSansKR-Thin.ttf
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

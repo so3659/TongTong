@@ -1,12 +1,18 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tongtong/FCM/fcm.dart';
 import 'package:tongtong/parameter/postParameter.dart';
 import 'package:tongtong/community/postDetailPageBody.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math';
 import 'package:tongtong/community/comment_list_body.dart';
 import 'package:tongtong/community/reply_list_body.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class PostDetailPage extends ConsumerStatefulWidget {
   final FeedPost post;
@@ -27,6 +33,43 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
 
   String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
       length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+
+  Future<void> sendNotificationV1(String toToken) async {
+    AccessTokenFirebase accessTokenGetter = AccessTokenFirebase();
+    String token = await accessTokenGetter.getAccessToken();
+    String jsonPost = jsonEncode(widget.post.toJson());
+
+    final projectID = dotenv.get("ProjectID");
+    try {
+      final response = await http.post(
+          Uri.parse(
+              'https://fcm.googleapis.com/v1/projects/$projectID/messages:send'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: json.encode({
+            "message": {
+              "token": toToken,
+              "notification": {"title": "새 댓글 알림", "body": "게시물에 새 댓글이 달렸습니다!"},
+              "data": {"postId": jsonPost},
+              "android": {
+                "notification": {"click_action": "FLUTTER_NOTIFICATION_CLICK"}
+              },
+              "apns": {
+                "payload": {
+                  "aps": {
+                    "category": "FLUTTER_NOTIFICATION_CLICK",
+                    "content-available": 1
+                  }
+                }
+              }
+            }
+          }));
+    } on HttpException catch (error) {
+      return print(error.message);
+    }
+  }
 
   Future<void> addComment(String postId, String content) async {
     if (contents.text.isEmpty) return;
@@ -56,6 +99,8 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
     await postRef.update({
       'commentsCount': FieldValue.increment(1),
     });
+    sendNotificationV1(
+        'fxXy6m8hQTqbbHJJ305OXC:APA91bHhUHAQr8IFHVBFl07HipaI-YCTBjgY0ORX94S8m4l5jXMi8yVTqlv8UlY9QRSJU--HTWllQeTsR5hmOuu88tk4QSDlsZAWcY1y-MHtB10tYce6T1BsfSrjLECiEwxiO1yWHXNx');
   }
 
   Future<String?> fetchAvatarUrl(String uid) async {
