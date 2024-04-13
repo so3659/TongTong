@@ -9,12 +9,19 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:tongtong/calendar/calendarMain.dart';
 import 'package:tongtong/community/postDetailPage.dart';
 import 'package:tongtong/info/infoMain.dart';
+import 'package:tongtong/knowhow/knowhow_postDetailPage.dart';
+import 'package:tongtong/lightning/lightning_postDetailPage.dart';
 import 'package:tongtong/mainpage/mainpage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tongtong/parameter/postParameter.dart';
+import 'package:tongtong/practice_room/practice_postDetailPage.dart';
 import 'package:tongtong/profile/profilePage.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:tongtong/repair/repair_postDetailPage.dart';
+import 'package:tongtong/restaurant/restaurant_postDetailPage.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -31,6 +38,14 @@ class HomePageState extends State<HomePage> {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+  Future<void> saveTokenToDatabase(String? token) async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+
+    await FirebaseFirestore.instance.collection('users').doc(userId).set({
+      'token': token,
+    }, SetOptions(merge: true));
+  }
+
   Future<void> getToken() async {
     // ios
     String? token;
@@ -42,7 +57,7 @@ class HomePageState extends State<HomePage> {
     else {
       token = await FirebaseMessaging.instance.getToken();
     }
-    print("fcmToken : $token");
+    saveTokenToDatabase(token);
   }
 
   Future<void> onSelectNotification(NotificationResponse details) async {
@@ -50,13 +65,55 @@ class HomePageState extends State<HomePage> {
       if (details.payload != null) {
         Map<String, dynamic> outerData =
             json.decode(details.payload ?? "") as Map<String, dynamic>;
-        Map<String, dynamic> data =
-            json.decode(outerData['postId']) as Map<String, dynamic>;
-        FeedPost post = FeedPost.fromMap(data);
-        await Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => PostDetailPage(post: post)));
+        if (outerData.containsKey('postId')) {
+          Map<String, dynamic> data =
+              json.decode(outerData['postId']) as Map<String, dynamic>;
+          FeedPost post = FeedPost.fromMap(data);
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PostDetailPage(post: post)));
+        } else if (outerData.containsKey('knowhowId')) {
+          Map<String, dynamic> data =
+              json.decode(outerData['knowhowId']) as Map<String, dynamic>;
+          FeedPost post = FeedPost.fromMap(data);
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => KnowhowDetailPage(post: post)));
+        } else if (outerData.containsKey('repairId')) {
+          Map<String, dynamic> data =
+              json.decode(outerData['repairId']) as Map<String, dynamic>;
+          FeedPost post = FeedPost.fromMap(data);
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => RepairDetailPage(post: post)));
+        } else if (outerData.containsKey('lightningId')) {
+          Map<String, dynamic> data =
+              json.decode(outerData['lightningId']) as Map<String, dynamic>;
+          FeedPost post = FeedPost.fromMap(data);
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => LightningDetailPage(post: post)));
+        } else if (outerData.containsKey('restaurantsId')) {
+          Map<String, dynamic> data =
+              json.decode(outerData['restaurantsId']) as Map<String, dynamic>;
+          FeedPost post = FeedPost.fromMap(data);
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => RestaurantDetailPage(post: post)));
+        } else if (outerData.containsKey('practiceId')) {
+          Map<String, dynamic> data =
+              json.decode(outerData['practiceId']) as Map<String, dynamic>;
+          FeedPost post = FeedPost.fromMap(data);
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PracticeDetailPage(post: post)));
+        }
       }
     } catch (e) {
       print("Error navigating: $e");
@@ -65,7 +122,7 @@ class HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // setupPlaylist();
+    setupPlaylist();
     getToken();
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
@@ -78,20 +135,115 @@ class HomePageState extends State<HomePage> {
               MaterialPageRoute(
                   builder: (context) => PostDetailPage(post: post)));
         }
+      } else if (message.data.containsKey('knowhowId')) {
+        final dynamic postJson = json.decode(message.data['knowhowId']);
+        if (postJson is Map<String, dynamic>) {
+          FeedPost post = FeedPost.fromMap(postJson);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => KnowhowDetailPage(post: post)));
+        }
+      } else if (message.data.containsKey('repairId')) {
+        final dynamic postJson = json.decode(message.data['repairId']);
+        if (postJson is Map<String, dynamic>) {
+          FeedPost post = FeedPost.fromMap(postJson);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => RepairDetailPage(post: post)));
+        }
+      } else if (message.data.containsKey('lightningId')) {
+        final dynamic postJson = json.decode(message.data['lightningId']);
+        if (postJson is Map<String, dynamic>) {
+          FeedPost post = FeedPost.fromMap(postJson);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => LightningDetailPage(post: post)));
+        }
+      } else if (message.data.containsKey('restaurantsId')) {
+        final dynamic postJson = json.decode(message.data['restaurantsId']);
+        if (postJson is Map<String, dynamic>) {
+          FeedPost post = FeedPost.fromMap(postJson);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => RestaurantDetailPage(post: post)));
+        }
+      } else if (message.data.containsKey('practiceId')) {
+        final dynamic postJson = json.decode(message.data['practiceId']);
+        if (postJson is Map<String, dynamic>) {
+          FeedPost post = FeedPost.fromMap(postJson);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PracticeDetailPage(post: post)));
+        }
       }
     });
 
     FirebaseMessaging.instance
         .getInitialMessage()
         .then((RemoteMessage? message) {
-      if (message?.data != null) {
-        final dynamic postJson = json.decode(message?.data['postId']);
+      if (message?.data != null && message!.data.containsKey('postId')) {
+        final dynamic postJson = json.decode(message.data['postId']);
         if (postJson is Map<String, dynamic>) {
           FeedPost post = FeedPost.fromMap(postJson);
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => PostDetailPage(post: post)));
+        }
+      } else if (message?.data != null &&
+          message!.data.containsKey('knowhowId')) {
+        final dynamic postJson = json.decode(message.data['knowhowId']);
+        if (postJson is Map<String, dynamic>) {
+          FeedPost post = FeedPost.fromMap(postJson);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => KnowhowDetailPage(post: post)));
+        }
+      } else if (message?.data != null &&
+          message!.data.containsKey('repairId')) {
+        final dynamic postJson = json.decode(message.data['repairId']);
+        if (postJson is Map<String, dynamic>) {
+          FeedPost post = FeedPost.fromMap(postJson);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => RepairDetailPage(post: post)));
+        }
+      } else if (message?.data != null &&
+          message!.data.containsKey('lightningId')) {
+        final dynamic postJson = json.decode(message.data['lightningId']);
+        if (postJson is Map<String, dynamic>) {
+          FeedPost post = FeedPost.fromMap(postJson);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => LightningDetailPage(post: post)));
+        }
+      } else if (message?.data != null &&
+          message!.data.containsKey('restaurantsId')) {
+        final dynamic postJson = json.decode(message.data['restaurantsId']);
+        if (postJson is Map<String, dynamic>) {
+          FeedPost post = FeedPost.fromMap(postJson);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => RestaurantDetailPage(post: post)));
+        }
+      } else if (message?.data != null &&
+          message!.data.containsKey('practiceId')) {
+        final dynamic postJson = json.decode(message.data['practiceId']);
+        if (postJson is Map<String, dynamic>) {
+          FeedPost post = FeedPost.fromMap(postJson);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PracticeDetailPage(post: post)));
         }
       }
     });
@@ -136,28 +288,28 @@ class HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  // void setupPlaylist() async {
-  //   _assetsAudioPlayer.open(
-  //     Audio(
-  //       "assets/audio/tong_music.mp3",
-  //       metas: Metas(
-  //         title: "낭만이라는 우리",
-  //         artist: "김태리",
-  //         album: "통통 1집",
-  //         image: const MetasImage.asset("assets/images/tong_logo.png"),
-  //       ),
-  //     ),
-  //     showNotification: true,
-  //     autoStart: false,
-  //     loopMode: LoopMode.single,
-  //   );
+  void setupPlaylist() async {
+    _assetsAudioPlayer.open(
+      Audio(
+        "assets/audio/tong_music.mp3",
+        metas: Metas(
+          title: "낭만이라는 우리",
+          artist: "김태리",
+          album: "통통 1집",
+          image: const MetasImage.asset("assets/images/tong_logo.png"),
+        ),
+      ),
+      showNotification: true,
+      autoStart: false,
+      loopMode: LoopMode.single,
+    );
 
-  //   _assetsAudioPlayer.isPlaying.listen((event) {
-  //     setState(() {
-  //       _play = event;
-  //     });
-  //   });
-  // }
+    _assetsAudioPlayer.isPlaying.listen((event) {
+      setState(() {
+        _play = event;
+      });
+    });
+  }
 
   int _selectedIndex = 0;
 
@@ -233,21 +385,21 @@ class HomePageState extends State<HomePage> {
                 SizedBox(
                   width: screenSize.width * 0.07,
                 ),
-                // Align(
-                //   alignment: Alignment.topLeft,
-                //   child: Column(
-                //     children: [
-                //       const Text(
-                //         '낭만이라는 우리',
-                //         style: TextStyle(fontSize: 15),
-                //       ),
-                //       Text(
-                //         '김태리 - 통통 1집',
-                //         style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                //       ),
-                //     ],
-                //   ),
-                // ),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Column(
+                    children: [
+                      const Text(
+                        '낭만이라는 우리',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                      Text(
+                        '김태리 - 통통 1집',
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                ),
                 SizedBox(
                   width: screenSize.width * 0.25,
                 ),

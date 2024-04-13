@@ -90,6 +90,7 @@ class CommentListState extends ConsumerState<CommentList> {
           actions: [
             ElevatedButton(
               onPressed: () {
+                if (!mounted) return;
                 ref
                     .read(repair_focusManagerProvider)
                     .requestFocusToCommentField();

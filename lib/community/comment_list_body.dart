@@ -88,6 +88,7 @@ class CommentListState extends ConsumerState<CommentList> {
           actions: [
             ElevatedButton(
               onPressed: () {
+                if (!mounted) return;
                 ref.read(focusManagerProvider).requestFocusToCommentField();
                 // ReplyNotifier에 commentId 전달
                 ref
@@ -98,7 +99,10 @@ class CommentListState extends ConsumerState<CommentList> {
               child: const Text('네'),
             ),
             ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                if (!mounted) return;
+                Navigator.of(context).pop();
+              },
               child: const Text('아니요'),
             ),
           ],
