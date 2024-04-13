@@ -6,10 +6,11 @@ class ImageDialog_HYO extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     return Dialog(
       child: Container(
-        width: 200,
-        height: 200,
+        width: screenSize.width * 0.6,
+        height: screenSize.height * 0.4,
         decoration: const BoxDecoration(
             image: DecorationImage(
                 image: ExactAssetImage('assets/images/hyo.jpg'),
@@ -24,10 +25,11 @@ class ImageDialog_Yubin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     return Dialog(
       child: Container(
-        width: 200,
-        height: 200,
+        width: screenSize.width * 0.6,
+        height: screenSize.height * 0.4,
         decoration: const BoxDecoration(
             image: DecorationImage(
                 image: ExactAssetImage('assets/images/yubin.jpg'),
@@ -42,15 +44,53 @@ class ImageDialog_Dubin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     return Dialog(
       child: Container(
-        width: 200,
-        height: 200,
+        width: screenSize.width * 0.6,
+        height: screenSize.height * 0.4,
         decoration: const BoxDecoration(
             image: DecorationImage(
                 image: ExactAssetImage('assets/images/dubin.png'),
                 fit: BoxFit.contain)),
       ),
+    );
+  }
+}
+
+class ImageDialog_Me extends StatelessWidget {
+  const ImageDialog_Me({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    return Column(
+      children: [
+        Dialog(
+          child: Container(
+            width: screenSize.width * 0.6,
+            height: screenSize.height * 0.4,
+            decoration: const BoxDecoration(
+                image: DecorationImage(
+                    image: ExactAssetImage('assets/images/me.jpg'),
+                    fit: BoxFit.contain)),
+          ),
+        ),
+        Container(
+          width: screenSize.width * 0.6,
+          height: screenSize.height * 0.1,
+          alignment: Alignment.center,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+          ),
+          child: const Text('\n만드느라 힘들었다\n',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
+              textAlign: TextAlign.center),
+        ),
+      ],
     );
   }
 }
@@ -95,12 +135,28 @@ class _HelpPeopleState extends State<HelpPeople> {
             ),
             const Text('Made by',
                 style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
-            Text('11기 김성욱\n',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent[700]),
-                textAlign: TextAlign.center),
+            InkWell(
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const ImageDialog_Me();
+                    });
+              },
+              child: const GradientAnimationText(
+                text: Text('11기 김성욱\n',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center),
+                colors: [
+                  Color.fromRGBO(0, 195, 255, 1), // violet
+                  Color.fromRGBO(255, 255, 28, 1),
+                ],
+                duration: Duration(seconds: 5),
+              ),
+            ),
             const Text('Illustrated by',
                 style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
             Text('11기 장윤정\n',
