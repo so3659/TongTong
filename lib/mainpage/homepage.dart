@@ -19,9 +19,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tongtong/repair/repair_postDetailPage.dart';
 import 'package:tongtong/restaurant/restaurant_postDetailPage.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -98,32 +95,9 @@ class HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> saveTokenToDatabase(String? token) async {
-    String userId = FirebaseAuth.instance.currentUser!.uid;
-
-    await FirebaseFirestore.instance.collection('users').doc(userId).set({
-      'token': token,
-    }, SetOptions(merge: true));
-  }
-
-  Future<void> getToken() async {
-    // ios
-    String? token;
-    if (defaultTargetPlatform == TargetPlatform.iOS ||
-        defaultTargetPlatform == TargetPlatform.macOS) {
-      token = await FirebaseMessaging.instance.getAPNSToken();
-    }
-    // aos
-    else {
-      token = await FirebaseMessaging.instance.getToken();
-    }
-    saveTokenToDatabase(token);
-  }
-
   @override
   void initState() {
     setupPlaylist();
-    getToken();
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       if (message.data.containsKey('postId')) {
@@ -336,7 +310,7 @@ class HomePageState extends State<HomePage> {
     });
   }
 
-  void signOut() async {
+  signOut() async {
     storage.delete(key: "login");
     await GoogleSignIn().signOut();
   }
@@ -472,8 +446,9 @@ class HomePageState extends State<HomePage> {
                         child: const Text(
                           '로그아웃',
                         ),
-                        onPressed: () {
-                          signOut();
+                        onPressed: () async {
+                          await signOut();
+                          if (!mounted) return; // 위젯이 마운트되어 있지 않다면 함수를 종료합니다.
                           GoRouter.of(context).go('/login');
                         },
                       ),

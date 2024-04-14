@@ -14,11 +14,27 @@
       },
       "oauth_client": [
         {
+          "client_id": "256107932838-4j9su2j10e1eb8c56pnacbembedubdr5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tongtong",
+            "certificate_hash": "5a75e74ab1d021b451fa3c8029c7178e6acf850a"
+          }
+        },
+        {
           "client_id": "256107932838-cmaesnnta4t402q282edrea5lq539f5l.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.tongtong",
             "certificate_hash": "662ab88237bef5fc751d10036a5945614df9b389"
+          }
+        },
+        {
+          "client_id": "256107932838-hts8tktb3v21se7c8vf1or1tdnj7frbf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tongtong",
+            "certificate_hash": "371eb93e59714f5df4d30a82fcd6755005724ef3"
           }
         },
         {
@@ -39,10 +55,10 @@
               "client_type": 3
             },
             {
-              "client_id": "256107932838-jbg7go18t6v9odcc4lmaf857usanu47p.apps.googleusercontent.com",
+              "client_id": "256107932838-4iknpjbmt9binhq0oal6ehbccvenlkri.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.tongtong.RunnerTests"
+                "bundle_id": "com.example.tongtong"
               }
             }
           ]

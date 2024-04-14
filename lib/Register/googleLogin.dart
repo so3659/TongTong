@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +9,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class GoogleLogin extends StatelessWidget {
   const GoogleLogin({super.key});
@@ -96,8 +99,31 @@ class BuildLoginState extends State<BuildLogin> {
 
     //user의 정보가 있다면 바로 로그아웃 페이지로 넝어가게 합니다.
     if (userInfo != null) {
-      context.go('/homepage');
+      getToken();
+      GoRouter.of(context).go('/homepage');
     }
+  }
+
+  Future<void> saveTokenToDatabase(String? token) async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+
+    await FirebaseFirestore.instance.collection('users').doc(userId).set({
+      'token': token,
+    }, SetOptions(merge: true));
+  }
+
+  Future<void> getToken() async {
+    // ios
+    String? token;
+    if (defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.macOS) {
+      token = await FirebaseMessaging.instance.getAPNSToken();
+    }
+    // aos
+    else {
+      token = await FirebaseMessaging.instance.getToken();
+    }
+    saveTokenToDatabase(token);
   }
 
   void _signInWithGoogle() async {
@@ -114,7 +140,8 @@ class BuildLoginState extends State<BuildLogin> {
           await firebaseAuth.signInWithCredential(credential);
       // print("Logged in with Google: ${userCredential.user}");
       await storage.write(key: "login", value: userCredential.user.toString());
-      context.go('/homepage');
+      getToken();
+      GoRouter.of(context).go('/homepage');
     } catch (e) {
       print(e);
     }
@@ -138,7 +165,8 @@ class BuildLoginState extends State<BuildLogin> {
       final userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
       await storage.write(key: "login", value: userCredential.user.toString());
-      context.go('/homepage');
+      getToken();
+      GoRouter.of(context).go('/homepage');
     } catch (e) {
       print(e);
     }
