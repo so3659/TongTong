@@ -1,5 +1,7 @@
 import 'dart:io';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:go_router/go_router.dart';
@@ -89,6 +91,28 @@ class BuildLoginState extends State<BuildLogin> {
     });
   }
 
+  Future<void> saveTokenToDatabase(String? token) async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+
+    await FirebaseFirestore.instance.collection('users').doc(userId).set({
+      'token': token,
+    }, SetOptions(merge: true));
+  }
+
+  Future<void> getToken() async {
+    // ios
+    String? token;
+    if (defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.macOS) {
+      token = await FirebaseMessaging.instance.getAPNSToken();
+    }
+    // aos
+    else {
+      token = await FirebaseMessaging.instance.getToken();
+    }
+    saveTokenToDatabase(token);
+  }
+
   _asyncMethod() async {
     //read 함수를 통하여 key값에 맞는 정보를 불러오게 됩니다. 이때 불러오는 결과의 타입은 String 타입임을 기억해야 합니다.
     //(데이터가 없을때는 null을 반환을 합니다.)
@@ -96,6 +120,7 @@ class BuildLoginState extends State<BuildLogin> {
 
     //user의 정보가 있다면 바로 로그아웃 페이지로 넝어가게 합니다.
     if (userInfo != null) {
+      getToken();
       context.go('/homepage');
     }
   }
@@ -114,6 +139,7 @@ class BuildLoginState extends State<BuildLogin> {
           await firebaseAuth.signInWithCredential(credential);
       // print("Logged in with Google: ${userCredential.user}");
       await storage.write(key: "login", value: userCredential.user.toString());
+      getToken();
       context.go('/homepage');
     } catch (e) {
       print(e);
@@ -138,6 +164,7 @@ class BuildLoginState extends State<BuildLogin> {
       final userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
       await storage.write(key: "login", value: userCredential.user.toString());
+      getToken();
       context.go('/homepage');
     } catch (e) {
       print(e);

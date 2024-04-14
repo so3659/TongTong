@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
@@ -20,8 +19,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tongtong/repair/repair_postDetailPage.dart';
 import 'package:tongtong/restaurant/restaurant_postDetailPage.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -37,28 +34,6 @@ class HomePageState extends State<HomePage> {
   bool _play = true;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-
-  Future<void> saveTokenToDatabase(String? token) async {
-    String userId = FirebaseAuth.instance.currentUser!.uid;
-
-    await FirebaseFirestore.instance.collection('users').doc(userId).set({
-      'token': token,
-    }, SetOptions(merge: true));
-  }
-
-  Future<void> getToken() async {
-    // ios
-    String? token;
-    if (defaultTargetPlatform == TargetPlatform.iOS ||
-        defaultTargetPlatform == TargetPlatform.macOS) {
-      token = await FirebaseMessaging.instance.getAPNSToken();
-    }
-    // aos
-    else {
-      token = await FirebaseMessaging.instance.getToken();
-    }
-    saveTokenToDatabase(token);
-  }
 
   Future<void> onSelectNotification(NotificationResponse details) async {
     try {
@@ -123,7 +98,6 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     setupPlaylist();
-    getToken();
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       if (message.data.containsKey('postId')) {

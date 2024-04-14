@@ -190,7 +190,6 @@ class PracticeDetailPageState extends ConsumerState<PracticeDetailPage> {
         .doc(widget.post.documentId) // 게시글 ID
         .collection('comments')
         .doc(commentId);
-    List<String> tokenList = [];
 
     String replyId = getRandomString(16); // Unique ID
 

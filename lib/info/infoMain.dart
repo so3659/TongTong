@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tongtong/restaurant/restaurant_postMainPage.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class InfoMain extends StatefulWidget {
   const InfoMain({super.key});

@@ -183,7 +183,6 @@ class LightningDetailPageState extends ConsumerState<LightningDetailPage> {
     setState(() {
       _loading = true; // Firestore에 문서를 보내는 작업이 시작됨
     });
-    List<String> tokenList = [];
     DocumentReference postRef = FirebaseFirestore.instance
         .collection('Lightning')
         .doc(widget.post.documentId);

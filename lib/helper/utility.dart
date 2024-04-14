@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print
 
-import 'dart:async';
 import 'dart:developer' as developer;
 
 import 'package:firebase_analytics/firebase_analytics.dart';
