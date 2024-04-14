@@ -75,8 +75,7 @@ class MainpageState extends State<Mainpage> {
     return Scaffold(
         body: ListView(children: [
       Center(
-          child: SizedBox.expand(
-              child: Column(
+          child: Column(
         children: [
           Stack(
             alignment: Alignment.bottomRight,
@@ -249,7 +248,7 @@ class MainpageState extends State<Mainpage> {
             ],
           )
         ],
-      )))
+      ))
     ]));
   }
 }
