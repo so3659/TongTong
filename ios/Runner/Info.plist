@@ -33,10 +33,10 @@
 			</array>
 		</dict>
 	</array>
-	<key>GoogleSignInClientId</key>
-	<string>256107932838-qhtr0ltlr8ms7mp6rv6hcfvq1fvlcres</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>GIDClientID</key>
+	<string></string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>https</string>
