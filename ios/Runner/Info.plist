@@ -34,12 +34,6 @@
 				<string>com.googleusercontent.apps.256107932838-qhtr0ltlr8ms7mp6rv6hcfvq1fvlcres</string>
 			</array>
 		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array/>
-		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
