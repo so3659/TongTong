@@ -22,8 +22,6 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>GIDClientID</key>
-	<string>Copied from GoogleService-Info.plist key IOS CLIENT ID</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
