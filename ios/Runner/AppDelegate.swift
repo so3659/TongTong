@@ -10,7 +10,9 @@ import Firebase
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     GeneratedPluginRegistrant.register(with: self)
-    FirebaseApp.configure() // Firebase 초기화
+    if FirebaseApp.app() == nil {
+    FirebaseApp.configure()
+    }
 
     UNUserNotificationCenter.current().delegate = self
     
