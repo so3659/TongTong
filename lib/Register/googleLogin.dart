@@ -128,8 +128,11 @@ class BuildLoginState extends State<BuildLogin> {
 
   void _signInWithGoogle() async {
     try {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId: '256107932838-qhtr0ltlr8ms7mp6rv6hcfvq1fvlcres',
+      );
       final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       final GoogleSignInAuthentication? googleAuth =
           await googleUser?.authentication;
       final credential = GoogleAuthProvider.credential(
