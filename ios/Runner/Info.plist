@@ -24,6 +24,7 @@
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
 	<array>
+<<<<<<< HEAD
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
@@ -32,12 +33,14 @@
 				<string>com.example.tongtong</string>
 			</array>
 		</dict>
+=======
+>>>>>>> 214d3df7d0ff67f97e72ab9473198732a1190975
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.256107932838-qhtr0ltlr8ms7mp6rv6hcfvq1fvlcres</string>
+				<string>com.googleusercontent.apps.256107932838-4iknpjbmt9binhq0oal6ehbccvenlkri</string>
 			</array>
 		</dict>
 	</array>
