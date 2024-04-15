@@ -38,7 +38,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void initializeNotification() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   FirebaseMessaging.instance.requestPermission(
     badge: true,
@@ -66,19 +65,15 @@ void initializeNotification() async {
     sound: true,
   );
 
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
+  var initialzationSettingsIOS = const DarwinInitializationSettings(
+    requestSoundPermission: true,
+    requestBadgePermission: true,
+    requestAlertPermission: true,
   );
 
-  await flutterLocalNotificationsPlugin.initialize(const InitializationSettings(
-    android: AndroidInitializationSettings("mipmap/ic_launcher"),
-  ));
+  await flutterLocalNotificationsPlugin.initialize(InitializationSettings(
+      android: const AndroidInitializationSettings("mipmap/ic_launcher"),
+      iOS: initialzationSettingsIOS));
 }
 
 void main() async {
