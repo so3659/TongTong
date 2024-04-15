@@ -1,4 +1,4 @@
-package com.example.tongtong
+package tongtong.app
 
 import io.flutter.embedding.android.FlutterActivity
 

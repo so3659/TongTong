@@ -64,6 +64,50 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:256107932838:android:7d8b315107e729e3ac9867",
+        "android_client_info": {
+          "package_name": "tongtong.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "256107932838-0s3jv2b9kcdh052tr5skve2ktnmvl2d6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tongtong.app",
+            "certificate_hash": "5a75e74ab1d021b451fa3c8029c7178e6acf850a"
+          }
+        },
+        {
+          "client_id": "256107932838-i6mcvkbrodlbdgumm66dbr26c5i3e4qm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUJ9D3wAXYYecO0Z1RHJ4i5o6730zEEu4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "256107932838-i6mcvkbrodlbdgumm66dbr26c5i3e4qm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "256107932838-4iknpjbmt9binhq0oal6ehbccvenlkri.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tongtong"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

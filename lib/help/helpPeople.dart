@@ -375,6 +375,12 @@ class _HelpPeopleState extends State<HelpPeople> {
                     fontWeight: FontWeight.bold,
                     color: Colors.blueAccent[700]),
                 textAlign: TextAlign.center),
+            Text('정히히\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
             Text('의룡인\n',
                 style: TextStyle(
                     fontSize: 18,

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.url_launcher_example">
+    package="tongtong.app">
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
