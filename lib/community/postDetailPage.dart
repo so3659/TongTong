@@ -47,8 +47,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
               'https://fcm.googleapis.com/v1/projects/$projectID/messages:send'),
           headers: {
             'Content-Type': 'application/json',
-            'Authorization':
-                'Bearer ya29.a0Ad52N39PmV2l7Ttj4Qk7H6fgMp2maQP7ritHC_MEdPURMONEKQx2Wci-Kf8ogmF5aVXK4iLVV6g9lOeH_J02Z__cKaLjaP4J11aEJCd6Zg4F812rJhN9k_4A5RFXpsVqfUvaeg0hem8s2GS2mOyQfmBxVwXdCKBuSLTmaCgYKARsSARMSFQHGX2Mir3cxJgCruokhnscupBW-Xg0171',
+            'Authorization': 'Bearer $token',
           },
           body: json.encode({
             "message": {
