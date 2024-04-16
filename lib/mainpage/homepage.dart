@@ -231,11 +231,6 @@ class HomePageState extends State<HomePage> {
           notification.title,
           notification.body,
           const NotificationDetails(
-            iOS: DarwinNotificationDetails(
-                presentAlert: true,
-                presentBadge: true,
-                presentSound: true,
-                badgeNumber: 1),
             android: AndroidNotificationDetails(
               'high_importance_channel',
               'high_importance_notification',
