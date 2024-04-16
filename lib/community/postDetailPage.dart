@@ -59,13 +59,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
               },
               "apns": {
                 "payload": {
-                  "aps": {
-                    "category": "FLUTTER_NOTIFICATION_CLICK",
-                    "content-available": 1
-                  },
-                  "title": "새 댓글 알림",
-                  "body": "게시물에 새 댓글이 달렸습니다!",
-                  "text": "게시물에 새 댓글이 달렸습니다!"
+                  "aps": {"content-available": 1},
                 }
               }
             }
