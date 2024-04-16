@@ -60,7 +60,7 @@ class LightningDetailPageState extends ConsumerState<LightningDetailPage> {
               "apns": {
                 "payload": {
                   "aps": {
-                    "category": "FLUTTER_NOTIFICATION_CLICK",
+                    "category": "Message Category",
                     "content-available": 1
                   }
                 }
@@ -100,7 +100,7 @@ class LightningDetailPageState extends ConsumerState<LightningDetailPage> {
               "apns": {
                 "payload": {
                   "aps": {
-                    "category": "FLUTTER_NOTIFICATION_CLICK",
+                    "category": "Message Category",
                     "content-available": 1
                   }
                 }
