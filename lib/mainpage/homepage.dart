@@ -224,8 +224,9 @@ class HomePageState extends State<HomePage> {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
 
-      if (notification != null) {
+      if (notification != null && android != null) {
         FlutterLocalNotificationsPlugin().show(
           notification.hashCode,
           notification.title,
