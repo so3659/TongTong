@@ -60,11 +60,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
               "apns": {
                 "payload": {
                   "aps": {
-                    "alert": {
-                      "title": "Game Request",
-                      "subtitle": "Five Card Draw",
-                      "body": "Bob wants to play poker"
-                    },
+                    "category": "FLUTTER_NOTIFICATION_CLICK",
                     "content-available": 1
                   }
                 }
