@@ -68,7 +68,7 @@ class LightningDetailPageState extends ConsumerState<LightningDetailPage> {
             }
           }));
     } on HttpException catch (error) {
-      return print(error.message);
+      return debugPrint(error.message);
     }
   }
 
@@ -108,7 +108,7 @@ class LightningDetailPageState extends ConsumerState<LightningDetailPage> {
             }
           }));
     } on HttpException catch (error) {
-      return print(error.message);
+      return debugPrint(error.message);
     }
   }
 

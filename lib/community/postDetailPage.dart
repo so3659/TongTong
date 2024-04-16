@@ -62,13 +62,16 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
                   "aps": {
                     "category": "FLUTTER_NOTIFICATION_CLICK",
                     "content-available": 1
-                  }
+                  },
+                  "title": "새 댓글 알림",
+                  "body": "게시물에 새 댓글이 달렸습니다!",
+                  "text": "게시물에 새 댓글이 달렸습니다!"
                 }
               }
             }
           }));
     } on HttpException catch (error) {
-      return print(error.message);
+      return debugPrint(error.message);
     }
   }
 
@@ -108,7 +111,7 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
             }
           }));
     } on HttpException catch (error) {
-      return print(error.message);
+      return debugPrint(error.message);
     }
   }
 

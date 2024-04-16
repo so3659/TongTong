@@ -67,7 +67,7 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
         try {
           await FirebaseStorage.instance.ref(filePath).delete();
         } catch (e) {
-          print("Failed to delete file at $filePath: $e");
+          debugPrint("Failed to delete file at $filePath: $e");
         }
       }
     }

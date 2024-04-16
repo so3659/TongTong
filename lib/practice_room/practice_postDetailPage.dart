@@ -67,7 +67,7 @@ class PracticeDetailPageState extends ConsumerState<PracticeDetailPage> {
             }
           }));
     } on HttpException catch (error) {
-      return print(error.message);
+      return debugPrint(error.message);
     }
   }
 
@@ -107,7 +107,7 @@ class PracticeDetailPageState extends ConsumerState<PracticeDetailPage> {
             }
           }));
     } on HttpException catch (error) {
-      return print(error.message);
+      return debugPrint(error.message);
     }
   }
 

@@ -155,7 +155,7 @@ class _ProfilePageState extends State<ProfilePage> {
         Navigator.of(context, rootNavigator: true).pop();
       }
     } catch (error) {
-      print('error: $error');
+      debugPrint('error: $error');
     }
   }
 

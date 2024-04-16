@@ -139,12 +139,12 @@ class BuildLoginState extends State<BuildLogin> {
       );
       final userCredential =
           await firebaseAuth.signInWithCredential(credential);
-      // print("Logged in with Google: ${userCredential.user}");
+      // debugPrint("Logged in with Google: ${userCredential.user}");
       await storage.write(key: "login", value: userCredential.user.toString());
       getToken();
       GoRouter.of(context).go('/homepage');
     } catch (e) {
-      print(e);
+      return;
     }
   }
 
@@ -169,7 +169,7 @@ class BuildLoginState extends State<BuildLogin> {
       getToken();
       GoRouter.of(context).go('/homepage');
     } catch (e) {
-      print(e);
+      return;
     }
   }
 

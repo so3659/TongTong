@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_debugPrint
 
 import 'dart:developer' as developer;
 
@@ -13,16 +13,16 @@ import 'package:url_launcher/url_launcher.dart';
 
 final kAnalytics = FirebaseAnalytics.instance;
 final kScreenLoader = CustomLoader();
-void cprint(dynamic data,
+void cdebugPrint(dynamic data,
     {String? errorIn, String? event, String label = 'Log'}) {
   /// Print logs only in development mode
   if (kDebugMode) {
     if (errorIn != null) {
-      print(
+      debugPrint(
           '****************************** error ******************************');
       developer.log('[Error]',
           time: DateTime.now(), error: data, name: errorIn);
-      print(
+      debugPrint(
           '****************************** error ******************************');
     } else if (data != null) {
       developer.log(data, time: DateTime.now(), name: label);
@@ -127,7 +127,7 @@ class Utility {
     } else {
       return null;
     }
-    cprint('Launching URL : $url');
+    cdebugPrint('Launching URL : $url');
     return url;
   }
 
@@ -142,19 +142,19 @@ class Utility {
         mode: LaunchMode.externalApplication,
       );
     } else {
-      cprint('Could not launch $url');
+      cdebugPrint('Could not launch $url');
     }
   }
 
   static void logEvent(String event, {Map<String, dynamic>? parameter}) {
     kReleaseMode
         ? kAnalytics.logEvent(name: event, parameters: parameter)
-        : print("[EVENT]: $event");
+        : debugPrint("[EVENT]: $event");
   }
 
   static void debugLog(String log, {dynamic param = ""}) {
     final String time = DateFormat("mm:ss:mmm").format(DateTime.now());
-    print("[$time][Log]: $log, $param");
+    debugPrint("[$time][Log]: $log, $param");
   }
 
   static void share(String message, {String? subject}) {

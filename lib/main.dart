@@ -33,7 +33,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("백그라운드 메시지 처리.. ${message.notification!.body!}");
+  debugPrint("백그라운드 메시지 처리.. ${message.notification!.body!}");
 }
 
 void initializeNotification() async {

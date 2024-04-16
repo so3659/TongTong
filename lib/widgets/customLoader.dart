@@ -41,7 +41,7 @@ class CustomLoader {
       _overlayEntry?.remove();
       _overlayEntry = null;
     } catch (e) {
-      print("Exception:: $e");
+      debugPrint("Exception:: $e");
     }
   }
 
@@ -61,11 +61,10 @@ class CustomScreenLoader extends StatelessWidget {
   final double height;
   final double width;
   const CustomScreenLoader(
-      {Key? key,
+      {super.key,
       this.backgroundColor = const Color(0xfff8f8f8),
       this.height = 30,
-      this.width = 30})
-      : super(key: key);
+      this.width = 30});
 
   @override
   Widget build(BuildContext context) {

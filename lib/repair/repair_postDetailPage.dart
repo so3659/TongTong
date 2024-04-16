@@ -68,7 +68,7 @@ class RepairDetailPageState extends ConsumerState<RepairDetailPage> {
             }
           }));
     } on HttpException catch (error) {
-      return print(error.message);
+      return debugPrint(error.message);
     }
   }
 
@@ -108,7 +108,7 @@ class RepairDetailPageState extends ConsumerState<RepairDetailPage> {
             }
           }));
     } on HttpException catch (error) {
-      return print(error.message);
+      return debugPrint(error.message);
     }
   }
 

@@ -91,7 +91,7 @@ class HomePageState extends State<HomePage> {
         }
       }
     } catch (e) {
-      print("Error navigating: $e");
+      debugPrint("Error navigating: $e");
     }
   }
 
