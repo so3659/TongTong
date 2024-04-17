@@ -13,12 +13,18 @@ migrate_working_dir/
 *.p8
 /assets/json/
 /lib/FCM/
+/ios/
+/macos/
+/android/
+/functions/
 
 # IntelliJ related
 *.iml
 *.ipr
 *.iws
 .idea/
+*.cer
+*.certSigningRequest
 
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
