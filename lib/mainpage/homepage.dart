@@ -438,7 +438,6 @@ class HomePageState extends State<HomePage> {
                           '후원하기',
                         ),
                         onPressed: () {
-                          signOut();
                           GoRouter.of(context).push('/sponsor');
                         },
                       ),

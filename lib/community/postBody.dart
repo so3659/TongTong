@@ -151,8 +151,31 @@ class FeedPageBodyState extends State<FeedPageBody> {
     // UI 업데이트는 StreamBuilder가 담당하므로 여기서는 setState() 호출 없음
   }
 
+  _blockUser() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: const Text('이 작성자의 게시물과 댓글이 표시되지 않으며, 다시 해제하실 수 없습니다. '),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('취소'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('확인'),
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     final bool hasImages = widget.photoUrls?.isNotEmpty ?? false;
     return StreamBuilder<DocumentSnapshot>(
       stream: FirebaseFirestore.instance
@@ -242,7 +265,7 @@ class FeedPageBodyState extends State<FeedPageBody> {
                                           context: context,
                                           builder: (BuildContext context) {
                                             return SizedBox(
-                                                height: 150,
+                                                height: screenSize.height * 0.2,
                                                 child: Center(
                                                     child: Column(
                                                         mainAxisAlignment:
@@ -301,16 +324,66 @@ class FeedPageBodyState extends State<FeedPageBody> {
                                           },
                                         );
                                       }
-                                    : null,
-                                child: Padding(
+                                    : () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return SizedBox(
+                                                height: screenSize.height * 0.2,
+                                                child: Center(
+                                                    child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: <Widget>[
+                                                      Align(
+                                                        alignment:
+                                                            Alignment.topRight,
+                                                        child: IconButton(
+                                                          icon: const Icon(
+                                                              Icons.close),
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        child: Column(
+                                                          children: [
+                                                            ListTile(
+                                                              leading: const Icon(
+                                                                  Icons.update),
+                                                              title: const Text(
+                                                                  '신고'),
+                                                              onTap: () {
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                            ),
+                                                            ListTile(
+                                                              leading: const Icon(
+                                                                  Icons.delete),
+                                                              title: const Text(
+                                                                  '차단'),
+                                                              onTap: () {
+                                                                _blockUser();
+                                                              },
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ])));
+                                          },
+                                        );
+                                      },
+                                child: const Padding(
                                   padding: EdgeInsets.zero,
                                   child: Icon(
                                     Icons.more_horiz,
-                                    color: widget.uid ==
-                                            FirebaseAuth
-                                                .instance.currentUser!.uid
-                                        ? Colors.black87
-                                        : Colors.grey[400],
+                                    color: Colors.black87,
                                     size: 17,
                                   ),
                                 ),
