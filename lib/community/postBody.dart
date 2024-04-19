@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:tongtong/services/customPageView.dart';
 import 'package:tongtong/theme/theme.dart';
@@ -156,7 +155,7 @@ class FeedPageBodyState extends State<FeedPageBody> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            content: const Text('이 작성자의 게시물과 댓글이 표시되지 않으며, 다시 해제하실 수 없습니다. '),
+            content: const Text('이 작성자의 게시물과 댓글이 표시되지 않으며, 다시 해제하실 수 없습니다.'),
             actions: [
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(),
@@ -171,6 +170,106 @@ class FeedPageBodyState extends State<FeedPageBody> {
             ],
           );
         });
+  }
+
+  _reportUser() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: const Text('신고 사유에 맞지 않는 신고일 경우, 해당 신고는 처리되지 않습니다.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('취소'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  _reportConfirm();
+                },
+                child: const Text('확인'),
+              ),
+            ],
+          );
+        });
+  }
+
+  _reportConfirm() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: const Text('신고가 접수되었습니다. 검토까지는 최대 24시간 소요됩니다.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+                child: const Text('확인'),
+              ),
+            ],
+          );
+        });
+  }
+
+  _cancelSheet() {
+    return showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+            Column(
+              children: [
+                ListTile(
+                  title: const Center(child: Text('잘못된 정보')),
+                  onTap: () {
+                    _reportUser();
+                  },
+                ),
+                ListTile(
+                  title: const Center(child: Text('상업적 광고')),
+                  onTap: () {
+                    _reportUser();
+                  },
+                ),
+                ListTile(
+                  title: const Center(child: Text('음란물')),
+                  onTap: () {
+                    _reportUser();
+                  },
+                ),
+                ListTile(
+                  title: const Center(child: Text('폭력성')),
+                  onTap: () {
+                    _reportUser();
+                  },
+                ),
+                ListTile(
+                  title: const Center(child: Text('기타')),
+                  onTap: () {
+                    _reportUser();
+                  },
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -264,63 +363,38 @@ class FeedPageBodyState extends State<FeedPageBody> {
                                         showModalBottomSheet(
                                           context: context,
                                           builder: (BuildContext context) {
-                                            return SizedBox(
-                                                height: screenSize.height * 0.2,
-                                                child: Center(
-                                                    child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: <Widget>[
-                                                      Align(
-                                                        alignment:
-                                                            Alignment.topRight,
-                                                        child: IconButton(
-                                                          icon: const Icon(
-                                                              Icons.close),
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                        ),
+                                            return Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.topRight,
+                                                    child: IconButton(
+                                                      icon: const Icon(
+                                                          Icons.close),
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  ),
+                                                  Column(
+                                                    children: [
+                                                      ListTile(
+                                                        leading: const Icon(
+                                                            Icons.delete),
+                                                        title: const Text('삭제'),
+                                                        onTap: () {
+                                                          deletePost(widget
+                                                              .documentId);
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
                                                       ),
-                                                      Container(
-                                                        child: Column(
-                                                          children: [
-                                                            // ListTile(
-                                                            //   leading: const Icon(
-                                                            //       Icons.update),
-                                                            //   title: const Text(
-                                                            //       '수정'),
-                                                            //   onTap: () {
-                                                            //     // Navigator.of(
-                                                            //     //         context,
-                                                            //     //         rootNavigator:
-                                                            //     //             true)
-                                                            //     //     .push(MaterialPageRoute(
-                                                            //     //         builder:
-                                                            //     //             (context) =>
-                                                            //     //                 const UpdatePost()));
-                                                            //   },
-                                                            // ),
-                                                            ListTile(
-                                                              leading: const Icon(
-                                                                  Icons.delete),
-                                                              title: const Text(
-                                                                  '삭제'),
-                                                              onTap: () {
-                                                                deletePost(widget
-                                                                    .documentId);
-                                                                Navigator.pop(
-                                                                    context);
-                                                              },
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ])));
+                                                    ],
+                                                  ),
+                                                ]);
                                           },
                                         );
                                       }
@@ -328,54 +402,43 @@ class FeedPageBodyState extends State<FeedPageBody> {
                                         showModalBottomSheet(
                                           context: context,
                                           builder: (BuildContext context) {
-                                            return SizedBox(
-                                                height: screenSize.height * 0.2,
-                                                child: Center(
-                                                    child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: <Widget>[
-                                                      Align(
-                                                        alignment:
-                                                            Alignment.topRight,
-                                                        child: IconButton(
-                                                          icon: const Icon(
-                                                              Icons.close),
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                        ),
+                                            return Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.topRight,
+                                                    child: IconButton(
+                                                      icon: const Icon(
+                                                          Icons.close),
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  ),
+                                                  Column(
+                                                    children: [
+                                                      ListTile(
+                                                        leading: const Icon(
+                                                            Icons.update),
+                                                        title: const Text('신고'),
+                                                        onTap: () {
+                                                          _cancelSheet();
+                                                        },
                                                       ),
-                                                      Container(
-                                                        child: Column(
-                                                          children: [
-                                                            ListTile(
-                                                              leading: const Icon(
-                                                                  Icons.update),
-                                                              title: const Text(
-                                                                  '신고'),
-                                                              onTap: () {
-                                                                Navigator.pop(
-                                                                    context);
-                                                              },
-                                                            ),
-                                                            ListTile(
-                                                              leading: const Icon(
-                                                                  Icons.delete),
-                                                              title: const Text(
-                                                                  '차단'),
-                                                              onTap: () {
-                                                                _blockUser();
-                                                              },
-                                                            ),
-                                                          ],
-                                                        ),
+                                                      ListTile(
+                                                        leading: const Icon(
+                                                            Icons.delete),
+                                                        title: const Text('차단'),
+                                                        onTap: () {
+                                                          _blockUser();
+                                                        },
                                                       ),
-                                                    ])));
+                                                    ],
+                                                  ),
+                                                ]);
                                           },
                                         );
                                       },
