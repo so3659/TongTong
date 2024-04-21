@@ -5,7 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -20,6 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
   User? user;
   late final TextEditingController userNameController;
   final String _uid = FirebaseAuth.instance.currentUser!.uid;
+  static const storage = FlutterSecureStorage();
 
   @override
   void initState() {
@@ -145,6 +148,7 @@ class _ProfilePageState extends State<ProfilePage> {
             await FirebaseStorage.instance.ref(imageRef).getDownloadURL();
         await user?.updatePhotoURL(urlString);
         FirebaseFirestore.instance.collection('users').doc(_uid).set({
+          'path': imageRef,
           'avatarUrl': urlString,
         }, SetOptions(merge: true));
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -157,6 +161,55 @@ class _ProfilePageState extends State<ProfilePage> {
     } catch (error) {
       debugPrint('error: $error');
     }
+  }
+
+  _deleteAccount() async {
+    storage.delete(key: "login");
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    DocumentSnapshot snapshot =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+    // 문서가 존재하는 경우
+    if (snapshot.exists) {
+      // 데이터를 Map으로 캐스팅
+      Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+      // 'path' 키가 존재하는지 확인
+      if (data.containsKey('path')) {
+        String filePath = data['path'];
+
+        // Firestore Storage에서 파일 삭제
+        await FirebaseStorage.instance.ref(filePath).delete();
+      }
+    }
+
+    await FirebaseFirestore.instance.collection('users').doc(userId).delete();
+    FirebaseAuth.instance.currentUser!.delete();
+    await GoogleSignIn().signOut();
+  }
+
+  _deleteAccountConfirm() async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: const Text('정말로 탈퇴하시겠습니까?'),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('취소'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  await _deleteAccount();
+                  GoRouter.of(context).go('/login');
+                  Navigator.of(context).pop();
+                },
+                child: const Text('확인'),
+              ),
+            ],
+          );
+        });
   }
 
   @override
@@ -200,190 +253,77 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
 
                 const SizedBox(height: 15), // 상하 여백
-                _buildMyPostsButton('내가 쓴 글'),
-                _buildMyCommentsButton('댓글 단 글'),
-                _builduserNameButton('닉네임 변경'),
-                _builduserProfileImageButton('프로필 사진 변경'),
-                _buildInquiryButton('문의하기'),
-                _buildSponsorButton('후원하기'),
+                Column(
+                  children: [
+                    Divider(
+                      color: Colors.grey[200],
+                    ),
+                    ListTile(
+                      title: const Center(child: Text('내가 쓴 글')),
+                      onTap: () {
+                        GoRouter.of(context).push('/myPosts');
+                      },
+                    ),
+                    Divider(
+                      color: Colors.grey[200],
+                    ),
+                    ListTile(
+                      title: const Center(child: Text('댓글 단 글')),
+                      onTap: () {
+                        GoRouter.of(context).push('/myComments');
+                      },
+                    ),
+                    Divider(
+                      color: Colors.grey[200],
+                    ),
+                    ListTile(
+                      title: const Center(child: Text('닉네임 변경')),
+                      onTap: () {
+                        _updateDisplayNameDialog();
+                      },
+                    ),
+                    Divider(
+                      color: Colors.grey[200],
+                    ),
+                    ListTile(
+                      title: const Center(child: Text('프로필 사진 변경')),
+                      onTap: () {
+                        _updateProfileImageDialog();
+                      },
+                    ),
+                    Divider(
+                      color: Colors.grey[200],
+                    ),
+                    ListTile(
+                      title: const Center(child: Text('문의하기')),
+                      onTap: () {
+                        GoRouter.of(context).push('/inquiry');
+                      },
+                    ),
+                    Divider(
+                      color: Colors.grey[200],
+                    ),
+                    ListTile(
+                      title: const Center(child: Text('후원하기')),
+                      onTap: () {
+                        GoRouter.of(context).push('/sponsor');
+                      },
+                    ),
+                    Divider(
+                      color: Colors.grey[200],
+                    ),
+                    ListTile(
+                      title: const Center(child: Text('회원탈퇴')),
+                      onTap: () {
+                        _deleteAccountConfirm();
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _builduserNameButton(String title) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        width: double.infinity,
-        margin: const EdgeInsets.symmetric(horizontal: 50), // 좌우 여백
-        child: OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            shape: const StadiumBorder(), // 버튼의 모서리를 둥글게
-            side: BorderSide(width: 2, color: Colors.lightBlue[200]!), // 테두리 색상
-          ),
-          onPressed: () {
-            _updateDisplayNameDialog();
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15.0), // 버튼 내부 상하 패딩
-            child: Text(
-              title,
-              style: const TextStyle(
-                color: Colors.black, // 텍스트 색상
-                fontSize: 16, // 텍스트 크기
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _builduserProfileImageButton(String title) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        width: double.infinity,
-        margin: const EdgeInsets.symmetric(horizontal: 50), // 좌우 여백
-        child: OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            shape: const StadiumBorder(), // 버튼의 모서리를 둥글게
-            side: BorderSide(width: 2, color: Colors.lightBlue[200]!), // 테두리 색상
-          ),
-          onPressed: () {
-            _updateProfileImageDialog();
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15.0), // 버튼 내부 상하 패딩
-            child: Text(
-              title,
-              style: const TextStyle(
-                color: Colors.black, // 텍스트 색상
-                fontSize: 16, // 텍스트 크기
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMyPostsButton(String title) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        width: double.infinity,
-        margin: const EdgeInsets.symmetric(horizontal: 50), // 좌우 여백
-        child: OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            shape: const StadiumBorder(), // 버튼의 모서리를 둥글게
-            side: BorderSide(width: 2, color: Colors.lightBlue[200]!), // 테두리 색상
-          ),
-          onPressed: () {
-            GoRouter.of(context).push('/myPosts');
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15.0), // 버튼 내부 상하 패딩
-            child: Text(
-              title,
-              style: const TextStyle(
-                color: Colors.black, // 텍스트 색상
-                fontSize: 16, // 텍스트 크기
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMyCommentsButton(String title) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        width: double.infinity,
-        margin: const EdgeInsets.symmetric(horizontal: 50), // 좌우 여백
-        child: OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            shape: const StadiumBorder(), // 버튼의 모서리를 둥글게
-            side: BorderSide(width: 2, color: Colors.lightBlue[200]!), // 테두리 색상
-          ),
-          onPressed: () {
-            GoRouter.of(context).push('/myComments');
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15.0), // 버튼 내부 상하 패딩
-            child: Text(
-              title,
-              style: const TextStyle(
-                color: Colors.black, // 텍스트 색상
-                fontSize: 16, // 텍스트 크기
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInquiryButton(String title) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        width: double.infinity,
-        margin: const EdgeInsets.symmetric(horizontal: 50), // 좌우 여백
-        child: OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            shape: const StadiumBorder(), // 버튼의 모서리를 둥글게
-            side: BorderSide(width: 2, color: Colors.lightBlue[200]!), // 테두리 색상
-          ),
-          onPressed: () {
-            GoRouter.of(context).push('/inquiry');
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15.0), // 버튼 내부 상하 패딩
-            child: Text(
-              title,
-              style: const TextStyle(
-                color: Colors.black, // 텍스트 색상
-                fontSize: 16, // 텍스트 크기
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSponsorButton(String title) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        width: double.infinity,
-        margin: const EdgeInsets.symmetric(horizontal: 50), // 좌우 여백
-        child: OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            shape: const StadiumBorder(), // 버튼의 모서리를 둥글게
-            side: BorderSide(width: 2, color: Colors.lightBlue[200]!), // 테두리 색상
-          ),
-          onPressed: () {
-            GoRouter.of(context).push('/sponsor');
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15.0), // 버튼 내부 상하 패딩
-            child: Text(
-              title,
-              style: const TextStyle(
-                color: Colors.black, // 텍스트 색상
-                fontSize: 16, // 텍스트 크기
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }

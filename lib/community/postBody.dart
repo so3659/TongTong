@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -150,7 +151,35 @@ class FeedPageBodyState extends State<FeedPageBody> {
     // UI 업데이트는 StreamBuilder가 담당하므로 여기서는 setState() 호출 없음
   }
 
-  _blockUser() {
+  blockUser() async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+
+    await FirebaseFirestore.instance.collection('users').doc(userId).update({
+      'blockList': FieldValue.arrayUnion([widget.uid]),
+    });
+  }
+
+  _blockConfirm() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: const Text('차단이 완료되었습니다.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+                child: const Text('확인'),
+              ),
+            ],
+          );
+        });
+  }
+
+  _blockAlert() {
     return showDialog(
         context: context,
         builder: (context) {
@@ -163,7 +192,8 @@ class FeedPageBodyState extends State<FeedPageBody> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  Navigator.of(context).pop();
+                  blockUser();
+                  _blockConfirm();
                 },
                 child: const Text('확인'),
               ),
@@ -172,7 +202,35 @@ class FeedPageBodyState extends State<FeedPageBody> {
         });
   }
 
-  _reportUser() {
+  final String _chars =
+      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+  final Random _rnd = Random();
+
+  String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+      length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+
+  _sendReport(String reportReason) async {
+    try {
+      String postKey = getRandomString(16);
+      DocumentReference<Map<String, dynamic>> reference =
+          FirebaseFirestore.instance.collection("Reports").doc(postKey);
+
+      await reference.set({
+        "type": "post",
+        'reportReason': reportReason,
+        "uid": widget.uid,
+        "name": widget.name,
+        "contents": widget.content,
+        "dateTime": widget.dateTime,
+        'documentId': widget.documentId,
+      });
+    } on FirebaseException catch (error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error.message ?? "")));
+    }
+  }
+
+  _reportUser(String reportReason) async {
     return showDialog(
         context: context,
         builder: (context) {
@@ -185,6 +243,7 @@ class FeedPageBodyState extends State<FeedPageBody> {
               ),
               ElevatedButton(
                 onPressed: () async {
+                  _sendReport(reportReason);
                   _reportConfirm();
                 },
                 child: const Text('확인'),
@@ -216,6 +275,11 @@ class FeedPageBodyState extends State<FeedPageBody> {
   }
 
   _cancelSheet() {
+    String wrongInfo = '잘못된 정보';
+    String commercialAd = '상업적 광고';
+    String adultReason = '음란물';
+    String violence = '폭력성';
+    String etc = '기타';
     return showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -235,33 +299,33 @@ class FeedPageBodyState extends State<FeedPageBody> {
             Column(
               children: [
                 ListTile(
-                  title: const Center(child: Text('잘못된 정보')),
+                  title: Center(child: Text(wrongInfo)),
                   onTap: () {
-                    _reportUser();
+                    _reportUser(wrongInfo);
                   },
                 ),
                 ListTile(
-                  title: const Center(child: Text('상업적 광고')),
+                  title: Center(child: Text(commercialAd)),
                   onTap: () {
-                    _reportUser();
+                    _reportUser(commercialAd);
                   },
                 ),
                 ListTile(
-                  title: const Center(child: Text('음란물')),
+                  title: Center(child: Text(adultReason)),
                   onTap: () {
-                    _reportUser();
+                    _reportUser(adultReason);
                   },
                 ),
                 ListTile(
-                  title: const Center(child: Text('폭력성')),
+                  title: Center(child: Text(violence)),
                   onTap: () {
-                    _reportUser();
+                    _reportUser(violence);
                   },
                 ),
                 ListTile(
-                  title: const Center(child: Text('기타')),
+                  title: Center(child: Text(etc)),
                   onTap: () {
-                    _reportUser();
+                    _reportUser(etc);
                   },
                 ),
               ],
@@ -422,7 +486,7 @@ class FeedPageBodyState extends State<FeedPageBody> {
                                                     children: [
                                                       ListTile(
                                                         leading: const Icon(
-                                                            Icons.update),
+                                                            Icons.report),
                                                         title: const Text('신고'),
                                                         onTap: () {
                                                           _cancelSheet();
@@ -430,10 +494,10 @@ class FeedPageBodyState extends State<FeedPageBody> {
                                                       ),
                                                       ListTile(
                                                         leading: const Icon(
-                                                            Icons.delete),
+                                                            Icons.block),
                                                         title: const Text('차단'),
                                                         onTap: () {
-                                                          _blockUser();
+                                                          _blockAlert();
                                                         },
                                                       ),
                                                     ],
