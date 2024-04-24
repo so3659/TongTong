@@ -43,7 +43,7 @@ class MakeKnowhowState extends State<MakeKnowhow> {
         images!.where((image) => image != null).cast<XFile>();
     for (XFile image in nonNullableImages) {
       String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
-      String imageRef = "posts/$_uid/$dateTime";
+      String imageRef = "knowhow/$_uid/$dateTime";
       File file = File(image.path);
       await FirebaseStorage.instance.ref(imageRef).putFile(file);
       final String urlString =
@@ -85,11 +85,6 @@ class MakeKnowhowState extends State<MakeKnowhow> {
 
   Future<void> _toFirestore(List<Map<String, String>>? images, String postKey,
       String contents) async {
-    if (!mounted) return; // 추가: 함수 시작 시 위젯이 마운트되어 있는지 확인
-    setState(() {
-      _loading = true; // Firestore에 문서를 보내는 작업이 시작됨
-    });
-
     try {
       DocumentReference<Map<String, dynamic>> reference =
           FirebaseFirestore.instance.collection("Knowhow").doc(postKey);
@@ -138,13 +133,9 @@ class MakeKnowhowState extends State<MakeKnowhow> {
           'avatarUrl': avatarUrl,
         });
       }
-    } finally {
-      if (mounted) {
-        // 변경: 작업 완료 후 위젯이 마운트되어 있는지 확인
-        setState(() {
-          _loading = false; // 작업이 완료됨
-        });
-      }
+    } on FirebaseException catch (error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error.message ?? "")));
     }
   }
 
@@ -162,6 +153,11 @@ class MakeKnowhowState extends State<MakeKnowhow> {
         actions: <Widget>[
           IconButton(
             onPressed: () async {
+              if (!mounted) return; // 추가: 함수 시작 시 위젯이 마운트되어 있는지 확인
+              setState(() {
+                _loading = true; // Firestore에 문서를 보내는 작업이 시작됨
+              });
+
               String content = contentController.text;
               String postKey = getRandomString(16);
               if (images != null) {
@@ -169,6 +165,13 @@ class MakeKnowhowState extends State<MakeKnowhow> {
               }
 
               _toFirestore(_images, postKey, content);
+
+              if (mounted) {
+                // 변경: 작업 완료 후 위젯이 마운트되어 있는지 확인
+                setState(() {
+                  _loading = false; // 작업이 완료됨
+                });
+              }
               Navigator.of(context, rootNavigator: true).pop();
             },
             icon: const Icon(Icons.send),

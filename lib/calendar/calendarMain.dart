@@ -162,52 +162,51 @@ class CalendarState extends State<Calendar> {
                                     ? showModalBottomSheet(
                                         context: context,
                                         builder: (BuildContext context) {
-                                          return SizedBox(
-                                              height: 150,
-                                              child: Center(
-                                                  child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: <Widget>[
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.topRight,
-                                                      child: IconButton(
-                                                        icon: const Icon(
-                                                            Icons.close),
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                      ),
+                                          return Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                Align(
+                                                  alignment: Alignment.topRight,
+                                                  child: IconButton(
+                                                    icon:
+                                                        const Icon(Icons.close),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                ),
+                                                Column(
+                                                  children: [
+                                                    ListTile(
+                                                      leading: const Icon(
+                                                          Icons.delete),
+                                                      title: const Text('삭제'),
+                                                      onTap: () async {
+                                                        await FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                'events')
+                                                            .doc(
+                                                                eventDocumentId)
+                                                            .delete();
+                                                        Navigator.pop(context);
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                                const SnackBar(
+                                                          content: Text(
+                                                              '일정이 삭제되었습니다.'), //snack bar의 내용. icon, button같은것도 가능하다.
+                                                          duration: Duration(
+                                                              seconds:
+                                                                  3), //올라와있는 시간
+                                                        ));
+                                                      },
                                                     ),
-                                                    Container(
-                                                      child: Column(
-                                                        children: [
-                                                          ListTile(
-                                                            leading: const Icon(
-                                                                Icons.delete),
-                                                            title: const Text(
-                                                                '삭제'),
-                                                            onTap: () async {
-                                                              await FirebaseFirestore
-                                                                  .instance
-                                                                  .collection(
-                                                                      'events')
-                                                                  .doc(
-                                                                      eventDocumentId)
-                                                                  .delete();
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ])));
+                                                  ],
+                                                ),
+                                              ]);
                                         },
                                       )
                                     : null;

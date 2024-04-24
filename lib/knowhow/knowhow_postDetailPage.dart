@@ -31,6 +31,23 @@ class KnowhowDetailPageState extends ConsumerState<KnowhowDetailPage> {
   bool checkboxValue = false;
   final TextEditingController contents = TextEditingController();
   bool _loading = false;
+  final Set<String> _blockedUsers = {};
+
+  @override
+  void initState() {
+    super.initState();
+    loadBlockedUsers();
+  }
+
+  Future<void> loadBlockedUsers() async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    var doc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    List<dynamic> blocked = doc.data()?['blockList'] ?? [];
+    setState(() {
+      _blockedUsers.addAll(blocked.cast<String>());
+    });
+  }
 
   String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
       length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
@@ -418,32 +435,41 @@ class KnowhowDetailPageState extends ConsumerState<KnowhowDetailPage> {
 
                                   return Column(
                                     children: [
-                                      comment['avatarUrl'] == null
-                                          ? CommentList(
-                                              // 댓글 정보를 사용하여 CommentList 위젯 생성
-                                              uid: comment['uid'],
-                                              name: comment['name'],
-                                              content: comment['content'],
-                                              dateTime: comment['dateTime'],
-                                              postId: comment['postId'],
-                                              commentId: comment['commentId'],
-                                              anoym: comment['anoym'],
-                                              replyCount: comment['replyCount'],
-                                              isDelete: comment['isDeleted'],
-                                            )
-                                          : CommentList(
-                                              // 댓글 정보를 사용하여 CommentList 위젯 생성
-                                              uid: comment['uid'],
-                                              name: comment['name'],
-                                              content: comment['content'],
-                                              dateTime: comment['dateTime'],
-                                              postId: comment['postId'],
-                                              commentId: comment['commentId'],
-                                              anoym: comment['anoym'],
-                                              replyCount: comment['replyCount'],
-                                              isDelete: comment['isDeleted'],
-                                              avatarUrl: comment['avatarUrl'],
-                                            ),
+                                      _blockedUsers.contains(comment['uid'])
+                                          ? const SizedBox.shrink()
+                                          : comment['avatarUrl'] == null
+                                              ? CommentList(
+                                                  // 댓글 정보를 사용하여 CommentList 위젯 생성
+                                                  uid: comment['uid'],
+                                                  name: comment['name'],
+                                                  content: comment['content'],
+                                                  dateTime: comment['dateTime'],
+                                                  postId: comment['postId'],
+                                                  commentId:
+                                                      comment['commentId'],
+                                                  anoym: comment['anoym'],
+                                                  replyCount:
+                                                      comment['replyCount'],
+                                                  isDelete:
+                                                      comment['isDeleted'],
+                                                )
+                                              : CommentList(
+                                                  // 댓글 정보를 사용하여 CommentList 위젯 생성
+                                                  uid: comment['uid'],
+                                                  name: comment['name'],
+                                                  content: comment['content'],
+                                                  dateTime: comment['dateTime'],
+                                                  postId: comment['postId'],
+                                                  commentId:
+                                                      comment['commentId'],
+                                                  anoym: comment['anoym'],
+                                                  replyCount:
+                                                      comment['replyCount'],
+                                                  isDelete:
+                                                      comment['isDeleted'],
+                                                  avatarUrl:
+                                                      comment['avatarUrl'],
+                                                ),
                                       StreamBuilder<QuerySnapshot>(
                                         // 대댓글 목록을 가져오는 스트림
                                         stream: document.reference
@@ -485,33 +511,42 @@ class KnowhowDetailPageState extends ConsumerState<KnowhowDetailPage> {
                                               Map<String, dynamic> reply =
                                                   replyDoc.data()
                                                       as Map<String, dynamic>;
-                                              return reply['avatarUrl'] == null
-                                                  ? ReplyList(
-                                                      uid: reply['uid'],
-                                                      name: reply['name'],
-                                                      content: reply['content'],
-                                                      dateTime:
-                                                          reply['dateTime'],
-                                                      postId: reply['postId'],
-                                                      commentId:
-                                                          reply['commentId'],
-                                                      replyId: reply['replyId'],
-                                                      anoym: reply['anoym'],
-                                                    )
-                                                  : ReplyList(
-                                                      uid: reply['uid'],
-                                                      name: reply['name'],
-                                                      content: reply['content'],
-                                                      dateTime:
-                                                          reply['dateTime'],
-                                                      postId: reply['postId'],
-                                                      commentId:
-                                                          reply['commentId'],
-                                                      replyId: reply['replyId'],
-                                                      anoym: reply['anoym'],
-                                                      avatarUrl:
-                                                          reply['avatarUrl'],
-                                                    );
+                                              return _blockedUsers
+                                                      .contains(reply['uid'])
+                                                  ? const SizedBox.shrink()
+                                                  : reply['avatarUrl'] == null
+                                                      ? ReplyList(
+                                                          uid: reply['uid'],
+                                                          name: reply['name'],
+                                                          content:
+                                                              reply['content'],
+                                                          dateTime:
+                                                              reply['dateTime'],
+                                                          postId:
+                                                              reply['postId'],
+                                                          commentId: reply[
+                                                              'commentId'],
+                                                          replyId:
+                                                              reply['replyId'],
+                                                          anoym: reply['anoym'],
+                                                        )
+                                                      : ReplyList(
+                                                          uid: reply['uid'],
+                                                          name: reply['name'],
+                                                          content:
+                                                              reply['content'],
+                                                          dateTime:
+                                                              reply['dateTime'],
+                                                          postId:
+                                                              reply['postId'],
+                                                          commentId: reply[
+                                                              'commentId'],
+                                                          replyId:
+                                                              reply['replyId'],
+                                                          anoym: reply['anoym'],
+                                                          avatarUrl: reply[
+                                                              'avatarUrl'],
+                                                        );
                                             },
                                           );
                                         },

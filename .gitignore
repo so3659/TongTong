@@ -1,4 +1,4 @@
-# Miscellaneous
+git # Miscellaneous
 *.class
 *.log
 *.pyc
@@ -13,6 +13,8 @@ migrate_working_dir/
 *.p8
 /assets/json/
 /lib/FCM/
+google-services.json
+GoogleService-Info.plist
 
 # IntelliJ related
 *.iml
@@ -34,6 +36,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+PrivacyInfo.xcprivacy
 
 # Symbolication related
 app.*.symbols

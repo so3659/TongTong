@@ -24,12 +24,24 @@ class KnowhowState extends State<KnowhowPage> {
   static const _pageSize = 10;
   final PagingController<DocumentSnapshot?, DocumentSnapshot>
       _pagingController = PagingController(firstPageKey: null);
+  final Set<String> _blockedUsers = {};
 
   @override
   void initState() {
     super.initState();
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
+    });
+    loadBlockedUsers();
+  }
+
+  Future<void> loadBlockedUsers() async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    var doc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    List<dynamic> blocked = doc.data()?['blockList'] ?? [];
+    setState(() {
+      _blockedUsers.addAll(blocked.cast<String>());
     });
   }
 
@@ -140,13 +152,17 @@ class KnowhowState extends State<KnowhowPage> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: () => Future.sync(
-          () => _pagingController.refresh(),
-        ),
+        onRefresh: () => Future.sync(() {
+          _pagingController.refresh();
+          loadBlockedUsers();
+        }),
         child: PagedListView<DocumentSnapshot?, DocumentSnapshot>(
           pagingController: _pagingController,
           builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot>(
             itemBuilder: (context, item, index) {
+              if (_blockedUsers.contains(item['uid'])) {
+                return const SizedBox.shrink(); // 차단된 사용자의 게시물은 표시하지 않습니다.
+              }
               return (item['image'] != null
                   ? item['avatarUrl'] == null
                       ? (KnowhowFeedPageBody(
@@ -210,22 +226,4 @@ class KnowhowState extends State<KnowhowPage> {
     _pagingController.dispose();
     super.dispose();
   }
-}
-
-Widget _floatingActionButton(BuildContext context) {
-  return FloatingActionButton(
-    heroTag: 'MakeKnowhow',
-    shape: const CircleBorder(),
-    onPressed: () {
-      Navigator.of(context, rootNavigator: true)
-          .push(MaterialPageRoute(builder: (context) => const MakeKnowhow()));
-    },
-    child: customIcon(
-      context,
-      icon: AppIcon.fabTweet,
-      isTwitterIcon: true,
-      iconColor: Theme.of(context).colorScheme.onPrimary,
-      size: 25,
-    ),
-  );
 }
