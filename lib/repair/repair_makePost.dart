@@ -43,7 +43,7 @@ class MakeRepairState extends State<MakeRepair> {
         images!.where((image) => image != null).cast<XFile>();
     for (XFile image in nonNullableImages) {
       String dateTime = DateTime.now().millisecondsSinceEpoch.toString();
-      String imageRef = "posts/$_uid/$dateTime";
+      String imageRef = "repair/$_uid/$dateTime";
       File file = File(image.path);
       await FirebaseStorage.instance.ref(imageRef).putFile(file);
       final String urlString =
