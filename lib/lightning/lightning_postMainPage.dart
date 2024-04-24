@@ -31,6 +31,7 @@ class LightningState extends State<LightningPage> {
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
+    loadBlockedUsers();
   }
 
   Future<void> loadBlockedUsers() async {

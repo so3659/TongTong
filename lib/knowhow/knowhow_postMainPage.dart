@@ -32,6 +32,7 @@ class KnowhowState extends State<KnowhowPage> {
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
+    loadBlockedUsers();
   }
 
   Future<void> loadBlockedUsers() async {

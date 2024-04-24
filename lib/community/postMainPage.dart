@@ -31,6 +31,7 @@ class PostState extends State<PostPage> {
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
+    loadBlockedUsers();
   }
 
   Future<void> _fetchPage(DocumentSnapshot? lastDocument) async {

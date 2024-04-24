@@ -31,6 +31,7 @@ class RestaurantState extends State<RestaurantPage> {
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
+    loadBlockedUsers();
   }
 
   Future<void> loadBlockedUsers() async {

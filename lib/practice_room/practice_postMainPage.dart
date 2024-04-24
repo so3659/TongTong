@@ -31,6 +31,7 @@ class PracticeState extends State<PracticePage> {
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
+    loadBlockedUsers();
   }
 
   Future<void> loadBlockedUsers() async {
