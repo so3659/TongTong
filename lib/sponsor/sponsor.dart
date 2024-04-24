@@ -90,30 +90,28 @@ class _SponsorState extends State<Sponsor> {
                           ]),
                     ],
                   )
-                : const Column(
-                    children: [
-                      Text('익명 후원\n',
-                          style: TextStyle(fontSize: 18),
-                          textAlign: TextAlign.center),
-                    ],
-                  ),
-            Linkify(
-              onOpen: (link) async {
-                if (!await launchUrl(Uri.parse(link.url))) {
-                  throw Exception('Could not launch ${link.url}');
-                }
-              },
-              text: 'https://toss.me/so3659',
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent[700]),
-              linkStyle: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline,
-                  color: Colors.blueAccent[700]),
-            ),
+                : Column(children: [
+                    const Text('익명 후원\n',
+                        style: TextStyle(fontSize: 18),
+                        textAlign: TextAlign.center),
+                    Linkify(
+                      onOpen: (link) async {
+                        if (!await launchUrl(Uri.parse(link.url))) {
+                          throw Exception('Could not launch ${link.url}');
+                        }
+                      },
+                      text: 'https://toss.me/so3659',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blueAccent[700]),
+                      linkStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                          color: Colors.blueAccent[700]),
+                    ),
+                  ])
           ],
         ))));
   }
