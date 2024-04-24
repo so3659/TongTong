@@ -238,6 +238,27 @@ class _HelpPeopleState extends State<HelpPeople> {
               ),
             ),
             InkWell(
+              onTap: () {},
+              child: const GradientAnimationText(
+                text: Text('탕후루인\n',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center),
+                colors: [
+                  Color(0xff8f00ff), // violet
+                  Colors.indigo,
+                  Colors.blue,
+                  Colors.green,
+                  Colors.yellow,
+                  Colors.orange,
+                  Colors.red,
+                ],
+                duration: Duration(seconds: 5),
+              ),
+            ),
+            InkWell(
               onTap: () {
                 showDialog(
                     context: context,
@@ -376,6 +397,12 @@ class _HelpPeopleState extends State<HelpPeople> {
                     color: Colors.blueAccent[700]),
                 textAlign: TextAlign.center),
             Text('정히히\n',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent[700]),
+                textAlign: TextAlign.center),
+            Text('곽병민\n',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

@@ -58,11 +58,6 @@ class MakeRepairState extends State<MakeRepair> {
 
   Future<void> _toFirestore(List<Map<String, String>>? images, String postKey,
       String contents) async {
-    if (!mounted) return; // 추가: 함수 시작 시 위젯이 마운트되어 있는지 확인
-    setState(() {
-      _loading = true; // Firestore에 문서를 보내는 작업이 시작됨
-    });
-
     try {
       DocumentReference<Map<String, dynamic>> reference =
           FirebaseFirestore.instance.collection("Repair").doc(postKey);
@@ -111,13 +106,9 @@ class MakeRepairState extends State<MakeRepair> {
           'avatarUrl': avatarUrl,
         });
       }
-    } finally {
-      if (mounted) {
-        // 변경: 작업 완료 후 위젯이 마운트되어 있는지 확인
-        setState(() {
-          _loading = false; // 작업이 완료됨
-        });
-      }
+    } on FirebaseException catch (error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error.message ?? "")));
     }
   }
 
@@ -162,6 +153,11 @@ class MakeRepairState extends State<MakeRepair> {
         actions: <Widget>[
           IconButton(
             onPressed: () async {
+              if (!mounted) return; // 추가: 함수 시작 시 위젯이 마운트되어 있는지 확인
+              setState(() {
+                _loading = true; // Firestore에 문서를 보내는 작업이 시작됨
+              });
+
               String content = contentController.text;
               String postKey = getRandomString(16);
               if (images != null) {
@@ -169,6 +165,13 @@ class MakeRepairState extends State<MakeRepair> {
               }
 
               _toFirestore(_images, postKey, content);
+
+              if (mounted) {
+                // 변경: 작업 완료 후 위젯이 마운트되어 있는지 확인
+                setState(() {
+                  _loading = false; // 작업이 완료됨
+                });
+              }
               Navigator.of(context, rootNavigator: true).pop();
             },
             icon: const Icon(Icons.send),

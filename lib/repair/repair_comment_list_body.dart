@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -131,6 +133,191 @@ class CommentListState extends ConsumerState<CommentList> {
     // UI 업데이트는 StreamBuilder가 담당하므로 여기서는 setState() 호출 없음
   }
 
+  _blockConfirm() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: const Text('차단이 완료되었습니다.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+                child: const Text('확인'),
+              ),
+            ],
+          );
+        });
+  }
+
+  _blockAlert() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: const Text('이 작성자의 게시물과 댓글이 표시되지 않으며, 다시 해제하실 수 없습니다.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('취소'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  blockUser();
+                  _blockConfirm();
+                },
+                child: const Text('확인'),
+              ),
+            ],
+          );
+        });
+  }
+
+  blockUser() async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+
+    await FirebaseFirestore.instance.collection('users').doc(userId).update({
+      'blockList': FieldValue.arrayUnion([widget.uid]),
+    });
+  }
+
+  _cancelSheet() {
+    String wrongInfo = '잘못된 정보';
+    String commercialAd = '상업적 광고';
+    String adultReason = '음란물';
+    String violence = '폭력성';
+    String etc = '기타';
+    return showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+            Column(
+              children: [
+                ListTile(
+                  title: Center(child: Text(wrongInfo)),
+                  onTap: () {
+                    _reportUser(wrongInfo);
+                  },
+                ),
+                ListTile(
+                  title: Center(child: Text(commercialAd)),
+                  onTap: () {
+                    _reportUser(commercialAd);
+                  },
+                ),
+                ListTile(
+                  title: Center(child: Text(adultReason)),
+                  onTap: () {
+                    _reportUser(adultReason);
+                  },
+                ),
+                ListTile(
+                  title: Center(child: Text(violence)),
+                  onTap: () {
+                    _reportUser(violence);
+                  },
+                ),
+                ListTile(
+                  title: Center(child: Text(etc)),
+                  onTap: () {
+                    _reportUser(etc);
+                  },
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _reportUser(String reportReason) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: const Text('신고 사유에 맞지 않는 신고일 경우, 해당 신고는 처리되지 않습니다.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('취소'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  _sendReport(reportReason);
+                  _reportConfirm();
+                },
+                child: const Text('확인'),
+              ),
+            ],
+          );
+        });
+  }
+
+  final String _chars =
+      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+  final Random _rnd = Random();
+
+  String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+      length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+
+  _sendReport(String reportReason) async {
+    try {
+      String postKey = getRandomString(16);
+      DocumentReference<Map<String, dynamic>> reference =
+          FirebaseFirestore.instance.collection("Reports").doc(postKey);
+
+      await reference.set({
+        "type": "repair-Comment",
+        'reportReason': reportReason,
+        "uid": widget.uid,
+        "name": widget.name,
+        "contents": widget.content,
+        "dateTime": widget.dateTime,
+        'documentId': widget.commentId,
+      });
+    } on FirebaseException catch (error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error.message ?? "")));
+    }
+  }
+
+  _reportConfirm() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: const Text('신고가 접수되었습니다. 검토까지는 최대 24시간 소요됩니다.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+                child: const Text('확인'),
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(children: [
@@ -231,75 +418,89 @@ class CommentListState extends ConsumerState<CommentList> {
                                         showModalBottomSheet(
                                           context: context,
                                           builder: (BuildContext context) {
-                                            return SizedBox(
-                                                height: 150,
-                                                child: Center(
-                                                    child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: <Widget>[
-                                                      Align(
-                                                        alignment:
-                                                            Alignment.topRight,
-                                                        child: IconButton(
-                                                          icon: const Icon(
-                                                              Icons.close),
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                        ),
+                                            return Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.topRight,
+                                                    child: IconButton(
+                                                      icon: const Icon(
+                                                          Icons.close),
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  ),
+                                                  Column(
+                                                    children: [
+                                                      ListTile(
+                                                        leading: const Icon(
+                                                            Icons.delete),
+                                                        title: const Text('삭제'),
+                                                        onTap: () {
+                                                          deleteComment();
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
                                                       ),
-                                                      Container(
-                                                        child: Column(
-                                                          children: [
-                                                            // ListTile(
-                                                            //   leading: const Icon(
-                                                            //       Icons.update),
-                                                            //   title: const Text(
-                                                            //       '수정'),
-                                                            //   onTap: () {
-                                                            //     // Navigator.of(
-                                                            //     //         context,
-                                                            //     //         rootNavigator:
-                                                            //     //             true)
-                                                            //     //     .push(MaterialPageRoute(
-                                                            //     //         builder:
-                                                            //     //             (context) =>
-                                                            //     //                 const UpdateRepair()));
-                                                            //   },
-                                                            // ),
-                                                            ListTile(
-                                                              leading: const Icon(
-                                                                  Icons.delete),
-                                                              title: const Text(
-                                                                  '삭제'),
-                                                              onTap: () {
-                                                                deleteComment();
-                                                                Navigator.pop(
-                                                                    context);
-                                                              },
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ])));
+                                                    ],
+                                                  ),
+                                                ]);
                                           },
                                         );
                                       }
-                                    : null,
-                                child: Padding(
+                                    : () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.topRight,
+                                                    child: IconButton(
+                                                      icon: const Icon(
+                                                          Icons.close),
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  ),
+                                                  Column(
+                                                    children: [
+                                                      ListTile(
+                                                        leading: const Icon(
+                                                            Icons.report),
+                                                        title: const Text('신고'),
+                                                        onTap: () {
+                                                          _cancelSheet();
+                                                        },
+                                                      ),
+                                                      ListTile(
+                                                        leading: const Icon(
+                                                            Icons.block),
+                                                        title: const Text('차단'),
+                                                        onTap: () {
+                                                          _blockAlert();
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ]);
+                                          },
+                                        );
+                                      },
+                                child: const Padding(
                                   padding: EdgeInsets.zero,
                                   child: Icon(
                                     Icons.more_horiz,
-                                    color: widget.uid ==
-                                            FirebaseAuth
-                                                .instance.currentUser!.uid
-                                        ? Colors.black87
-                                        : Colors.grey[400],
+                                    color: Colors.black87,
                                     size: 17,
                                   ),
                                 ),

@@ -40,7 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
           return AlertDialog(
             title: const Text('닉네임 변경'),
             content: TextField(
-              maxLength: 20,
+              maxLength: 15,
               controller: userNameController,
               decoration: const InputDecoration(hintText: '원하는 유저 이름을 적어주세요'),
             ),
@@ -79,6 +79,10 @@ class _ProfilePageState extends State<ProfilePage> {
       FirebaseFirestore.instance.collection('users').doc(_uid).set({
         'username': displayName,
       }, SetOptions(merge: true));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('변경이 완료되었습니다'), //snack bar의 내용. icon, button같은것도 가능하다.
+        duration: Duration(seconds: 3), //올라와있는 시간
+      ));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('이미 존재하는 이름입니다'), //snack bar의 내용. icon, button같은것도 가능하다.
@@ -123,6 +127,10 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> setDefaultProfileImage() async {
     await user!.updatePhotoURL(
         "https://firebasestorage.googleapis.com/v0/b/tongtong-5936b.appspot.com/o/defaultProfileImage%2Ftong_logo.png?alt=media&token=b17f8452-66e6-43f4-8439-3c414b8691c6");
+    FirebaseFirestore.instance.collection('users').doc(_uid).set({
+      'avatarUrl':
+          "https://firebasestorage.googleapis.com/v0/b/tongtong-5936b.appspot.com/o/defaultProfileImage%2Ftong_logo.png?alt=media&token=b17f8452-66e6-43f4-8439-3c414b8691c6",
+    }, SetOptions(merge: true));
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text('변경이 완료되었습니다.'), //snack bar의 내용. icon, button같은것도 가능하다.
       duration: Duration(seconds: 3), //올라와있는 시간

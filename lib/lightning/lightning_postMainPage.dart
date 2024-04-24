@@ -23,12 +23,23 @@ class LightningState extends State<LightningPage> {
   static const _pageSize = 10;
   final PagingController<DocumentSnapshot?, DocumentSnapshot>
       _pagingController = PagingController(firstPageKey: null);
+  final Set<String> _blockedUsers = {};
 
   @override
   void initState() {
     super.initState();
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
+    });
+  }
+
+  Future<void> loadBlockedUsers() async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    var doc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    List<dynamic> blocked = doc.data()?['blockList'] ?? [];
+    setState(() {
+      _blockedUsers.addAll(blocked.cast<String>());
     });
   }
 
@@ -139,13 +150,17 @@ class LightningState extends State<LightningPage> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: () => Future.sync(
-          () => _pagingController.refresh(),
-        ),
+        onRefresh: () => Future.sync(() {
+          _pagingController.refresh();
+          loadBlockedUsers();
+        }),
         child: PagedListView<DocumentSnapshot?, DocumentSnapshot>(
           pagingController: _pagingController,
           builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot>(
             itemBuilder: (context, item, index) {
+              if (_blockedUsers.contains(item['uid'])) {
+                return const SizedBox.shrink(); // 차단된 사용자의 게시물은 표시하지 않습니다.
+              }
               return (item['image'] != null
                   ? item['avatarUrl'] == null
                       ? (LightningFeedPageBody(
