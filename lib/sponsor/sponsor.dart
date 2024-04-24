@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/services.dart';
 
 class Sponsor extends StatefulWidget {
   const Sponsor({super.key});
@@ -40,16 +43,60 @@ class _SponsorState extends State<Sponsor> {
             SizedBox(
               height: screenSize.height * 0.05,
             ),
-            const Text('계좌번호',
+            const Text('계좌번호\n',
                 style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
-            Text('카카오뱅크\n3333-05-7607820\n',
+            SelectableText('카카오뱅크 3333-05-7607820',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.blueAccent[700]),
                 textAlign: TextAlign.center),
-            const Text('익명 후원\n',
-                style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
+            SizedBox(height: screenSize.height * 0.01),
+            ElevatedButton(
+              onPressed: () {
+                Clipboard.setData(const ClipboardData(text: '3333-05-7607820'));
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('계좌 번호가 복사되었습니다.')));
+              },
+              child: const Text('계좌 번호 복사'),
+            ),
+            SizedBox(height: screenSize.height * 0.05),
+            Platform.isIOS
+                ? Column(
+                    children: [
+                      const Text('익명 후원\n',
+                          style: TextStyle(fontSize: 18),
+                          textAlign: TextAlign.center),
+                      SelectableText('https://toss.me/so3659',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blueAccent[700])),
+                      SizedBox(height: screenSize.height * 0.01),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Clipboard.setData(const ClipboardData(
+                                    text: 'https://toss.me/so3659'));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            '복사되었습니다. 크롬 브라우저에 붙여넣기를 해주세요.')));
+                              },
+                              child: const Text('익명 계좌 복사'),
+                            ),
+                          ]),
+                    ],
+                  )
+                : const Column(
+                    children: [
+                      Text('익명 후원\n',
+                          style: TextStyle(fontSize: 18),
+                          textAlign: TextAlign.center),
+                    ],
+                  ),
             Linkify(
               onOpen: (link) async {
                 if (!await launchUrl(Uri.parse(link.url))) {
