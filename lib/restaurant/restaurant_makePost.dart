@@ -187,10 +187,11 @@ class MakeRestaurantState extends State<MakeRestaurant> {
             children: [
               TextField(
                 decoration: const InputDecoration(
-                  hintText: '나만의 맛집에 대한 이야기를 적어주세요. \n링크를 공유하면 더 좋아요!',
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.only(left: 16),
-                ),
+                    hintText:
+                        '나만의 맛집에 대한 이야기를 적어주세요. \n링크를 공유하면 더 좋아요!\n\n\n불건전 게시물 작성 시 서비스 이용이 제한될 수 있습니다.',
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.only(left: 16),
+                    hintStyle: TextStyle(fontSize: 13)),
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 controller: contentController,
