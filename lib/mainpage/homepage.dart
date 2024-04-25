@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -433,14 +434,16 @@ class HomePageState extends State<HomePage> {
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      TextButton(
-                        child: const Text(
-                          '후원하기',
-                        ),
-                        onPressed: () {
-                          GoRouter.of(context).push('/sponsor');
-                        },
-                      ),
+                      Platform.isIOS
+                          ? const SizedBox.shrink()
+                          : TextButton(
+                              child: const Text(
+                                '후원하기',
+                              ),
+                              onPressed: () {
+                                GoRouter.of(context).push('/sponsor');
+                              },
+                            ),
                       TextButton(
                         child: const Text(
                           '로그아웃',

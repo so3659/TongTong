@@ -1,6 +1,8 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:tongtong/EULA/eula.dart';
+import 'package:tongtong/EULA/eulaDetail.dart';
 import 'package:tongtong/Inquiry/inquiry.dart';
 import 'package:tongtong/Register/googleLogin.dart';
 import 'package:tongtong/calendar/makeAppointment.dart';
@@ -170,6 +172,14 @@ final GoRouter _goroute = GoRouter(
     GoRoute(
       path: '/myComments',
       builder: (context, state) => const MyComments(),
+    ),
+    GoRoute(
+      path: '/eula',
+      builder: (context, state) => const EULA(),
+    ),
+    GoRoute(
+      path: '/eulaDetail',
+      builder: (context, state) => const EULADetail(),
     ),
     GoRoute(
       path: '/postDetailPage',

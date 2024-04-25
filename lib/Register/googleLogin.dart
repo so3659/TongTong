@@ -92,15 +92,37 @@ class BuildLoginState extends State<BuildLogin> {
     });
   }
 
+  Future<bool?> getEULAV(String userId) async {
+    DocumentSnapshot userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+    if (userDoc.exists) {
+      Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+      // EULA 필드 값 확인
+      bool? eulaValue = userData['EULA'] as bool?;
+
+      return eulaValue;
+    } else {
+      return null;
+    }
+  }
+
   _asyncMethod() async {
     //read 함수를 통하여 key값에 맞는 정보를 불러오게 됩니다. 이때 불러오는 결과의 타입은 String 타입임을 기억해야 합니다.
     //(데이터가 없을때는 null을 반환을 합니다.)
     userInfo = await storage.read(key: "login");
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    bool? eulaValue = await getEULAV(userId);
 
     //user의 정보가 있다면 바로 로그아웃 페이지로 넝어가게 합니다.
     if (userInfo != null) {
       getToken();
-      GoRouter.of(context).go('/homepage');
+      if (eulaValue == null || eulaValue == false) {
+        // EULA 동의 페이지로 이동
+        GoRouter.of(context).go('/eula');
+      } else {
+        GoRouter.of(context).go('/homepage');
+      }
     }
   }
 
@@ -142,7 +164,14 @@ class BuildLoginState extends State<BuildLogin> {
       // debugPrint("Logged in with Google: ${userCredential.user}");
       await storage.write(key: "login", value: userCredential.user.toString());
       getToken();
-      GoRouter.of(context).go('/homepage');
+      String userId = FirebaseAuth.instance.currentUser!.uid;
+      bool? eulaValue = await getEULAV(userId);
+      if (eulaValue == null || eulaValue == false) {
+        // EULA 동의 페이지로 이동
+        GoRouter.of(context).go('/eula');
+      } else {
+        GoRouter.of(context).go('/homepage');
+      }
     } catch (e) {
       return;
     }
@@ -167,7 +196,14 @@ class BuildLoginState extends State<BuildLogin> {
           await FirebaseAuth.instance.signInWithCredential(credential);
       await storage.write(key: "login", value: userCredential.user.toString());
       getToken();
-      GoRouter.of(context).go('/homepage');
+      String userId = FirebaseAuth.instance.currentUser!.uid;
+      bool? eulaValue = await getEULAV(userId);
+      if (eulaValue == null || eulaValue == false) {
+        // EULA 동의 페이지로 이동
+        GoRouter.of(context).go('/eula');
+      } else {
+        GoRouter.of(context).go('/homepage');
+      }
     } catch (e) {
       return;
     }

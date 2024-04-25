@@ -186,8 +186,7 @@ class MakePostState extends State<MakePost> {
             children: [
               TextField(
                 decoration: const InputDecoration(
-                    hintText:
-                        '무슨 생각을 하고 계신가요?\n여러분의 생각을 자유롭게 표현해주세요! \n\n\n불건전 게시물 작성 시 서비스 이용이 제한될 수 있습니다.',
+                    hintText: '무슨 생각을 하고 계신가요?\n여러분의 생각을 자유롭게 표현해주세요!',
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.only(left: 16),
                     hintStyle: TextStyle(fontSize: 13)),

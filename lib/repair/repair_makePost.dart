@@ -187,8 +187,7 @@ class MakeRepairState extends State<MakeRepair> {
             children: [
               TextField(
                 decoration: const InputDecoration(
-                    hintText:
-                        '기타를 수리해 줄 수리점을 소개해 주세요!\n\n\n불건전 게시물 작성 시 서비스 이용이 제한될 수 있습니다.',
+                    hintText: '기타를 수리해 줄 수리점을 소개해 주세요!',
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.only(left: 16),
                     hintStyle: TextStyle(fontSize: 13)),

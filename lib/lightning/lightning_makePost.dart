@@ -186,8 +186,7 @@ class MakeLightningState extends State<MakeLightning> {
             children: [
               TextField(
                 decoration: const InputDecoration(
-                    hintText:
-                        '최고의 번개 장소 및 경험을 공유해주세요!\n\n\n불건전 게시물 작성 시 서비스 이용이 제한될 수 있습니다.',
+                    hintText: '최고의 번개 장소 및 경험을 공유해주세요!',
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.only(left: 16),
                     hintStyle: TextStyle(fontSize: 13)),

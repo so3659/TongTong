@@ -311,15 +311,19 @@ class _ProfilePageState extends State<ProfilePage> {
                     Divider(
                       color: Colors.grey[200],
                     ),
-                    ListTile(
-                      title: const Center(child: Text('후원하기')),
-                      onTap: () {
-                        GoRouter.of(context).push('/sponsor');
-                      },
-                    ),
-                    Divider(
-                      color: Colors.grey[200],
-                    ),
+                    Platform.isIOS
+                        ? const SizedBox.shrink()
+                        : Column(children: [
+                            ListTile(
+                              title: const Center(child: Text('후원하기')),
+                              onTap: () {
+                                GoRouter.of(context).push('/sponsor');
+                              },
+                            ),
+                            Divider(
+                              color: Colors.grey[200],
+                            ),
+                          ]),
                     ListTile(
                       title: const Center(child: Text('회원탈퇴')),
                       onTap: () {
