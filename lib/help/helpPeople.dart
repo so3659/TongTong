@@ -20,6 +20,25 @@ class ImageDialog_HYO extends StatelessWidget {
   }
 }
 
+class ImageDialog_Sister extends StatelessWidget {
+  const ImageDialog_Sister({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    return Dialog(
+      child: Container(
+        width: screenSize.width * 0.6,
+        height: screenSize.height * 0.4,
+        decoration: const BoxDecoration(
+            image: DecorationImage(
+                image: ExactAssetImage('assets/images/sister.jpg'),
+                fit: BoxFit.contain)),
+      ),
+    );
+  }
+}
+
 class ImageDialog_Yubin extends StatelessWidget {
   const ImageDialog_Yubin({super.key});
 
@@ -183,6 +202,33 @@ class _HelpPeopleState extends State<HelpPeople> {
                 textAlign: TextAlign.center),
             const Text('Sponsored by',
                 style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
+            InkWell(
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const ImageDialog_Sister();
+                    });
+              },
+              child: const GradientAnimationText(
+                text: Text('최강한화우승\n',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center),
+                colors: [
+                  Color(0xff8f00ff), // violet
+                  Colors.indigo,
+                  Colors.blue,
+                  Colors.green,
+                  Colors.yellow,
+                  Colors.orange,
+                  Colors.red,
+                ],
+                duration: Duration(seconds: 5),
+              ),
+            ),
             InkWell(
               onTap: () {
                 showDialog(
