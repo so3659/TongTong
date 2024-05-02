@@ -153,6 +153,7 @@ class BuildLoginState extends State<BuildLogin> {
     try {
       final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
       final GoogleSignInAuthentication? googleAuth =
           await googleUser?.authentication;
       final credential = GoogleAuthProvider.credential(
@@ -171,6 +172,9 @@ class BuildLoginState extends State<BuildLogin> {
         GoRouter.of(context).go('/eula');
       } else {
         GoRouter.of(context).go('/homepage');
+      }
+      if (googleUser == null) {
+        return;
       }
     } catch (e) {
       return;
