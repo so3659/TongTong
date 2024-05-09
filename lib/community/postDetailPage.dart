@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tongtong/FCM/fcm.dart';
 import 'package:tongtong/parameter/postParameter.dart';
@@ -14,7 +16,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class PostDetailPage extends ConsumerStatefulWidget {
+class PostDetailPage extends StatefulWidget {
   final FeedPost post;
   const PostDetailPage({super.key, required this.post});
 
@@ -22,7 +24,7 @@ class PostDetailPage extends ConsumerStatefulWidget {
   PostDetailPageState createState() => PostDetailPageState();
 }
 
-class PostDetailPageState extends ConsumerState<PostDetailPage> {
+class PostDetailPageState extends State<PostDetailPage> {
   final String _chars =
       'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
   final Random _rnd = Random();
@@ -654,5 +656,12 @@ class PostDetailPageState extends ConsumerState<PostDetailPage> {
         ]),
       );
     });
+  }
+
+  @override
+  void dispose() {
+    contents.dispose();
+    _focusNode.dispose();
+    super.dispose();
   }
 }

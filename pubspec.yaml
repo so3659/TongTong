@@ -77,6 +77,7 @@ dependencies:
   sign_in_with_apple: ^6.1.0
   flutter_local_notifications: ^17.0.0
   googleapis_auth: ^1.6.0
+  firebase_ui_firestore: ^1.6.3
 
 dev_dependencies:
   flutter_test:

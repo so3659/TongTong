@@ -38,6 +38,12 @@ class PracticeDetailPageState extends ConsumerState<PracticeDetailPage> {
     loadBlockedUsers();
   }
 
+  @override
+  void dispose() {
+    contents.dispose();
+    super.dispose();
+  }
+
   Future<void> loadBlockedUsers() async {
     String userId = FirebaseAuth.instance.currentUser!.uid;
     var doc =

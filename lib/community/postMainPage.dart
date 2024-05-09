@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:tongtong/community/hotPostsPage.dart';
 import 'package:tongtong/community/makePost.dart';
@@ -48,12 +49,16 @@ class PostState extends State<PostPage> {
       await Future.delayed(const Duration(seconds: 1));
 
       final isLastPage = snapshot.docs.length < _pageSize;
-      if (isLastPage) {
-        _pagingController.appendLastPage(snapshot.docs);
-      } else {
-        final nextPageKey = snapshot.docs.last;
-        _pagingController.appendPage(snapshot.docs, nextPageKey);
-      }
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          if (isLastPage) {
+            _pagingController.appendLastPage(snapshot.docs);
+          } else {
+            final nextPageKey = snapshot.docs.last;
+            _pagingController.appendPage(snapshot.docs, nextPageKey);
+          }
+        });
+      });
     } catch (error) {
       _pagingController.error = error;
     }
