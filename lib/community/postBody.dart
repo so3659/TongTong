@@ -15,7 +15,7 @@ import 'package:tongtong/parameter/postParameter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FeedPageBody extends StatefulWidget {
-  const FeedPageBody({
+  FeedPageBody({
     super.key,
     required this.uid,
     required this.name,
@@ -38,23 +38,81 @@ class FeedPageBody extends StatefulWidget {
   final String currentUserId;
   final bool anoym;
   final int commentsCount;
-  final String? avatarUrl;
+  String? avatarUrl;
 
   @override
   FeedPageBodyState createState() => FeedPageBodyState();
 }
 
-class FeedPageBodyState extends State<FeedPageBody> {
+class FeedPageBodyState extends State<FeedPageBody>
+    with AutomaticKeepAliveClientMixin<FeedPageBody> {
   int currentPage = 0;
   late FeedPost post;
+  String avatarUrl =
+      "https://firebasestorage.googleapis.com/v0/b/tongtong-5936b.appspot.com/o/defaultProfileImage%2Ftong_logo.png?alt=media&token=b17f8452-66e6-43f4-8439-3c414b8691c6";
+  String username = "이름 없는 자";
 
   User? user;
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   void initState() {
     super.initState();
+
     user = FirebaseAuth.instance.currentUser;
+    _bringAvatarurl();
+    _bringname();
     postParameter();
+  }
+
+  Future<void> _bringAvatarurl() async {
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.uid)
+          .get();
+
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+        if (data.containsKey('avatarUrl')) {
+          if (mounted) {
+            // mounted 확인
+            setState(() {
+              avatarUrl = data['avatarUrl'];
+            });
+          }
+        }
+      }
+    } catch (e) {
+      print("Error fetching avatar URL: $e");
+    }
+  }
+
+  Future<void> _bringname() async {
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.uid)
+          .get();
+
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+        if (data.containsKey('username')) {
+          if (mounted) {
+            // mounted 확인
+            setState(() {
+              username = data['username'];
+            });
+          }
+        }
+      }
+    } catch (e) {
+      print("Error fetching username: $e");
+    }
   }
 
   Future<void> deletePost(String documentId) async {
@@ -83,53 +141,17 @@ class FeedPageBodyState extends State<FeedPageBody> {
   }
 
   void postParameter() {
-    if (widget.photoUrls != null) {
-      widget.avatarUrl == null
-          ? post = FeedPost(
-              uid: widget.uid,
-              name: widget.name,
-              content: widget.content,
-              photoUrls: widget.photoUrls,
-              dateTime: widget.dateTime,
-              documentId: widget.documentId,
-              currentUserId: widget.currentUserId,
-              anoym: widget.anoym,
-              commentsCount: widget.commentsCount,
-            )
-          : post = FeedPost(
-              uid: widget.uid,
-              name: widget.name,
-              content: widget.content,
-              photoUrls: widget.photoUrls,
-              dateTime: widget.dateTime,
-              documentId: widget.documentId,
-              currentUserId: widget.currentUserId,
-              anoym: widget.anoym,
-              commentsCount: widget.commentsCount,
-              avatarUrl: widget.avatarUrl);
-    } else {
-      widget.avatarUrl == null
-          ? post = FeedPost(
-              uid: widget.uid,
-              name: widget.name,
-              content: widget.content,
-              dateTime: widget.dateTime,
-              documentId: widget.documentId,
-              currentUserId: widget.currentUserId,
-              anoym: widget.anoym,
-              commentsCount: widget.commentsCount,
-            )
-          : post = FeedPost(
-              uid: widget.uid,
-              name: widget.name,
-              content: widget.content,
-              dateTime: widget.dateTime,
-              documentId: widget.documentId,
-              currentUserId: widget.currentUserId,
-              anoym: widget.anoym,
-              commentsCount: widget.commentsCount,
-              avatarUrl: widget.avatarUrl);
-    }
+    post = FeedPost(
+        uid: widget.uid,
+        name: widget.anoym ? '익명' : username,
+        content: widget.content,
+        photoUrls: widget.photoUrls,
+        dateTime: widget.dateTime,
+        documentId: widget.documentId,
+        currentUserId: widget.currentUserId,
+        anoym: widget.anoym,
+        commentsCount: widget.commentsCount,
+        avatarUrl: widget.avatarUrl ??= avatarUrl);
   }
 
   Future<void> handleLikeButtonPressed(
@@ -147,8 +169,6 @@ class FeedPageBodyState extends State<FeedPageBody> {
     await postRef.update({'likedBy': updatedLikedBy});
     await postRef
         .set({'likesCount': updatedLikedBy.length}, SetOptions(merge: true));
-    // Firestore 업데이트
-    // UI 업데이트는 StreamBuilder가 담당하므로 여기서는 setState() 호출 없음
   }
 
   blockUser() async {
@@ -338,7 +358,7 @@ class FeedPageBodyState extends State<FeedPageBody> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
+    super.build(context);
     final bool hasImages = widget.photoUrls?.isNotEmpty ?? false;
     return StreamBuilder<DocumentSnapshot>(
       stream: FirebaseFirestore.instance
@@ -382,12 +402,7 @@ class FeedPageBodyState extends State<FeedPageBody> {
                                 ? const AssetImage(
                                         'assets/images/tong_logo.png')
                                     as ImageProvider<Object>
-                                : widget.avatarUrl == null
-                                    ? const AssetImage(
-                                            'assets/images/tong_logo.png')
-                                        as ImageProvider<Object>
-                                    : CachedNetworkImageProvider(
-                                        widget.avatarUrl!),
+                                : CachedNetworkImageProvider(avatarUrl),
                             radius: 35,
                           ),
                         ),
@@ -401,9 +416,7 @@ class FeedPageBodyState extends State<FeedPageBody> {
                               Container(
                                 margin: const EdgeInsets.only(right: 5),
                                 child: Text(
-                                  widget.anoym
-                                      ? '익명'
-                                      : (widget.name ?? '(이름을 설정해주세요)'),
+                                  widget.anoym ? '익명' : username,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium!

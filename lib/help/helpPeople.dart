@@ -178,7 +178,7 @@ class _HelpPeopleState extends State<HelpPeople> {
             ),
             const Text('Illustrated by',
                 style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
-            Text('11기 장윤정\n',
+            Text('11기 장윤정 (이먼진)\n',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

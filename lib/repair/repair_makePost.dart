@@ -75,37 +75,22 @@ class MakeRepairState extends State<MakeRepair> {
 
       String? avatarUrl = await fetchAvatarUrl(_uid);
 
-      if (images != null) {
-        await reference.set({
-          "uid": _uid,
-          "name": checkboxValue ? '익명' : _displayName,
-          "contents": contents,
-          "image": imageUrls,
-          "path": imagePaths,
-          "dateTime": Timestamp.now(),
-          'likedBy': [],
-          'likesCount': 0,
-          'anoym': checkboxValue,
-          'commentsCount': 0,
-          'documentId': postKey,
-          'avatarUrl': avatarUrl,
-        });
-      } else if (images == null) {
-        await reference.set({
-          "uid": _uid,
-          "name": checkboxValue ? '익명' : _displayName,
-          "contents": contents,
-          "image": null,
-          "path": null,
-          "dateTime": Timestamp.now(),
-          'likedBy': [],
-          'likesCount': 0,
-          'anoym': checkboxValue,
-          'commentsCount': 0,
-          'documentId': postKey,
-          'avatarUrl': avatarUrl,
-        });
-      }
+      await reference.set({
+        "uid": _uid,
+        "name": checkboxValue ? '익명' : _displayName,
+        "contents": contents,
+        "image": imageUrls,
+        "path": imagePaths,
+        "dateTime": Timestamp.now(),
+        'likedBy': [],
+        'likesCount': 0,
+        'anoym': checkboxValue,
+        'commentsCount': 0,
+        'documentId': postKey,
+        'avatarUrl': avatarUrl,
+        'anoymCount': 0,
+        'anoymList': [],
+      });
     } on FirebaseException catch (error) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(error.message ?? "")));

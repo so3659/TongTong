@@ -76,9 +76,63 @@ class CommentList extends ConsumerStatefulWidget {
 }
 
 class CommentListState extends ConsumerState<CommentList> {
+  String avatarUrl =
+      "https://firebasestorage.googleapis.com/v0/b/tongtong-5936b.appspot.com/o/defaultProfileImage%2Ftong_logo.png?alt=media&token=b17f8452-66e6-43f4-8439-3c414b8691c6";
+  String username = "이름 없는 자";
+
   @override
   void initState() {
     super.initState();
+    _bringAvatarurl();
+    _bringname();
+  }
+
+  Future<void> _bringAvatarurl() async {
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.uid)
+          .get();
+
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+        if (data.containsKey('avatarUrl')) {
+          if (mounted) {
+            // mounted 확인
+            setState(() {
+              avatarUrl = data['avatarUrl'];
+            });
+          }
+        }
+      }
+    } catch (e) {
+      print("Error fetching avatar URL: $e");
+    }
+  }
+
+  Future<void> _bringname() async {
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.uid)
+          .get();
+
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+        if (data.containsKey('username')) {
+          if (mounted) {
+            // mounted 확인
+            setState(() {
+              username = data['username'];
+            });
+          }
+        }
+      }
+    } catch (e) {
+      print("Error fetching username: $e");
+    }
   }
 
   void showReplyDialog() {
@@ -365,12 +419,7 @@ class CommentListState extends ConsumerState<CommentList> {
                                     ? const AssetImage(
                                             'assets/images/tong_logo.png')
                                         as ImageProvider<Object>
-                                    : widget.avatarUrl == null
-                                        ? const AssetImage(
-                                                'assets/images/tong_logo.png')
-                                            as ImageProvider<Object>
-                                        : CachedNetworkImageProvider(
-                                            widget.avatarUrl!),
+                                    : CachedNetworkImageProvider(avatarUrl),
                             radius: 20,
                           ),
                         ),
@@ -384,11 +433,11 @@ class CommentListState extends ConsumerState<CommentList> {
                               Container(
                                 margin: const EdgeInsets.only(right: 5),
                                 child: Text(
-                                  widget.anoym
-                                      ? '익명'
-                                      : widget.isDelete
-                                          ? '(삭제된 댓글)'
-                                          : (widget.name ?? '(이름을 설정해주세요)'),
+                                  widget.isDelete
+                                      ? '(삭제된 댓글)'
+                                      : widget.anoym
+                                          ? widget.name!
+                                          : username,
                                   style: widget.isDelete
                                       ? Theme.of(context)
                                           .textTheme

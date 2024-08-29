@@ -19,6 +19,8 @@ class HotKnowhowPageState extends ConsumerState<HotKnowhowPage> {
   static const _pageSize = 10;
   final PagingController<DocumentSnapshot?, DocumentSnapshot>
       _pagingController = PagingController(firstPageKey: null);
+  final Set<String> _blockedUsers = {};
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -26,6 +28,8 @@ class HotKnowhowPageState extends ConsumerState<HotKnowhowPage> {
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
+
+    loadBlockedUsers();
   }
 
   Future<void> _fetchPage(DocumentSnapshot? lastDocument) async {
@@ -53,6 +57,29 @@ class HotKnowhowPageState extends ConsumerState<HotKnowhowPage> {
     }
   }
 
+  Future<void> loadBlockedUsers() async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+
+    var doc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+    List<dynamic> blocked = doc.data()?['blockList'] ?? [];
+
+    setState(() {
+      _blockedUsers.addAll(blocked.cast<String>());
+    });
+  }
+
+  Future<void> _refreshPage() async {
+    final scrollPosition = _scrollController.position.pixels;
+    _pagingController.refresh();
+    loadBlockedUsers();
+    // 리프레시 후 스크롤 위치 복원
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.jumpTo(scrollPosition);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,71 +103,42 @@ class HotKnowhowPageState extends ConsumerState<HotKnowhowPage> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: () => Future.sync(
-          () => _pagingController.refresh(),
-        ),
-        child: CustomScrollView(
-          slivers: <Widget>[
-            PagedSliverList<DocumentSnapshot?, DocumentSnapshot>(
-              pagingController: _pagingController,
-              builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot>(
-                itemBuilder: (context, item, index) {
-                  return (item['image'] != null
-                      ? item['avatarUrl'] == null
-                          ? (KnowhowFeedPageBody(
-                              uid: item['uid'],
-                              name: item['name'],
-                              content: item['contents'],
-                              photoUrls: item['image'],
-                              dateTime: item['dateTime'],
-                              documentId: item.id,
-                              currentUserId: currentUserId,
-                              anoym: item['anoym'],
-                              commentsCount: item['commentsCount'],
-                            ))
-                          : (KnowhowFeedPageBody(
-                              uid: item['uid'],
-                              name: item['name'],
-                              content: item['contents'],
-                              photoUrls: item['image'],
-                              dateTime: item['dateTime'],
-                              documentId: item.id,
-                              currentUserId: currentUserId,
-                              anoym: item['anoym'],
-                              commentsCount: item['commentsCount'],
-                              avatarUrl: item['avatarUrl'],
-                            ))
-                      : item['avatarUrl'] == null
-                          ? (KnowhowFeedPageBody(
-                              uid: item['uid'],
-                              name: item['name'],
-                              content: item['contents'],
-                              dateTime: item['dateTime'],
-                              documentId: item.id,
-                              currentUserId: currentUserId,
-                              anoym: item['anoym'],
-                              commentsCount: item['commentsCount'],
-                            ))
-                          : (KnowhowFeedPageBody(
-                              uid: item['uid'],
-                              name: item['name'],
-                              content: item['contents'],
-                              dateTime: item['dateTime'],
-                              documentId: item.id,
-                              currentUserId: currentUserId,
-                              anoym: item['anoym'],
-                              commentsCount: item['commentsCount'],
-                              avatarUrl: item['avatarUrl'],
-                            )));
-                },
-                noItemsFoundIndicatorBuilder: (context) => const Center(
-                  child: Text("표시할 게시물이 없어요", style: TextStyle(fontSize: 20)),
-                ),
-              ),
+        onRefresh: _refreshPage,
+        child: PagedListView<DocumentSnapshot?, DocumentSnapshot>(
+          pagingController: _pagingController,
+          physics: const ClampingScrollPhysics(),
+          scrollController: _scrollController,
+          builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot>(
+            itemBuilder: (context, item, index) {
+              if (_blockedUsers.contains(item['uid'])) {
+                return const SizedBox.shrink(); // 차단된 사용자의 게시물은 표시하지 않습니다.
+              }
+              return KnowhowFeedPageBody(
+                uid: item['uid'],
+                name: item['name'],
+                content: item['contents'],
+                photoUrls: item['image'],
+                dateTime: item['dateTime'],
+                documentId: item.id,
+                currentUserId: currentUserId,
+                anoym: item['anoym'],
+                commentsCount: item['commentsCount'],
+                avatarUrl: item['avatarUrl'], // avatarUrl이 null인 경우 null을 전달
+              );
+            },
+            noItemsFoundIndicatorBuilder: (context) => const Center(
+              child: Text("표시할 게시물이 없어요", style: TextStyle(fontSize: 20)),
             ),
-          ],
+          ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    _scrollController.dispose();
+    super.dispose();
   }
 }

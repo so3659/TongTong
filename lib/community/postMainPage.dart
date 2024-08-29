@@ -25,6 +25,7 @@ class PostState extends State<PostPage> {
   final PagingController<DocumentSnapshot?, DocumentSnapshot>
       _pagingController = PagingController(firstPageKey: null);
   final Set<String> _blockedUsers = {};
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ class PostState extends State<PostPage> {
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
+
     loadBlockedUsers();
   }
 
@@ -46,19 +48,15 @@ class PostState extends State<PostPage> {
           ? await query.get()
           : await query.startAfterDocument(lastDocument).get();
 
-      await Future.delayed(const Duration(seconds: 1));
-
       final isLastPage = snapshot.docs.length < _pageSize;
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        setState(() {
-          if (isLastPage) {
-            _pagingController.appendLastPage(snapshot.docs);
-          } else {
-            final nextPageKey = snapshot.docs.last;
-            _pagingController.appendPage(snapshot.docs, nextPageKey);
-          }
-        });
-      });
+
+      if (isLastPage) {
+        _pagingController.appendLastPage(snapshot.docs);
+      } else {
+        final nextPageKey = snapshot.docs.last;
+
+        _pagingController.appendPage(snapshot.docs, nextPageKey);
+      }
     } catch (error) {
       _pagingController.error = error;
     }
@@ -66,11 +64,24 @@ class PostState extends State<PostPage> {
 
   Future<void> loadBlockedUsers() async {
     String userId = FirebaseAuth.instance.currentUser!.uid;
+
     var doc =
         await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
     List<dynamic> blocked = doc.data()?['blockList'] ?? [];
+
     setState(() {
       _blockedUsers.addAll(blocked.cast<String>());
+    });
+  }
+
+  Future<void> _refreshPage() async {
+    final scrollPosition = _scrollController.position.pixels;
+    _pagingController.refresh();
+    loadBlockedUsers();
+    // 리프레시 후 스크롤 위치 복원
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.jumpTo(scrollPosition);
     });
   }
 
@@ -156,64 +167,28 @@ class PostState extends State<PostPage> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: () => Future.sync(() {
-          _pagingController.refresh();
-          loadBlockedUsers();
-        }),
+        onRefresh: _refreshPage,
         child: PagedListView<DocumentSnapshot?, DocumentSnapshot>(
           pagingController: _pagingController,
+          physics: const ClampingScrollPhysics(),
+          scrollController: _scrollController,
           builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot>(
             itemBuilder: (context, item, index) {
               if (_blockedUsers.contains(item['uid'])) {
                 return const SizedBox.shrink(); // 차단된 사용자의 게시물은 표시하지 않습니다.
               }
-              return (item['image'] != null
-                  ? item['avatarUrl'] == null
-                      ? (FeedPageBody(
-                          uid: item['uid'],
-                          name: item['name'],
-                          content: item['contents'],
-                          photoUrls: item['image'],
-                          dateTime: item['dateTime'],
-                          documentId: item.id,
-                          currentUserId: currentUserId,
-                          anoym: item['anoym'],
-                          commentsCount: item['commentsCount'],
-                        ))
-                      : (FeedPageBody(
-                          uid: item['uid'],
-                          name: item['name'],
-                          content: item['contents'],
-                          photoUrls: item['image'],
-                          dateTime: item['dateTime'],
-                          documentId: item.id,
-                          currentUserId: currentUserId,
-                          anoym: item['anoym'],
-                          commentsCount: item['commentsCount'],
-                          avatarUrl: item['avatarUrl'],
-                        ))
-                  : item['avatarUrl'] == null
-                      ? (FeedPageBody(
-                          uid: item['uid'],
-                          name: item['name'],
-                          content: item['contents'],
-                          dateTime: item['dateTime'],
-                          documentId: item.id,
-                          currentUserId: currentUserId,
-                          anoym: item['anoym'],
-                          commentsCount: item['commentsCount'],
-                        ))
-                      : (FeedPageBody(
-                          uid: item['uid'],
-                          name: item['name'],
-                          content: item['contents'],
-                          dateTime: item['dateTime'],
-                          documentId: item.id,
-                          currentUserId: currentUserId,
-                          anoym: item['anoym'],
-                          commentsCount: item['commentsCount'],
-                          avatarUrl: item['avatarUrl'],
-                        )));
+              return FeedPageBody(
+                uid: item['uid'],
+                name: item['name'],
+                content: item['contents'],
+                photoUrls: item['image'],
+                dateTime: item['dateTime'],
+                documentId: item.id,
+                currentUserId: currentUserId,
+                anoym: item['anoym'],
+                commentsCount: item['commentsCount'],
+                avatarUrl: item['avatarUrl'], // avatarUrl이 null인 경우 null을 전달
+              );
             },
             noItemsFoundIndicatorBuilder: (context) => const Center(
               child: Text("표시할 게시물이 없어요", style: TextStyle(fontSize: 20)),
@@ -228,6 +203,7 @@ class PostState extends State<PostPage> {
   @override
   void dispose() {
     _pagingController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 }

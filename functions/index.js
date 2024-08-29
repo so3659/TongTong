@@ -19,6 +19,31 @@
 // });
 
 const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+admin.initializeApp({
+  databaseURL: "https://(default).asia-northeast3.firebaseio.com", // Firebase Realtime Database URL
+});
+
+exports.addFieldToAllDocs = functions
+    .region("asia-northeast3")
+    .https.onRequest(async (req, res) => {
+      const db = admin.database();
+      const ref = db.ref("/Posts");
+
+      const snapshot = await ref.once("value");
+
+      const updates = {};
+
+      snapshot.forEach((childSnapshot) => {
+        const key = childSnapshot.key;
+        updates[`${key}/anoymCount`] = 0; // 추가하고자 하는 새로운 필드와 값
+      });
+
+      await ref.update(updates);
+      console.log("Field added to all documents.");
+
+      res.send("Field added to all documents.");
+    });
 
 // Set up Algolia
 const {default: algoliasearch} = require("algoliasearch");

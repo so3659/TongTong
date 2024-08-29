@@ -25,6 +25,7 @@ class KnowhowState extends State<KnowhowPage> {
   final PagingController<DocumentSnapshot?, DocumentSnapshot>
       _pagingController = PagingController(firstPageKey: null);
   final Set<String> _blockedUsers = {};
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -42,6 +43,16 @@ class KnowhowState extends State<KnowhowPage> {
     List<dynamic> blocked = doc.data()?['blockList'] ?? [];
     setState(() {
       _blockedUsers.addAll(blocked.cast<String>());
+    });
+  }
+
+  Future<void> _refreshPage() async {
+    final scrollPosition = _scrollController.position.pixels;
+    _pagingController.refresh();
+    loadBlockedUsers();
+    // 리프레시 후 스크롤 위치 복원
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.jumpTo(scrollPosition);
     });
   }
 
@@ -152,64 +163,28 @@ class KnowhowState extends State<KnowhowPage> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: () => Future.sync(() {
-          _pagingController.refresh();
-          loadBlockedUsers();
-        }),
+        onRefresh: _refreshPage,
         child: PagedListView<DocumentSnapshot?, DocumentSnapshot>(
           pagingController: _pagingController,
+          physics: const ClampingScrollPhysics(),
+          scrollController: _scrollController,
           builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot>(
             itemBuilder: (context, item, index) {
               if (_blockedUsers.contains(item['uid'])) {
                 return const SizedBox.shrink(); // 차단된 사용자의 게시물은 표시하지 않습니다.
               }
-              return (item['image'] != null
-                  ? item['avatarUrl'] == null
-                      ? (KnowhowFeedPageBody(
-                          uid: item['uid'],
-                          name: item['name'],
-                          content: item['contents'],
-                          photoUrls: item['image'],
-                          dateTime: item['dateTime'],
-                          documentId: item.id,
-                          currentUserId: currentUserId,
-                          anoym: item['anoym'],
-                          commentsCount: item['commentsCount'],
-                        ))
-                      : (KnowhowFeedPageBody(
-                          uid: item['uid'],
-                          name: item['name'],
-                          content: item['contents'],
-                          photoUrls: item['image'],
-                          dateTime: item['dateTime'],
-                          documentId: item.id,
-                          currentUserId: currentUserId,
-                          anoym: item['anoym'],
-                          commentsCount: item['commentsCount'],
-                          avatarUrl: item['avatarUrl'],
-                        ))
-                  : item['avatarUrl'] == null
-                      ? (KnowhowFeedPageBody(
-                          uid: item['uid'],
-                          name: item['name'],
-                          content: item['contents'],
-                          dateTime: item['dateTime'],
-                          documentId: item.id,
-                          currentUserId: currentUserId,
-                          anoym: item['anoym'],
-                          commentsCount: item['commentsCount'],
-                        ))
-                      : (KnowhowFeedPageBody(
-                          uid: item['uid'],
-                          name: item['name'],
-                          content: item['contents'],
-                          dateTime: item['dateTime'],
-                          documentId: item.id,
-                          currentUserId: currentUserId,
-                          anoym: item['anoym'],
-                          commentsCount: item['commentsCount'],
-                          avatarUrl: item['avatarUrl'],
-                        )));
+              return KnowhowFeedPageBody(
+                uid: item['uid'],
+                name: item['name'],
+                content: item['contents'],
+                photoUrls: item['image'],
+                dateTime: item['dateTime'],
+                documentId: item.id,
+                currentUserId: currentUserId,
+                anoym: item['anoym'],
+                commentsCount: item['commentsCount'],
+                avatarUrl: item['avatarUrl'], // avatarUrl이 null인 경우 null을 전달
+              );
             },
             noItemsFoundIndicatorBuilder: (context) => const Center(
               child: Text("표시할 게시물이 없어요", style: TextStyle(fontSize: 20)),
@@ -224,6 +199,7 @@ class KnowhowState extends State<KnowhowPage> {
   @override
   void dispose() {
     _pagingController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 }

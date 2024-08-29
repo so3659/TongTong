@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class CustomPageView extends StatefulWidget {
@@ -43,8 +44,12 @@ class _CustomPageViewState extends State<CustomPageView> {
                   },
                   itemCount: widget.photoUrls.length,
                   itemBuilder: (context, index) {
-                    return Image.network(
-                      widget.photoUrls[index],
+                    return CachedNetworkImage(
+                      imageUrl: widget.photoUrls[index],
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                       fit: BoxFit.fitWidth,
                     );
                   },

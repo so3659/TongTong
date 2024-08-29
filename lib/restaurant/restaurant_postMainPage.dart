@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:tongtong/knowhow/knowhow_postBody.dart';
 import 'package:tongtong/restaurant/restaurant_hotPostsPage.dart';
 import 'package:tongtong/restaurant/restaurant_makePost.dart';
 import 'package:tongtong/restaurant/restaurant_postBody.dart';
@@ -24,6 +25,7 @@ class RestaurantState extends State<RestaurantPage> {
   final PagingController<DocumentSnapshot?, DocumentSnapshot>
       _pagingController = PagingController(firstPageKey: null);
   final Set<String> _blockedUsers = {};
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -41,6 +43,16 @@ class RestaurantState extends State<RestaurantPage> {
     List<dynamic> blocked = doc.data()?['blockList'] ?? [];
     setState(() {
       _blockedUsers.addAll(blocked.cast<String>());
+    });
+  }
+
+  Future<void> _refreshPage() async {
+    final scrollPosition = _scrollController.position.pixels;
+    _pagingController.refresh();
+    loadBlockedUsers();
+    // 리프레시 후 스크롤 위치 복원
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.jumpTo(scrollPosition);
     });
   }
 
@@ -151,64 +163,28 @@ class RestaurantState extends State<RestaurantPage> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: () => Future.sync(() {
-          _pagingController.refresh();
-          loadBlockedUsers();
-        }),
+        onRefresh: _refreshPage,
         child: PagedListView<DocumentSnapshot?, DocumentSnapshot>(
           pagingController: _pagingController,
+          physics: const ClampingScrollPhysics(),
+          scrollController: _scrollController,
           builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot>(
             itemBuilder: (context, item, index) {
               if (_blockedUsers.contains(item['uid'])) {
                 return const SizedBox.shrink(); // 차단된 사용자의 게시물은 표시하지 않습니다.
               }
-              return (item['image'] != null
-                  ? item['avatarUrl'] == null
-                      ? (RestaurantFeedPageBody(
-                          uid: item['uid'],
-                          name: item['name'],
-                          content: item['contents'],
-                          photoUrls: item['image'],
-                          dateTime: item['dateTime'],
-                          documentId: item.id,
-                          currentUserId: currentUserId,
-                          anoym: item['anoym'],
-                          commentsCount: item['commentsCount'],
-                        ))
-                      : (RestaurantFeedPageBody(
-                          uid: item['uid'],
-                          name: item['name'],
-                          content: item['contents'],
-                          photoUrls: item['image'],
-                          dateTime: item['dateTime'],
-                          documentId: item.id,
-                          currentUserId: currentUserId,
-                          anoym: item['anoym'],
-                          commentsCount: item['commentsCount'],
-                          avatarUrl: item['avatarUrl'],
-                        ))
-                  : item['avatarUrl'] == null
-                      ? (RestaurantFeedPageBody(
-                          uid: item['uid'],
-                          name: item['name'],
-                          content: item['contents'],
-                          dateTime: item['dateTime'],
-                          documentId: item.id,
-                          currentUserId: currentUserId,
-                          anoym: item['anoym'],
-                          commentsCount: item['commentsCount'],
-                        ))
-                      : (RestaurantFeedPageBody(
-                          uid: item['uid'],
-                          name: item['name'],
-                          content: item['contents'],
-                          dateTime: item['dateTime'],
-                          documentId: item.id,
-                          currentUserId: currentUserId,
-                          anoym: item['anoym'],
-                          commentsCount: item['commentsCount'],
-                          avatarUrl: item['avatarUrl'],
-                        )));
+              return RestaurantFeedPageBody(
+                uid: item['uid'],
+                name: item['name'],
+                content: item['contents'],
+                photoUrls: item['image'],
+                dateTime: item['dateTime'],
+                documentId: item.id,
+                currentUserId: currentUserId,
+                anoym: item['anoym'],
+                commentsCount: item['commentsCount'],
+                avatarUrl: item['avatarUrl'], // avatarUrl이 null인 경우 null을 전달
+              );
             },
             noItemsFoundIndicatorBuilder: (context) => const Center(
               child: Text("표시할 게시물이 없어요", style: TextStyle(fontSize: 20)),
@@ -223,24 +199,7 @@ class RestaurantState extends State<RestaurantPage> {
   @override
   void dispose() {
     _pagingController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
-}
-
-Widget _floatingActionButton(BuildContext context) {
-  return FloatingActionButton(
-    heroTag: 'MakeRestaurant',
-    shape: const CircleBorder(),
-    onPressed: () {
-      Navigator.of(context, rootNavigator: true).push(
-          MaterialPageRoute(builder: (context) => const MakeRestaurant()));
-    },
-    child: customIcon(
-      context,
-      icon: AppIcon.fabTweet,
-      isTwitterIcon: true,
-      iconColor: Theme.of(context).colorScheme.onPrimary,
-      size: 25,
-    ),
-  );
 }

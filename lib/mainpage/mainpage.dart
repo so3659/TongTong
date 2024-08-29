@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -86,8 +87,12 @@ class MainpageState extends State<Mainpage> {
                   controller: _pageController,
                   itemCount: _imageUrls.length,
                   itemBuilder: (context, index) {
-                    return Image.network(
-                      _imageUrls[index],
+                    return CachedNetworkImage(
+                      imageUrl: _imageUrls[index],
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                       fit: BoxFit.cover,
                     );
                   },

@@ -47,11 +47,64 @@ class FeedDetailPageBody extends StatefulWidget {
 class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
   int currentPage = 0;
   late FeedPost post;
+  String avatarUrl =
+      "https://firebasestorage.googleapis.com/v0/b/tongtong-5936b.appspot.com/o/defaultProfileImage%2Ftong_logo.png?alt=media&token=b17f8452-66e6-43f4-8439-3c414b8691c6";
+  String username = "이름 없는 자";
 
   @override
   void initState() {
     super.initState();
+    _bringAvatarurl();
+    _bringname();
     postParameter();
+  }
+
+  Future<void> _bringAvatarurl() async {
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.uid)
+          .get();
+
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+        if (data.containsKey('avatarUrl')) {
+          if (mounted) {
+            // mounted 확인
+            setState(() {
+              avatarUrl = data['avatarUrl'];
+            });
+          }
+        }
+      }
+    } catch (e) {
+      print("Error fetching avatar URL: $e");
+    }
+  }
+
+  Future<void> _bringname() async {
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.uid)
+          .get();
+
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+        if (data.containsKey('username')) {
+          if (mounted) {
+            // mounted 확인
+            setState(() {
+              username = data['username'];
+            });
+          }
+        }
+      }
+    } catch (e) {
+      print("Error fetching username: $e");
+    }
   }
 
   Future<void> deleteRestaurant(String documentId) async {
@@ -80,53 +133,17 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
   }
 
   void postParameter() {
-    if (widget.photoUrls != null) {
-      widget.avatarUrl == null
-          ? post = FeedPost(
-              uid: widget.uid,
-              name: widget.name,
-              content: widget.content,
-              photoUrls: widget.photoUrls,
-              dateTime: widget.dateTime,
-              documentId: widget.documentId,
-              currentUserId: widget.currentUserId,
-              anoym: widget.anoym,
-              commentsCount: widget.commentsCount,
-            )
-          : post = FeedPost(
-              uid: widget.uid,
-              name: widget.name,
-              content: widget.content,
-              photoUrls: widget.photoUrls,
-              dateTime: widget.dateTime,
-              documentId: widget.documentId,
-              currentUserId: widget.currentUserId,
-              anoym: widget.anoym,
-              commentsCount: widget.commentsCount,
-              avatarUrl: widget.avatarUrl);
-    } else {
-      widget.avatarUrl == null
-          ? post = FeedPost(
-              uid: widget.uid,
-              name: widget.name,
-              content: widget.content,
-              dateTime: widget.dateTime,
-              documentId: widget.documentId,
-              currentUserId: widget.currentUserId,
-              anoym: widget.anoym,
-              commentsCount: widget.commentsCount,
-            )
-          : post = FeedPost(
-              uid: widget.uid,
-              name: widget.name,
-              content: widget.content,
-              dateTime: widget.dateTime,
-              documentId: widget.documentId,
-              currentUserId: widget.currentUserId,
-              anoym: widget.anoym,
-              commentsCount: widget.commentsCount,
-              avatarUrl: widget.avatarUrl);
-    }
+    post = FeedPost(
+        uid: widget.uid,
+        name: widget.name,
+        content: widget.content,
+        photoUrls: widget.photoUrls,
+        dateTime: widget.dateTime,
+        documentId: widget.documentId,
+        currentUserId: widget.currentUserId,
+        anoym: widget.anoym,
+        commentsCount: widget.commentsCount,
+        avatarUrl: widget.avatarUrl);
   }
 
   Future<void> handleLikeButtonPressed(
@@ -371,12 +388,7 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
                           backgroundImage: widget.anoym
                               ? const AssetImage('assets/images/tong_logo.png')
                                   as ImageProvider<Object>
-                              : widget.avatarUrl == null
-                                  ? const AssetImage(
-                                          'assets/images/tong_logo.png')
-                                      as ImageProvider<Object>
-                                  : CachedNetworkImageProvider(
-                                      widget.avatarUrl!),
+                              : CachedNetworkImageProvider(avatarUrl),
                           radius: 35,
                         ),
                       ),
@@ -390,9 +402,7 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
                             Container(
                               margin: const EdgeInsets.only(right: 5),
                               child: Text(
-                                widget.anoym
-                                    ? '익명'
-                                    : (widget.name ?? '(이름을 설정해주세요)'),
+                                (widget.anoym ? '익명' : username),
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
@@ -619,7 +629,7 @@ class _FeedDetailPageBodyState extends State<FeedDetailPageBody> {
             ],
           );
         } else {
-          return Container();
+          return const SizedBox.shrink();
         }
       },
     );

@@ -32,17 +32,64 @@ class LightningDetailPageState extends ConsumerState<LightningDetailPage> {
   final TextEditingController contents = TextEditingController();
   bool _loading = false;
   final Set<String> _blockedUsers = {};
+  String avatarUrl =
+      "https://firebasestorage.googleapis.com/v0/b/tongtong-5936b.appspot.com/o/defaultProfileImage%2Ftong_logo.png?alt=media&token=b17f8452-66e6-43f4-8439-3c414b8691c6";
+  String username = "이름 없는 자";
 
   @override
   void initState() {
     super.initState();
+    _bringAvatarurl();
+    _bringname();
     loadBlockedUsers();
   }
 
-  @override
-  void dispose() {
-    contents.dispose();
-    super.dispose();
+  Future<void> _bringAvatarurl() async {
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.post.uid)
+          .get();
+
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+        if (data.containsKey('avatarUrl')) {
+          if (mounted) {
+            // mounted 확인
+            setState(() {
+              avatarUrl = data['avatarUrl'];
+            });
+          }
+        }
+      }
+    } catch (e) {
+      print("Error fetching avatar URL: $e");
+    }
+  }
+
+  Future<void> _bringname() async {
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.post.uid)
+          .get();
+
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+        if (data.containsKey('username')) {
+          if (mounted) {
+            // mounted 확인
+            setState(() {
+              username = data['username'];
+            });
+          }
+        }
+      }
+    } catch (e) {
+      print("Error fetching username: $e");
+    }
   }
 
   Future<void> loadBlockedUsers() async {
@@ -165,14 +212,56 @@ class LightningDetailPageState extends ConsumerState<LightningDetailPage> {
 
     CollectionReference commentsRef = postRef.collection('comments');
     String commentId = getRandomString(16);
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+
+    DocumentSnapshot postSnapshot = await postRef.get();
+
+    List<dynamic> anoymList = postSnapshot.get('anoymList') ?? [];
+    int anoymCount = postSnapshot.get('anoymCount') ?? 0;
+    bool postAnoym = postSnapshot.get('anoym') ?? false;
+
+    String displayName;
+    if (checkboxValue) {
+      // 익명 사용자인 경우
+      if (anoymList.contains(uid)) {
+        // 이미 익명 목록에 있는 경우
+        int index = anoymList.indexOf(uid);
+        displayName = (postAnoym && postSnapshot.get('uid') == uid)
+            ? "익명(작성자)"
+            : "익명$index";
+      } else {
+        // 익명 목록에 없는 경우 새로 추가
+        anoymList.add(uid);
+        if (postSnapshot.get('uid') != uid) {
+          anoymCount++;
+        } else if (!(postAnoym && postSnapshot.get('uid') == uid)) {
+          anoymCount++;
+        }
+
+        displayName = (postAnoym && postSnapshot.get('uid') == uid)
+            ? "익명(작성자)"
+            : "익명$anoymCount";
+
+        // 익명 목록과 카운트 업데이트
+        await FirebaseFirestore.instance
+            .collection("Lightning")
+            .doc(postId)
+            .update({
+          'anoymList': anoymList,
+          'anoymCount': anoymCount,
+        });
+      }
+    } else {
+      // 실명 사용자인 경우
+      displayName = FirebaseAuth.instance.currentUser!.displayName!;
+    }
 
     String? avatarUrl =
         await fetchAvatarUrl(FirebaseAuth.instance.currentUser!.uid);
 
     await commentsRef.doc(commentId).set({
-      "uid": FirebaseAuth.instance.currentUser!.uid,
-      "name":
-          checkboxValue ? '익명' : FirebaseAuth.instance.currentUser!.displayName,
+      "uid": uid,
+      "name": displayName,
       'content': content,
       'dateTime': Timestamp.now(),
       'postId': postId,
@@ -216,6 +305,51 @@ class LightningDetailPageState extends ConsumerState<LightningDetailPage> {
         .doc(commentId);
 
     String replyId = getRandomString(16); // Unique ID
+    String uid0 = FirebaseAuth.instance.currentUser!.uid;
+
+    DocumentSnapshot postSnapshot = await FirebaseFirestore.instance
+        .collection("Lightning")
+        .doc(postId)
+        .get();
+
+    List<dynamic> anoymList = postSnapshot.get('anoymList') ?? [];
+    int anoymCount = postSnapshot.get('anoymCount') ?? 0;
+    bool postAnoym = postSnapshot.get('anoym') ?? false;
+
+    String displayName;
+    if (checkboxValue) {
+      // 익명 사용자인 경우
+      if (anoymList.contains(uid0)) {
+        // 이미 익명 목록에 있는 경우
+        int index = anoymList.indexOf(uid0);
+        displayName = (postAnoym && postSnapshot.get('uid') == uid0)
+            ? "익명(작성자)"
+            : "익명${index + 1}";
+      } else {
+        // 익명 목록에 없는 경우 새로 추가
+        anoymList.add(uid0);
+        if (postSnapshot.get('uid') != uid0) {
+          anoymCount++;
+        } else if (!(postAnoym && postSnapshot.get('uid') == uid0)) {
+          anoymCount++;
+        }
+        displayName = (postAnoym && postSnapshot.get('uid') == uid0)
+            ? "익명(작성자)"
+            : "익명$anoymCount";
+
+        // 익명 목록과 카운트 업데이트
+        await FirebaseFirestore.instance
+            .collection("Lightning")
+            .doc(postId)
+            .update({
+          'anoymList': anoymList,
+          'anoymCount': anoymCount,
+        });
+      }
+    } else {
+      // 실명 사용자인 경우
+      displayName = FirebaseAuth.instance.currentUser!.displayName!;
+    }
 
     String? avatarUrl =
         await fetchAvatarUrl(FirebaseAuth.instance.currentUser!.uid);
@@ -223,8 +357,7 @@ class LightningDetailPageState extends ConsumerState<LightningDetailPage> {
     // 대댓글 추가 로직
     await commentRef.collection('Replies').doc(replyId).set({
       "uid": FirebaseAuth.instance.currentUser!.uid,
-      "name":
-          checkboxValue ? '익명' : FirebaseAuth.instance.currentUser!.displayName,
+      "name": displayName,
       'content': replyContent,
       'dateTime': Timestamp.now(),
       'postId': postId,
@@ -350,53 +483,19 @@ class LightningDetailPageState extends ConsumerState<LightningDetailPage> {
                             height: screenSize.height * 0.02,
                             width: double.infinity,
                           ),
-                          widget.post.photoUrls != null
-                              ? widget.post.avatarUrl == null
-                                  ? FeedDetailPageBody(
-                                      uid: widget.post.uid,
-                                      name: widget.post.name,
-                                      content: widget.post.content,
-                                      photoUrls: widget.post.photoUrls,
-                                      dateTime: widget.post.dateTime,
-                                      documentId: widget.post.documentId,
-                                      currentUserId: widget.post.currentUserId,
-                                      anoym: widget.post.anoym,
-                                      commentsCount: widget.post.commentsCount,
-                                    )
-                                  : FeedDetailPageBody(
-                                      uid: widget.post.uid,
-                                      name: widget.post.name,
-                                      content: widget.post.content,
-                                      photoUrls: widget.post.photoUrls,
-                                      dateTime: widget.post.dateTime,
-                                      documentId: widget.post.documentId,
-                                      currentUserId: widget.post.currentUserId,
-                                      anoym: widget.post.anoym,
-                                      commentsCount: widget.post.commentsCount,
-                                      avatarUrl: widget.post.avatarUrl,
-                                    )
-                              : widget.post.avatarUrl == null
-                                  ? FeedDetailPageBody(
-                                      uid: widget.post.uid,
-                                      name: widget.post.name,
-                                      content: widget.post.content,
-                                      dateTime: widget.post.dateTime,
-                                      documentId: widget.post.documentId,
-                                      currentUserId: widget.post.currentUserId,
-                                      anoym: widget.post.anoym,
-                                      commentsCount: widget.post.commentsCount,
-                                    )
-                                  : FeedDetailPageBody(
-                                      uid: widget.post.uid,
-                                      name: widget.post.name,
-                                      content: widget.post.content,
-                                      dateTime: widget.post.dateTime,
-                                      documentId: widget.post.documentId,
-                                      currentUserId: widget.post.currentUserId,
-                                      anoym: widget.post.anoym,
-                                      commentsCount: widget.post.commentsCount,
-                                      avatarUrl: widget.post.avatarUrl,
-                                    ),
+                          FeedDetailPageBody(
+                            uid: widget.post.uid,
+                            name: widget.post.anoym ? '익명' : username,
+                            content: widget.post.content,
+                            photoUrls: widget.post.photoUrls,
+                            dateTime: widget.post.dateTime,
+                            documentId: widget.post.documentId,
+                            currentUserId: widget.post.currentUserId,
+                            anoym: widget.post.anoym,
+                            commentsCount: widget.post.commentsCount,
+                            avatarUrl: widget
+                                .post.avatarUrl, // avatarUrl이 null인 경우 null을 전달
+                          ),
                         ],
                       ),
                     ),
@@ -442,39 +541,19 @@ class LightningDetailPageState extends ConsumerState<LightningDetailPage> {
                                     children: [
                                       _blockedUsers.contains(comment['uid'])
                                           ? const SizedBox.shrink()
-                                          : comment['avatarUrl'] == null
-                                              ? CommentList(
-                                                  // 댓글 정보를 사용하여 CommentList 위젯 생성
-                                                  uid: comment['uid'],
-                                                  name: comment['name'],
-                                                  content: comment['content'],
-                                                  dateTime: comment['dateTime'],
-                                                  postId: comment['postId'],
-                                                  commentId:
-                                                      comment['commentId'],
-                                                  anoym: comment['anoym'],
-                                                  replyCount:
-                                                      comment['replyCount'],
-                                                  isDelete:
-                                                      comment['isDeleted'],
-                                                )
-                                              : CommentList(
-                                                  // 댓글 정보를 사용하여 CommentList 위젯 생성
-                                                  uid: comment['uid'],
-                                                  name: comment['name'],
-                                                  content: comment['content'],
-                                                  dateTime: comment['dateTime'],
-                                                  postId: comment['postId'],
-                                                  commentId:
-                                                      comment['commentId'],
-                                                  anoym: comment['anoym'],
-                                                  replyCount:
-                                                      comment['replyCount'],
-                                                  isDelete:
-                                                      comment['isDeleted'],
-                                                  avatarUrl:
-                                                      comment['avatarUrl'],
-                                                ),
+                                          : CommentList(
+                                              // 댓글 정보를 사용하여 CommentList 위젯 생성
+                                              uid: comment['uid'],
+                                              name: comment['name'],
+                                              content: comment['content'],
+                                              dateTime: comment['dateTime'],
+                                              postId: comment['postId'],
+                                              commentId: comment['commentId'],
+                                              anoym: comment['anoym'],
+                                              replyCount: comment['replyCount'],
+                                              isDelete: comment['isDeleted'],
+                                              avatarUrl: comment['avatarUrl'],
+                                            ),
                                       StreamBuilder<QuerySnapshot>(
                                         // 대댓글 목록을 가져오는 스트림
                                         stream: document.reference
@@ -519,39 +598,20 @@ class LightningDetailPageState extends ConsumerState<LightningDetailPage> {
                                               return _blockedUsers
                                                       .contains(reply['uid'])
                                                   ? const SizedBox.shrink()
-                                                  : reply['avatarUrl'] == null
-                                                      ? ReplyList(
-                                                          uid: reply['uid'],
-                                                          name: reply['name'],
-                                                          content:
-                                                              reply['content'],
-                                                          dateTime:
-                                                              reply['dateTime'],
-                                                          postId:
-                                                              reply['postId'],
-                                                          commentId: reply[
-                                                              'commentId'],
-                                                          replyId:
-                                                              reply['replyId'],
-                                                          anoym: reply['anoym'],
-                                                        )
-                                                      : ReplyList(
-                                                          uid: reply['uid'],
-                                                          name: reply['name'],
-                                                          content:
-                                                              reply['content'],
-                                                          dateTime:
-                                                              reply['dateTime'],
-                                                          postId:
-                                                              reply['postId'],
-                                                          commentId: reply[
-                                                              'commentId'],
-                                                          replyId:
-                                                              reply['replyId'],
-                                                          anoym: reply['anoym'],
-                                                          avatarUrl: reply[
-                                                              'avatarUrl'],
-                                                        );
+                                                  : ReplyList(
+                                                      uid: reply['uid'],
+                                                      name: reply['name'],
+                                                      content: reply['content'],
+                                                      dateTime:
+                                                          reply['dateTime'],
+                                                      postId: reply['postId'],
+                                                      commentId:
+                                                          reply['commentId'],
+                                                      replyId: reply['replyId'],
+                                                      anoym: reply['anoym'],
+                                                      avatarUrl:
+                                                          reply['avatarUrl'],
+                                                    );
                                             },
                                           );
                                         },
@@ -660,5 +720,12 @@ class LightningDetailPageState extends ConsumerState<LightningDetailPage> {
         ]),
       );
     });
+  }
+
+  @override
+  void dispose() {
+    contents.dispose();
+    _focusNode.dispose();
+    super.dispose();
   }
 }
