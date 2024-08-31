@@ -4,6 +4,7 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:tongtong/calendar/calendarMain.dart';
@@ -20,6 +21,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tongtong/repair/repair_postDetailPage.dart';
 import 'package:tongtong/restaurant/restaurant_postDetailPage.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:app_version_update/app_version_update.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -96,8 +98,68 @@ class HomePageState extends State<HomePage> {
     }
   }
 
+  void _verifyVersion() async {
+    await AppVersionUpdate.checkForUpdates(
+      appleId: '6497060338',
+      playStoreId: 'tongtong.app',
+    ).then((result) async {
+      if (result.canUpdate!) {
+        // await AppVersionUpdate.showBottomSheetUpdate(context: context, appVersionResult: appVersionResult)
+        // await AppVersionUpdate.showPageUpdate(context: context, appVersionResult: appVersionResult)
+        // or use your own widget with information received from AppVersionResult
+
+        //##############################################################################################
+        Widget? alertUpdateWidget = await AppVersionUpdate.showAlertUpdate(
+          appVersionResult: result,
+          context: context,
+          mandatory: true,
+          backgroundColor: Colors.grey[200],
+          title: '업데이트 알림',
+          titleTextStyle: const TextStyle(
+              color: Colors.black, fontWeight: FontWeight.w600, fontSize: 24.0),
+          content: '새로운 업데이트가 있습니다.',
+          contentTextStyle: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w400,
+          ),
+          updateButtonText: '업데이트 하러 가기',
+          cancelButtonText: 'LATER',
+        );
+
+        if (alertUpdateWidget != null) {
+          return PopScope(
+            canPop: false,
+            onPopInvoked: (didPop) {
+              SystemNavigator.pop();
+            },
+            child: alertUpdateWidget,
+          );
+        } else {
+          SystemNavigator.pop();
+        }
+
+        //## AppVersionUpdate.showBottomSheetUpdate ##
+        // await AppVersionUpdate.showBottomSheetUpdate(
+        //   context: context,
+        //   mandatory: true,
+        //   appVersionResult: result,
+        // );
+
+        //## AppVersionUpdate.showPageUpdate ##
+
+        // await AppVersionUpdate.showPageUpdate(
+        //   context: context,
+        //   appVersionResult: result,
+        // );
+      }
+    });
+    // TODO: implement initState
+  }
+
   @override
   void initState() {
+    _verifyVersion();
+    super.initState();
     setupPlaylist();
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
