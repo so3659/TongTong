@@ -28,8 +28,8 @@
 
 ### Tools
 <div>
-<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Github.png?raw=true" width="80">
-<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Notion.png?raw=true" width="80">
+<img src="https://github.com/user-attachments/assets/2a8f4848-0134-495c-b530-c7da2db970ae" width="80">
+<img src="https://github.com/user-attachments/assets/42c1e8b3-4471-40dc-abce-c525d6693adb" width="80">
 </div>
 
 <br />
