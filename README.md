@@ -1,10 +1,12 @@
 <div align="center">
 
 <!-- logo -->
-<img src="https://github.com/user-attachments/assets/f9eeeae5-579c-4f88-bfce-df809651a72d" width="400"/>
+<img src="https://github.com/user-attachments/assets/f9eeeae5-579c-4f88-bfce-df809651a72d" width="300"/>
 
 ### TONGTONG<br>
 ### KYUNGHEE UNIVERSITY ACOUSTIC GUITAR CLUB 🎸
+
+</div> 
 
 ## 📝 소개
 동아리 인원들을 위한 SNS 앱 입니다   
