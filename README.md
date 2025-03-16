@@ -38,7 +38,7 @@
 <img src="https://github.com/user-attachments/assets/5df8b251-1d5e-40c5-9558-4fb8c15a9928">
 <br />
 
-## 주요 기능
+## 🧑‍💻 주요 기능
 
 - **소셜 로그인**:
   - 사용자 인증 정보를 통해 로그인합니다.
@@ -68,7 +68,7 @@
 
 <br />
 
-### 화면 구성
+## 🖥️ 화면 구성
 |메인 화면|
 |:---:|
 |<img src="https://github.com/user-attachments/assets/13d4051f-c100-44f9-bda2-360fa1e13331" width="450"/>|
@@ -105,6 +105,8 @@
 ### [플레이스토어](https://play.google.com/store/apps/details?id=tongtong.app)
 ### [앱스토어](https://apps.apple.com/us/app/%ED%86%B5%ED%86%B5-tongtong/id6497060338)
 
-## Contact
+<br />
+
+## 📞 Contact
 
 * 김성욱 : so3659@naver.com
