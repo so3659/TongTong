@@ -4,7 +4,7 @@
 <img src="https://github.com/user-attachments/assets/f9eeeae5-579c-4f88-bfce-df809651a72d" width="300"/>
 
 ### TONGTONG
-### 🎸 KYUNGHEE UNIVERSITY ACOUSTIC GUITAR CLUB 🎸
+### 🎸 OOOOOOOO UNIVERSITY ACOUSTIC GUITAR CLUB 🎸
 
 </div> 
 
